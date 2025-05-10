@@ -1,0 +1,472 @@
+html, body {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #0a0a0a; /* Темный фон сайта */
+  color: #e0e0e0;
+  scroll-behavior: smooth;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+::-webkit-scrollbar-thumb {
+  background: #00ffff; /* Яркий циан для скроллбара */
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #00e0e0; /* Более светлый циан при наведении на скроллбар */
+}
+
+#hero-video-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.hero-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  transform: translateX(-50%) translateY(-50%);
+  object-fit: cover;
+  opacity: 1;
+}
+
+.video-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачное затемнение для видео */
+  z-index: 1;
+}
+
+.hero-text {
+  position: relative;
+  z-index: 2;
+}
+
+.gradient-text {
+  background: linear-gradient(90deg, #00ffff, #ff00ff); /* Градиент для текста (циан-пурпурный) */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.about-me-photo {
+  max-width: 100%;
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .about-me-photo {
+      max-width: 100%;
+  }
+}
+
+.service-card, .feature-card, .pricing-card {
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+  background-color: rgba(26, 26, 46, 0.7); /* Полупрозрачный темно-синий фон для карточек */
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 255, 255, 0.2); /* Светло-циановая рамка для карточек */
+}
+.service-card:hover, .feature-card:hover, .pricing-card:hover {
+  transform: translateY(-12px) perspective(1200px) rotateX(3deg) rotateY(3deg) scale(1.03);
+  box-shadow: 0 25px 50px rgba(0, 255, 255, 0.25); /* Тень при наведении на карточки */
+}
+
+.portfolio-item {
+    background-color: rgba(26, 26, 46, 0.7);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    transition: box-shadow 0.4s ease;
+}
+.portfolio-item:hover {
+    box-shadow: 0 15px 40px rgba(0, 255, 255, 0.2);
+}
+.portfolio-video-link .fa-play {
+    transition: transform 0.3s ease;
+}
+.portfolio-video-link:hover .fa-play {
+    transform: scale(1.2);
+}
+
+/* Обновленные стили для основной кнопки (btn-primary) */
+.btn-primary {
+  background: linear-gradient(90deg, #008ecf, #00529b); /* Более темный синий градиент */
+  color: #ffffff; /* Белый текст для контраста */
+  transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 15px rgba(0, 100, 160, 0.4); /* Скорректированная тень под новый цвет */
+}
+.btn-primary:hover {
+  background: linear-gradient(90deg, #0072b3, #004280); /* Еще темнее при наведении */
+  transform: translateY(-3px) scale(1.08);
+  box-shadow: 0 10px 30px rgba(0, 100, 160, 0.7); /* Скорректированная тень при наведении */
+}
+
+/* Обновленные стили для вторичной кнопки (btn-secondary) */
+.btn-secondary {
+  border: 2px solid #00ffff; /* Циановая рамка */
+  color: #00ffff; /* Циановый текст */
+  transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.btn-secondary:hover {
+  background-color: #00ffff; /* Циановый фон при наведении */
+  color: #0a0a0a; /* Темный текст (цвет фона сайта) для контраста */
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 5px 15px rgba(0, 255, 255, 0.2);
+}
+
+/* Специальные стили для кнопки "Премиум" пакета (остаются без изменений, если контраст устраивает) */
+.pricing-card a.btn-secondary.border-purple-400.text-purple-400:hover {
+    background-color: rgba(192, 132, 252, 0.2); /* Tailwind purple-400/20 */
+    color: #ffffff; /* Белый текст */
+}
+
+/* --- Стили для обновленного прелоадера --- */
+#preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #0a0a0a; /* Фон прелоадера */
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 0.8s ease-out, visibility 0.8s ease-out; /* Увеличена длительность для плавности */
+  opacity: 1;
+  visibility: visible;
+}
+#preloader.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none; /* Отключаем взаимодействие после скрытия */
+}
+
+.loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.loader {
+  border: 12px solid #1a1a2e; /* Темный цвет для фона кольца загрузчика, увеличен */
+  border-top: 12px solid #00ffff; /* Циановый цвет для активной части кольца, увеличен */
+  border-radius: 50%;
+  width: 100px; /* Увеличен размер */
+  height: 100px; /* Увеличен размер */
+  animation: spin 1.2s linear infinite; /* Немного замедлена анимация */
+  margin-bottom: 25px; /* Отступ снизу */
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+#progress-bar-container {
+  width: 250px; /* Ширина контейнера прогресс-бара */
+  height: 12px; /* Высота прогресс-бара */
+  background-color: #1a1a2e; /* Фон прогресс-бара */
+  border-radius: 6px; /* Скругление углов */
+  margin-bottom: 15px; /* Отступ снизу */
+  overflow: hidden; /* Чтобы скрыть выходящую за пределы часть #progress-bar */
+}
+
+#progress-bar {
+  width: 0%; /* Начальная ширина 0% */
+  height: 100%;
+  background-color: #00ffff; /* Цвет заполнения прогресс-бара */
+  border-radius: 6px;
+  transition: width 0.3s ease-out; /* Плавное изменение ширины */
+}
+
+#progress-text {
+  font-size: 1.5em; /* Увеличен размер текста процентов */
+  color: #00ffff; /* Цвет текста процентов */
+  font-weight: bold;
+  margin-bottom: 10px; /* Отступ снизу */
+}
+
+.loading-text {
+  font-size: 1.1em; /* Размер текста "Загрузка сайта..." */
+  color: #e0e0e0;
+}
+/* --- Конец стилей для обновленного прелоадера --- */
+
+
+#scrollToTopBtn {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-color: #00ffff; /* Циановый фон кнопки "Наверх" */
+  color: #0a0a0a; /* Темный текст на кнопке */
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 1000;
+  box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: translateY(30px);
+  pointer-events: none;
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out, background-color 0.3s ease-out;
+  will-change: opacity, transform;
+}
+#scrollToTopBtn.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+#scrollToTopBtn:hover {
+  background-color: #00e0e0; /* Более светлый циан при наведении */
+  box-shadow: 0 8px 20px rgba(0, 224, 224, 0.5);
+}
+#scrollToTopBtn.visible:hover {
+  transform: translateY(0) scale(1.1);
+}
+
+nav {
+  background: rgba(10, 10, 10, 0.6); /* Полупрозрачный темный фон для навигации */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0, 255, 255, 0.1); /* Тонкая циановая линия внизу */
+  transition: padding 0.3s ease, background-color 0.3s ease;
+}
+nav.scrolled {
+  background: rgba(10, 10, 10, 0.85); /* Более плотный фон при скролле */
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+nav a.active-link {
+  color: #00ffff; /* Циановый цвет для активной ссылки в меню */
+  font-weight: 700;
+}
+
+.section-title {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  position: relative;
+  display: inline-block; /* Чтобы подчеркивание было по ширине текста */
+  padding-bottom: 0.5rem;
+}
+.section-title::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 0;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #00ffff, #ff00ff); /* Градиентное подчеркивание для заголовков секций */
+  transition: width 0.3s ease;
+}
+.section-title:hover::after {
+  width: 90px; /* Увеличение ширины подчеркивания при наведении */
+}
+
+/* Стили для мобильного меню */
+.mobile-menu {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.25s ease-out, opacity 0.25s ease-out, transform 0.25s ease-out;
+  opacity: 0;
+  transform: translateY(-20px);
+  will-change: max-height, opacity, transform;
+}
+.mobile-menu.open {
+  max-height: 600px; /* Увеличено для вмещения соц. иконок, при необходимости подстроить */
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Стили для иконки бургер-меню */
+.burger-icon {
+  width: 28px;
+  height: 22px;
+  position: relative;
+  cursor: pointer;
+  display: inline-block;
+  will-change: transform;
+}
+.burger-icon span {
+  display: block;
+  position: absolute;
+  height: 3px;
+  width: 100%;
+  background: #e0e0e0; /* Цвет полосок бургера */
+  border-radius: 3px;
+  opacity: 1;
+  left: 0;
+  transform: rotate(0deg);
+  transition: .25s ease-in-out;
+  will-change: transform, opacity, top, left, background;
+}
+.burger-icon span:nth-child(1) { top: 0px; }
+.burger-icon span:nth-child(2) { top: 9px; }
+.burger-icon span:nth-child(3) { top: 18px; }
+
+.burger-icon.open span:nth-child(1) {
+  top: 9px;
+  transform: rotate(135deg);
+  background: #00ffff; /* Цвет крестика при открытом меню (циан) */
+}
+.burger-icon.open span:nth-child(2) {
+  opacity: 0;
+  left: -28px;
+}
+.burger-icon.open span:nth-child(3) {
+  top: 9px;
+  transform: rotate(-135deg);
+  background: #00ffff; /* Цвет крестика при открытом меню (циан) */
+}
+
+/* Стили для списков в карточках прайсинга */
+.pricing-card ul {
+  list-style: none;
+  padding: 0;
+}
+.pricing-card ul li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(0, 255, 255, 0.1); /* Разделитель пунктов в прайсе */
+}
+.pricing-card ul li:last-child {
+  border-bottom: none;
+}
+
+.pricing-card ul li i {
+  margin-right: 0.5rem;
+}
+
+/* Гарантируем красный цвет для иконок "крестик" в прайсинге */
+.pricing-card ul li i.fa-times-circle.text-red-400 {
+  color: #f56565 !important; /* Tailwind red-400 */
+}
+
+/* Стили для модального окна с видео */
+#videoModal {
+    opacity: 0;
+    pointer-events: none;
+}
+#videoModal:not(.hidden) {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-content {
+    transform: scale(0.95);
+    transition: transform 0.3s ease-out, max-width 0.3s ease-out;
+}
+#videoModal:not(.hidden) .modal-content {
+    transform: scale(1);
+}
+
+.video-iframe-container {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%; /* Соотношение сторон 16:9 для видео */
+    height: 0;
+    overflow: hidden;
+    background-color: #000; /* Черный фон для контейнера iframe */
+}
+
+.video-iframe-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* Стили для вертикального Instagram видео в модальном окне (десктоп) */
+@media (min-width: 769px) {
+    .video-iframe-container.instagram-vertical {
+        width: 326px;
+        height: 710px;
+        padding-bottom: 0;
+        margin-left: auto;
+        margin-right: auto;
+        overflow: hidden;
+    }
+    .modal-content.modal-instagram-vertical-content {
+        max-width: 342px;
+    }
+}
+
+/* Адаптация для мобильных устройств */
+@media (max-width: 768px) {
+  .hero-text h1 {
+      font-size: 2.25rem; /* text-4xl */
+  }
+  .hero-text p {
+      font-size: 1rem; /* text-base */
+  }
+  .typing-effect {
+      white-space: normal;
+      border-right: none;
+      animation: none;
+  }
+
+  .video-iframe-container.instagram-vertical {
+    width: 100%;
+    max-width: 100%;
+    padding-bottom: 177.77%; /* Соотношение 9:16 для Instagram Reels/Stories */
+    height: 0;
+  }
+
+  /* Адаптация прелоадера для мобильных устройств */
+  .loader {
+    width: 80px;
+    height: 80px;
+    border-width: 10px;
+  }
+  #progress-bar-container {
+    width: 200px;
+    height: 10px;
+  }
+  #progress-text {
+    font-size: 1.3em;
+  }
+  .loading-text {
+    font-size: 1em;
+  }
+}
