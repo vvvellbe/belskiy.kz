@@ -227,7 +227,7 @@ function setupContentToggles() {
             if (window.innerWidth > 640) {
                 glider.style.width = `${targetButton.offsetWidth}px`;
                 glider.style.height = 'calc(100% - 10px)';
-                glider.style.transform = `translateX(${targetButton.offsetLeft}px)`;
+                glider.style.transform = `translateX(${targetButton.offsetLeft - 5}px)`;
             } else {
                 glider.style.width = 'calc(100% - 10px)';
                 glider.style.height = `${targetButton.offsetHeight}px`;
