@@ -1,457 +1,338 @@
-const preloader = document.getElementById('preloader');
-const progressBar = document.getElementById('progress-bar');
-const progressText = document.getElementById('progress-text');
-const dynamicLoadingTextElement = document.querySelector('#preloader .loading-text');
-
-const loadingMessages = [
-    "Готовим сцену...",
-    "Настраиваем микрофоны...",
-    "Магия AI загружается...",
-    "Создаем атмосферу праздника...",
-    "Валерий Бельский уже в пути!"
-];
-let currentMessageIndex = 0;
-let messageInterval;
-let progressInterval;
-let currentProgress = 0;
-
-function updateProgress(percentage) {
-    if (progressBar && progressText) {
-        currentProgress = Math.min(percentage, 100);
-        progressBar.style.width = currentProgress + '%';
-        progressText.textContent = Math.round(currentProgress) + '%';
-    }
-}
-
-function changeLoadingMessage() {
-    if (dynamicLoadingTextElement) {
-        dynamicLoadingTextElement.style.opacity = 0;
-        setTimeout(() => {
-            currentMessageIndex = (currentMessageIndex + 1) % loadingMessages.length;
-            dynamicLoadingTextElement.textContent = loadingMessages[currentMessageIndex];
-            dynamicLoadingTextElement.style.opacity = 1;
-        }, 300);
-    }
-}
-
-function simulateProgress() {
-    let simulatedProgress = 0;
-    const totalSimulationTime = 2500;
-    const intervalTime = 50;
-    const increment = (100 / (totalSimulationTime / intervalTime));
-
-    if (dynamicLoadingTextElement && loadingMessages.length > 0) {
-        dynamicLoadingTextElement.textContent = loadingMessages[currentMessageIndex];
-        dynamicLoadingTextElement.style.opacity = 1;
-        if (loadingMessages.length > 1) {
-            messageInterval = setInterval(changeLoadingMessage, 2000);
-        }
-    }
-
-    progressInterval = setInterval(() => {
-        simulatedProgress += increment;
-        if (simulatedProgress >= 100) {
-            updateProgress(100);
-            clearInterval(progressInterval);
-        } else {
-            updateProgress(simulatedProgress);
-        }
-    }, intervalTime);
-}
-
+// --- INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', () => {
-    if (preloader) {
-        document.body.classList.add('body-preloading');
-    }
-
-    if (preloader && progressBar && progressText) {
-        simulateProgress();
-    }
-    
-    if (typingElement) {
-        setTimeout(typeSubtitle, 500);
-    }
-    
-    setTimeout(setInitialCtaButtonState, 100);
-
-    if (sections.length > 0 && (navLinksDesktop.length > 0 || navLinksMobile.length > 0)) {
-        changeActiveLink();
-    }
+    // Эти функции можно запустить сразу, они не зависят от размеров и картинок
+    setupPreloader();
+    setupHeroVideo();
+    setupTypingEffect();
+    setupCtaButtonLogic();
+    setupContentToggles();
+    setupRepertoireToggle();
+    setupModals();
+    setupScrollToTop();
+    setupRevealAnimation();
+    setupNavigation(); // Настройка слушателей, но первая проверка будет позже
 });
 
-window.addEventListener('load', () => {
-    clearInterval(progressInterval);
-    clearInterval(messageInterval);
-    updateProgress(100);
+// --- PRELOADER LOGIC ---
+function setupPreloader() {
+    const preloader = document.getElementById('preloader');
+    if (!preloader) return;
 
-    if (preloader) {
+    const progressBar = document.getElementById('progress-bar');
+    const progressText = document.getElementById('progress-text');
+    const dynamicLoadingTextElement = preloader.querySelector('.loading-text');
+    const loadingMessages = [
+        "Готовим сцену...", "Настраиваем микрофоны...", "Магия AI загружается...",
+        "Создаем атмосферу праздника...", "Валерий Бельский уже в пути!"
+    ];
+    let currentMessageIndex = 0;
+    let progressInterval;
+
+    function updateProgress(percentage) {
+        if (progressBar && progressText) {
+            const p = Math.min(percentage, 100);
+            progressBar.style.width = p + '%';
+            progressText.textContent = Math.round(p) + '%';
+        }
+    }
+
+    function changeLoadingMessage() {
+        if (dynamicLoadingTextElement) {
+            dynamicLoadingTextElement.style.opacity = 0;
+            setTimeout(() => {
+                currentMessageIndex = (currentMessageIndex + 1) % loadingMessages.length;
+                dynamicLoadingTextElement.textContent = loadingMessages[currentMessageIndex];
+                dynamicLoadingTextElement.style.opacity = 1;
+            }, 300);
+        }
+    }
+
+    function simulateProgress() {
+        let simulatedProgress = 0;
+        const totalSimulationTime = 2500;
+        const intervalTime = 50;
+        const increment = 100 / (totalSimulationTime / intervalTime);
+        const messageInterval = setInterval(changeLoadingMessage, 2000);
+
+        progressInterval = setInterval(() => {
+            simulatedProgress += increment;
+            updateProgress(simulatedProgress);
+            if (simulatedProgress >= 100) {
+                clearInterval(progressInterval);
+                clearInterval(messageInterval);
+            }
+        }, intervalTime);
+    }
+
+    document.body.classList.add('body-preloading');
+    simulateProgress();
+
+    window.addEventListener('load', () => {
+        clearInterval(progressInterval);
+        updateProgress(100);
         setTimeout(() => {
             preloader.classList.add('hidden');
-            setTimeout(() => {
-                if (document.body.classList.contains('body-preloading')) {
-                    document.body.classList.remove('body-preloading');
-                }
-            }, 800);
+            setTimeout(() => document.body.classList.remove('body-preloading'), 800);
         }, 500);
-    }
-});
-
-const heroVideo = document.getElementById('hero-video-1');
-if (heroVideo) {
-    heroVideo.loop = true;
-    heroVideo.muted = true;
-    heroVideo.playsInline = true;
-    heroVideo.preload = 'auto';
-    const playPromise = heroVideo.play();
-    if (playPromise !== undefined) {
-        playPromise.catch(error => {
-            console.error("Ошибка автовоспроизведения фонового видео:", error);
-        });
-    }
-}
-
-const heroCtaButton = document.getElementById('heroCtaButton');
-const navCtaButton = document.getElementById('navCtaButton');
-const heroSection = document.getElementById('hero');
-const navElement = document.querySelector('nav');
-const desktopMenuLinks = document.getElementById('desktop-menu-links');
-
-function setInitialCtaButtonState() {
-    if (!heroCtaButton || !navCtaButton || !heroSection || !navElement) return;
-    const heroRect = heroSection.getBoundingClientRect();
-    const navHeight = navElement.offsetHeight;
-
-    if (heroRect.bottom < navHeight) {
-        heroCtaButton.classList.remove('opacity-100', 'scale-100', 'pointer-events-auto');
-        heroCtaButton.classList.add('opacity-0', 'scale-90', 'pointer-events-none');
-
-        navCtaButton.style.width = 'auto';
-        navCtaButton.style.paddingLeft = '1.25rem'; 
-        navCtaButton.style.paddingRight = '1.25rem'; 
-        navCtaButton.style.marginLeft = desktopMenuLinks && desktopMenuLinks.classList.contains('lg:px-4') ? '1rem' : '0.75rem'; 
-        navCtaButton.classList.remove('opacity-0', 'scale-90', 'pointer-events-none');
-        navCtaButton.classList.add('opacity-100', 'scale-100', 'pointer-events-auto');
-        if(desktopMenuLinks) desktopMenuLinks.style.marginRight = '0'; 
-    } else {
-        heroCtaButton.classList.remove('opacity-0', 'scale-90', 'pointer-events-none');
-        heroCtaButton.classList.add('opacity-100', 'scale-100', 'pointer-events-auto');
-
-        navCtaButton.style.width = '0';
-        navCtaButton.style.paddingLeft = '0';
-        navCtaButton.style.paddingRight = '0';
-        navCtaButton.style.marginLeft = '0';
-        navCtaButton.classList.remove('opacity-100', 'scale-100', 'pointer-events-auto');
-        navCtaButton.classList.add('opacity-0', 'scale-90', 'pointer-events-none');
-        if(desktopMenuLinks) desktopMenuLinks.style.marginRight = 'auto'; 
-    }
-}
-
-if (heroCtaButton && navCtaButton && heroSection && navElement) {
-    heroCtaButton.classList.add('opacity-100', 'scale-100', 'pointer-events-auto');
-    heroCtaButton.classList.remove('opacity-0', 'scale-90', 'pointer-events-none');
-
-    navCtaButton.style.width = '0'; 
-    navCtaButton.style.paddingLeft = '0';
-    navCtaButton.style.paddingRight = '0';
-    navCtaButton.style.marginLeft = '0';
-    navCtaButton.classList.add('opacity-0', 'scale-90', 'pointer-events-none');
-    navCtaButton.classList.remove('opacity-100', 'scale-100', 'pointer-events-auto');
-
-    window.addEventListener('scroll', () => {
-        const heroRect = heroSection.getBoundingClientRect();
-        const navHeight = navElement.offsetHeight;
-
-        if (heroRect.bottom < navHeight) { 
-            if (!navCtaButton.classList.contains('opacity-100')) {
-                heroCtaButton.classList.remove('opacity-100', 'scale-100', 'pointer-events-auto');
-                heroCtaButton.classList.add('opacity-0', 'scale-90', 'pointer-events-none');
-
-                navCtaButton.style.width = 'auto';
-                navCtaButton.style.paddingLeft = '1.25rem';
-                navCtaButton.style.paddingRight = '1.25rem';
-                navCtaButton.style.marginLeft = desktopMenuLinks && desktopMenuLinks.classList.contains('lg:px-4') ? '1rem' : '0.75rem';
-                navCtaButton.classList.remove('opacity-0', 'scale-90', 'pointer-events-none');
-                navCtaButton.classList.add('opacity-100', 'scale-100', 'pointer-events-auto');
-                if(desktopMenuLinks) desktopMenuLinks.style.marginRight = '0';
-            }
-        } else { 
-            if (!heroCtaButton.classList.contains('opacity-100')) {
-                heroCtaButton.classList.remove('opacity-0', 'scale-90', 'pointer-events-none');
-                heroCtaButton.classList.add('opacity-100', 'scale-100', 'pointer-events-auto');
-
-                navCtaButton.style.width = '0';
-                navCtaButton.style.paddingLeft = '0';
-                navCtaButton.style.paddingRight = '0';
-                navCtaButton.style.marginLeft = '0';
-                navCtaButton.classList.remove('opacity-100', 'scale-100', 'pointer-events-auto');
-                navCtaButton.classList.add('opacity-0', 'scale-90', 'pointer-events-none');
-                 if(desktopMenuLinks) desktopMenuLinks.style.marginRight = 'auto';
-            }
-        }
     });
 }
 
-const subtitles = [
-    "Искрометный Ведущий с AI-Фишками",
-    "Интеллектуальный Юмор и Драйв",
-    "Новый Формат Развлечений",
-    "Глубокая персонализация",
-    "Алматинский Эминем"
-];
-let subtitleIndex = 0;
-let charIndex = 0;
-const typingSpeed = 100; 
-const erasingSpeed = 50;  
-const delayBetweenSubtitles = 2000; 
-const typingElement = document.getElementById('typing-subtitle');
-
-function typeSubtitle() {
-    if (typingElement && charIndex < subtitles[subtitleIndex].length) {
-        typingElement.textContent += subtitles[subtitleIndex].charAt(charIndex);
-        charIndex++;
-        setTimeout(typeSubtitle, typingSpeed);
-    } else if (typingElement) {
-        setTimeout(eraseSubtitle, delayBetweenSubtitles);
-    }
-}
-
-function eraseSubtitle() {
-    if (typingElement && charIndex > 0) {
-        typingElement.textContent = subtitles[subtitleIndex].substring(0, charIndex - 1);
-        charIndex--;
-        setTimeout(eraseSubtitle, erasingSpeed);
-    } else if (typingElement) {
-        subtitleIndex = (subtitleIndex + 1) % subtitles.length; 
-        setTimeout(typeSubtitle, typingSpeed);
-    }
-}
-
-const navLinksDesktop = document.querySelectorAll('#desktop-menu-links a[href^="#"]');
-const navLinksMobile = document.querySelectorAll('#mobile-menu-items a[href^="#"]:not(#mobileCtaButton)');
-const sections = document.querySelectorAll('section[id]'); 
-const mobileMenuButton = document.getElementById('burger-menu-button');
-const mobileMenuItems = document.getElementById('mobile-menu-items');
-const burgerIconDiv = mobileMenuButton ? mobileMenuButton.querySelector('.burger-icon') : null;
-
-function changeActiveLink() {
-    if (!navElement) return;
-    let currentSectionId = '';
-    let offset = navElement.offsetHeight + 20; 
-
-    sections.forEach(section => {
-        const sectionTop = section.offsetTop;
-        if (window.scrollY + offset >= sectionTop) {
-            currentSectionId = section.getAttribute('id');
-        }
-    });
-    
-    if (!currentSectionId && sections.length > 0 && document.getElementById('hero')) {
-        if (window.scrollY < (sections[0].offsetTop - offset)) {
-             currentSectionId = 'hero';
-        }
-    }
-
-    [navLinksDesktop, navLinksMobile].forEach(linkCollection => {
-        linkCollection.forEach(link => {
-            link.classList.remove('active-link');
-            if (link.getAttribute('href') === `#${currentSectionId}`) {
-                link.classList.add('active-link');
-            }
-        });
-    });
-}
-
-if (sections.length > 0 && (navLinksDesktop.length > 0 || navLinksMobile.length > 0) ) {
-    window.addEventListener('scroll', changeActiveLink);
-}
-
-if (mobileMenuButton && mobileMenuItems && burgerIconDiv) {
-    mobileMenuButton.addEventListener('click', () => {
-        const isOpen = mobileMenuItems.classList.toggle('open');
-        burgerIconDiv.classList.toggle('open');
-        if (isOpen) {
-            requestAnimationFrame(changeActiveLink);
-        }
-    });
-
-    mobileMenuItems.querySelectorAll('a').forEach(link => {
-        if (!link.closest('.py-4.px-4.text-center')) { 
-            link.addEventListener('click', () => {
-                mobileMenuItems.classList.remove('open');
-                burgerIconDiv.classList.remove('open');
-                if (link.id !== 'mobileCtaButton') {
-                     setTimeout(changeActiveLink, 50); 
-                }
+// --- HERO VIDEO ---
+function setupHeroVideo() {
+    const heroVideo = document.getElementById('hero-video-1');
+    if (heroVideo) {
+        heroVideo.loop = true;
+        heroVideo.muted = true;
+        heroVideo.playsInline = true;
+        heroVideo.preload = 'auto';
+        const playPromise = heroVideo.play();
+        if (playPromise !== undefined) {
+            playPromise.catch(error => {
+                console.info("Autoplay was prevented:", error);
             });
         }
-    });
+    }
 }
 
-const revealElements = document.querySelectorAll('.reveal');
-const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('active');
-        } else { 
-            entry.target.classList.remove('active');
-        }
-    });
-}, { threshold: 0.1 }); 
+// --- TYPING EFFECT ---
+function setupTypingEffect() {
+    const typingElement = document.getElementById('typing-subtitle');
+    if (!typingElement) return;
 
-revealElements.forEach(el => {
-    revealObserver.observe(el);
-});
+    const subtitles = [
+        "Искрометный Ведущий с AI-Фишками", "Интеллектуальный Юмор и Драйв",
+        "Новый Формат Развлечений", "Глубокая персонализация", "Алматинский Эминем"
+    ];
+    let subtitleIndex = 0, charIndex = 0;
+    const typingSpeed = 100, erasingSpeed = 50, delayBetween = 2000;
 
-window.addEventListener('scroll', () => {
-    if (navElement) {
-        if (window.scrollY > 50) { 
-            navElement.classList.add('scrolled');
+    function type() {
+        if (charIndex < subtitles[subtitleIndex].length) {
+            typingElement.textContent += subtitles[subtitleIndex].charAt(charIndex++);
+            setTimeout(type, typingSpeed);
         } else {
-            navElement.classList.remove('scrolled');
+            setTimeout(erase, delayBetween);
         }
     }
-});
 
-const scrollToTopBtn = document.getElementById('scrollToTopBtn');
-if (scrollToTopBtn) {
-    window.addEventListener('scroll', () => {
-        if (window.pageYOffset > 300) { 
-            scrollToTopBtn.classList.add('visible');
+    function erase() {
+        if (charIndex > 0) {
+            typingElement.textContent = subtitles[subtitleIndex].substring(0, --charIndex);
+            setTimeout(erase, erasingSpeed);
         } else {
-            scrollToTopBtn.classList.remove('visible');
+            subtitleIndex = (subtitleIndex + 1) % subtitles.length;
+            setTimeout(type, typingSpeed);
         }
-    });
-
-    scrollToTopBtn.addEventListener('click', () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' }); 
-    });
+    }
+    setTimeout(type, 500);
 }
 
-const currentYearEl = document.getElementById('currentYear');
-if (currentYearEl) {
-    currentYearEl.textContent = new Date().getFullYear();
-}
+// --- NAVIGATION & CTA LOGIC ---
+function setupCtaButtonLogic() {
+    const heroCta = document.getElementById('heroCtaButton');
+    const navCta = document.getElementById('navCtaButton');
+    const hero = document.getElementById('hero');
+    const nav = document.querySelector('nav');
 
-const videoModal = document.getElementById('videoModal');
-const videoIframe = document.getElementById('videoIframe');
-const closeModalBtn = document.getElementById('closeModalBtn');
-const portfolioVideoLinks = document.querySelectorAll('.portfolio-video-link');
-const videoIframeContainer = document.querySelector('.video-iframe-container');
-const modalContentElement = videoModal ? videoModal.querySelector('.modal-content') : null;
+    if (!heroCta || !navCta || !hero || !nav) return;
 
-if (videoModal && videoIframe && closeModalBtn && portfolioVideoLinks.length > 0 && videoIframeContainer && modalContentElement) {
-    portfolioVideoLinks.forEach(link => {
-        link.addEventListener('click', function(event) {
-            event.preventDefault();
-            const videoSrc = this.dataset.videoSrc; 
-            if (videoSrc) {
-                let finalVideoSrc = '';
-
-                if (videoSrc.includes('instagram.com')) {
-                    videoIframeContainer.classList.add('instagram-vertical');
-                    modalContentElement.classList.add('modal-instagram-vertical-content');
-                    finalVideoSrc = videoSrc; 
-                } 
-                else if (videoSrc && !videoSrc.toLowerCase().startsWith('http') && !videoSrc.includes('instagram.com')) {
-                    const videoId = videoSrc; 
-                    finalVideoSrc = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&showinfo=0&modestbranding=1`;
-                    videoIframeContainer.classList.remove('instagram-vertical');
-                    modalContentElement.classList.remove('modal-instagram-vertical-content');
-                } 
-                else if (videoSrc.toLowerCase().startsWith('http')) {
-                     finalVideoSrc = videoSrc;
-                     videoIframeContainer.classList.remove('instagram-vertical');
-                     modalContentElement.classList.remove('modal-instagram-vertical-content');
-                }
-
-                if (finalVideoSrc) {
-                    videoIframe.setAttribute('src', finalVideoSrc);
-                    videoModal.classList.remove('hidden');
-                    requestAnimationFrame(() => {
-                        videoModal.style.opacity = '1';
-                        videoModal.style.pointerEvents = 'auto';
-                        document.body.style.overflow = 'hidden'; 
-                    });
-                } else {
-                    console.error('Не удалось определить источник видео:', videoSrc);
-                }
-            }
-        });
-    });
-
-    function closeVideoModal() {
-        videoModal.style.opacity = '0';
-        videoModal.style.pointerEvents = 'none';
-        setTimeout(() => {
-            videoModal.classList.add('hidden');
-            videoIframe.setAttribute('src', ''); 
-            document.body.style.overflow = ''; 
-            videoIframeContainer.classList.remove('instagram-vertical');
-            modalContentElement.classList.remove('modal-instagram-vertical-content');
-        }, 300); 
+    function updateCtaVisibility() {
+        const showNavButton = hero.getBoundingClientRect().bottom < nav.offsetHeight;
+        heroCta.classList.toggle('opacity-0', showNavButton);
+        navCta.classList.toggle('opacity-0', !showNavButton);
     }
 
-    closeModalBtn.addEventListener('click', closeVideoModal);
-
-    videoModal.addEventListener('click', function(event) {
-        if (event.target === videoModal) {
-            closeVideoModal();
-        }
-    });
-
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape' && !videoModal.classList.contains('hidden')) {
-            closeVideoModal();
-        }
-    });
+    window.addEventListener('scroll', updateCtaVisibility);
+    updateCtaVisibility();
 }
 
-const togglePortfolioBtn = document.getElementById('togglePortfolioBtn');
-const portfolioGrid = document.getElementById('portfolioGrid');
+function setupNavigation() {
+    const nav = document.querySelector('nav');
+    if (!nav) return;
+    
+    const sections = Array.from(document.querySelectorAll('section[id]'));
+    const navLinks = document.querySelectorAll('nav a[href^="#"]');
 
-if (togglePortfolioBtn && portfolioGrid) {
-    const portfolioItems = Array.from(portfolioGrid.querySelectorAll('.portfolio-item'));
-    const initiallyVisibleCount = 3; 
-    let allItemsVisible = false; 
-
-    function updatePortfolioVisibilityAndButton() {
-        let hiddenCount = 0;
-        portfolioItems.forEach((item, index) => {
-            if (index < initiallyVisibleCount) {
-                item.classList.remove('hidden'); 
-            } else {
-                if (allItemsVisible) { 
-                    item.classList.remove('hidden');
-                } else { 
-                    item.classList.add('hidden');
-                }
-            }
-            if (index >= initiallyVisibleCount && item.classList.contains('hidden')) {
-                hiddenCount++;
-            }
-        });
-        
-        const totalExtraItems = portfolioItems.length - initiallyVisibleCount;
-
-        if (totalExtraItems <= 0) { 
-            togglePortfolioBtn.classList.add('hidden'); 
-            return;
-        } else {
-            togglePortfolioBtn.classList.remove('hidden'); 
-        }
-
-        if (allItemsVisible) { 
-            togglePortfolioBtn.textContent = 'Скрыть';
-        } else { 
-            togglePortfolioBtn.textContent = `Показать еще ${hiddenCount > 0 ? hiddenCount : ''} видео`.trim();
-        }
+    function updateNavScroll() {
+        nav.classList.toggle('scrolled', window.scrollY > 50);
     }
     
-    allItemsVisible = false; 
-    updatePortfolioVisibilityAndButton();
+    function updateActiveLink() {
+        const scrollY = window.scrollY;
+        
+        if (scrollY < 200) {
+             navLinks.forEach(link => link.classList.remove('active-link'));
+             return;
+        }
 
-    togglePortfolioBtn.addEventListener('click', () => {
-        allItemsVisible = !allItemsVisible; 
-        updatePortfolioVisibilityAndButton(); 
+        let currentSectionId = '';
+        const navHeight = nav.offsetHeight;
+        
+        if ((window.innerHeight + scrollY) >= document.body.offsetHeight - 5) {
+            currentSectionId = 'contact';
+        } else {
+            for (const section of sections) {
+                const sectionTop = section.offsetTop - navHeight - 100;
+                if (scrollY >= sectionTop) {
+                    currentSectionId = section.id;
+                }
+            }
+        }
+        
+        navLinks.forEach(link => {
+            link.classList.toggle('active-link', link.getAttribute('href') === `#${currentSectionId}`);
+        });
+    }
+
+    setupMobileMenu();
+    window.addEventListener('scroll', () => {
+        updateNavScroll();
+        updateActiveLink();
     });
+    
+    window.addEventListener('load', () => {
+        updateNavScroll();
+        updateActiveLink();
+    });
+}
+
+function setupMobileMenu() {
+    const menuButton = document.getElementById('burger-menu-button');
+    const menuItems = document.getElementById('mobile-menu-items');
+    const burgerIcon = menuButton?.querySelector('.burger-icon');
+
+    if (!menuButton || !menuItems || !burgerIcon) return;
+
+    menuButton.addEventListener('click', () => {
+        menuItems.classList.toggle('open');
+        burgerIcon.classList.toggle('open');
+    });
+
+    menuItems.querySelectorAll('a[href^="#"]').forEach(link => {
+        link.addEventListener('click', () => {
+            menuItems.classList.remove('open');
+            burgerIcon.classList.remove('open');
+        });
+    });
+}
+
+// --- CONTENT TOGGLES ---
+function setupContentToggles() {
+    document.querySelectorAll('.tabs').forEach(tabsContainer => {
+        const glider = tabsContainer.querySelector('.glider');
+        const tabButtons = tabsContainer.querySelectorAll('.tab-btn');
+        const contentPanels = tabsContainer.closest('section').querySelectorAll('.content-panel');
+
+        function updateGlider(targetButton) {
+            if (window.innerWidth > 640) {
+                glider.style.width = `${targetButton.offsetWidth}px`;
+                glider.style.height = 'calc(100% - 10px)';
+                glider.style.transform = `translateX(${targetButton.offsetLeft}px)`;
+            } else {
+                glider.style.width = 'calc(100% - 10px)';
+                glider.style.height = `${targetButton.offsetHeight}px`;
+                glider.style.transform = `translateY(${targetButton.offsetTop}px)`;
+            }
+        }
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                updateGlider(button);
+                contentPanels.forEach(panel => {
+                    panel.classList.toggle('active', panel.id === button.dataset.target);
+                });
+            });
+        });
+
+        const initGlider = () => updateGlider(tabsContainer.querySelector('.tab-btn.active'));
+        initGlider();
+        window.addEventListener('resize', initGlider);
+    });
+}
+
+// --- REPERTOIRE TOGGLE ---
+function setupRepertoireToggle() {
+    const toggleBtn = document.getElementById('toggleRepertoireBtn');
+    const container = document.getElementById('hidden-repertoire-container');
+    if (!toggleBtn || !container) return;
+    
+    toggleBtn.addEventListener('click', () => {
+        const isExpanded = container.style.maxHeight && container.style.maxHeight !== "0px";
+        container.style.maxHeight = isExpanded ? "0px" : container.scrollHeight + "px";
+        toggleBtn.textContent = isExpanded ? 'Скрыть репертуар' : 'Показать весь репертуар';
+    });
+}
+
+// --- MODALS ---
+function setupModals() {
+    document.querySelectorAll('.modal-overlay').forEach(modal => {
+        const closeTriggers = modal.querySelectorAll('.modal-close-btn');
+        const openTriggers = document.querySelectorAll(`[data-modal-trigger="${modal.id}"]`);
+        
+        const openModal = (trigger) => {
+            const videoIframe = modal.querySelector('iframe');
+            if (videoIframe && trigger && trigger.dataset.videoSrc) {
+                const videoSrc = trigger.dataset.videoSrc;
+                const isInstagram = videoSrc.includes('instagram.com');
+                let finalSrc = isInstagram ? videoSrc : `https://www.youtube.com/embed/${videoSrc}?autoplay=1&rel=0`;
+                videoIframe.src = finalSrc;
+                modal.querySelector('.video-iframe-container')?.classList.toggle('instagram-vertical', isInstagram);
+                modal.querySelector('.modal-content')?.classList.toggle('modal-instagram-vertical-content', isInstagram);
+            }
+            modal.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        };
+
+        const closeModal = () => {
+            modal.classList.remove('open');
+            document.body.style.overflow = '';
+            const videoIframe = modal.querySelector('iframe');
+            if (videoIframe) setTimeout(() => { videoIframe.src = ''; }, 400);
+        };
+
+        openTriggers.forEach(trigger => {
+            trigger.addEventListener('click', e => {
+                e.preventDefault();
+                openModal(trigger);
+            });
+        });
+
+        closeTriggers.forEach(btn => btn.addEventListener('click', closeModal));
+        modal.addEventListener('click', e => {
+            if (e.target === modal) closeModal();
+        });
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+        });
+    });
+}
+
+// --- GENERIC HELPERS ---
+function setupScrollToTop() {
+    const btn = document.getElementById('scrollToTopBtn');
+    if (!btn) return;
+    btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    window.addEventListener('scroll', () => {
+        btn.classList.toggle('visible', window.scrollY > 300);
+    });
+}
+
+function setupRevealAnimation() {
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+}
+
+// --- FOOTER YEAR ---
+const currentYearEl = document.getElementById('currentYear');
+if(currentYearEl) {
+    currentYearEl.textContent = new Date().getFullYear();
 }
