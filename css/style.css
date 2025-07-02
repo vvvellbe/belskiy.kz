@@ -1,3 +1,7 @@
+html {
+  scroll-behavior: smooth;
+}
+
 html, body {
   width: 100%;
 }
@@ -6,7 +10,6 @@ body {
   font-family: 'Poppins', sans-serif;
   background-color: #0a0a0a;
   color: #e0e0e0;
-  scroll-behavior: smooth;
   overflow-x: hidden;
 }
 
@@ -351,20 +354,54 @@ nav a.active-link {
 .pricing-card ul li i.fa-times-circle.text-red-400 {
   color: #f56565 !important;
 }
-#videoModal {
-    opacity: 0;
-    pointer-events: none;
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 1rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s linear 0.4s;
 }
-#videoModal:not(.hidden) {
-    opacity: 1;
-    pointer-events: auto;
+.modal-overlay.open {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
 }
 .modal-content {
-    transform: scale(0.95);
-    transition: transform 0.3s ease-out, max-width 0.3s ease-out;
+  transform: scale(0.95) translateY(20px);
+  opacity: 0;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
-#videoModal:not(.hidden) .modal-content {
-    transform: scale(1);
+.modal-overlay.open .modal-content {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+.modal-close-btn {
+    position: absolute;
+    top: -0.75rem;
+    right: -0.75rem;
+    color: white;
+    background-color: #ef4444; /* red-500 */
+    border-radius: 9999px;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    z-index: 20;
+    transition: all 0.2s ease-in-out;
+}
+.modal-close-btn:hover {
+    background-color: #dc2626; /* red-600 */
+    transform: scale(1.1);
 }
 .video-iframe-container {
     position: relative;
@@ -382,6 +419,114 @@ nav a.active-link {
     height: 100%;
     border: none;
 }
+
+/* --- ОБНОВЛЕННЫЕ СТИЛИ РЕПЕРТУАРА --- */
+.repertoire-list {
+    /* Инициализация счетчика для нумерации */
+    counter-reset: track-counter;
+}
+.repertoire-item {
+    display: grid;
+    /* Определяем колонки: для номера, для информации, для кнопки */
+    grid-template-columns: auto 1fr auto;
+    gap: 1rem;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+    transition: background-color 0.3s ease;
+}
+.repertoire-item:hover {
+    background-color: rgba(0, 255, 255, 0.05);
+}
+/* Стили для номера трека */
+.repertoire-item::before {
+    counter-increment: track-counter;
+    content: counter(track-counter);
+    font-weight: 700;
+    font-size: 1.5rem;
+    background: linear-gradient(90deg, #00ffff, #ff00ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+    min-width: 2rem; /* Чтобы номера 1 и 10 занимали одинаковую ширину */
+    text-align: right;
+}
+/* Контейнер для названия и куплетов */
+.repertoire-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.repertoire-info strong {
+    font-weight: 600;
+}
+.repertoire-info span {
+    color: #9ca3af; /* gray-400 */
+}
+.btn-repertoire {
+    background-color: #3b82f6; /* blue-500 */
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem; /* rounded-md */
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    white-space: nowrap;
+}
+.btn-repertoire:hover {
+    background-color: #2563eb; /* blue-600 */
+}
+.hidden-repertoire-container {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+/* Адаптация репертуара для мобильных */
+@media (max-width: 640px) {
+    .repertoire-item {
+        /* Меняем сетку для мобильных */
+        grid-template-columns: auto 1fr; /* Номер | Информация+Кнопка */
+        grid-template-rows: auto auto; /* Две строки */
+        column-gap: 0.75rem;
+        row-gap: 0.5rem;
+    }
+    .repertoire-item::before {
+        /* Номер занимает первую строку и первую колонку */
+        grid-row: 1 / 2;
+        grid-column: 1 / 2;
+        align-self: start;
+        font-size: 1.25rem;
+    }
+    .repertoire-info {
+        /* Информация занимает первую строку и вторую колонку */
+        grid-row: 1 / 2;
+        grid-column: 2 / 3;
+    }
+    .btn-repertoire {
+        /* Кнопка занимает вторую строку и вторую колонку */
+        grid-row: 2 / 3;
+        grid-column: 2 / 3;
+        justify-self: start; /* Кнопка прижимается к левому краю своей ячейки */
+    }
+}
+
+.rider-content-container::-webkit-scrollbar {
+    width: 6px;
+}
+.rider-content-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+.rider-content-container::-webkit-scrollbar-thumb {
+    background: #8b5cf6; /* purple-500 */
+    border-radius: 3px;
+}
+.rider-content-container::-webkit-scrollbar-thumb:hover {
+    background: #7c3aed; /* purple-600 */
+}
+
 @media (min-width: 768px) {
   .about-me-photo {
       max-width: 100%;
@@ -397,7 +542,7 @@ nav a.active-link {
         overflow: hidden;
     }
     .modal-content.modal-instagram-vertical-content {
-        max-width: 342px;
+        max-width: 342px !important;
     }
 }
 @media (max-width: 768px) {
@@ -433,4 +578,89 @@ nav a.active-link {
   .loading-text {
     font-size: 0.9em;
   }
+}
+
+.tabs {
+    display: flex;
+    position: relative;
+    background-color: rgba(26, 26, 46, 0.7);
+    border-radius: 99px;
+    padding: 5px;
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    width: fit-content;
+}
+
+.tab-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #e0e0e0;
+    background: none;
+    border: none;
+    border-radius: 99px;
+    cursor: pointer;
+    position: relative;
+    z-index: 2;
+    transition: color 0.4s ease;
+    white-space: nowrap;
+}
+
+.tab-btn.active {
+    color: #ffffff;
+}
+
+.glider {
+    position: absolute;
+    display: flex;
+    height: calc(100% - 10px);
+    top: 5px;
+    left: 5px;
+    z-index: 1;
+    border-radius: 99px;
+    background: linear-gradient(90deg, #008ecf, #00529b);
+    box-shadow: 0 4px 15px rgba(0, 100, 160, 0.4);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.content-panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out, visibility 0s linear 0.5s;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.content-panel.active {
+    position: relative;
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+    pointer-events: auto;
+    transition-delay: 0s, 0s, 0s;
+}
+
+@media (max-width: 640px) {
+    .tabs {
+        flex-direction: column;
+        width: 100%;
+        max-width: 350px;
+        border-radius: 20px;
+    }
+    .tab-btn {
+        text-align: center;
+        width: 100%;
+    }
+    .glider {
+        height: auto;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        top: 0;
+    }
 }
