@@ -420,25 +420,24 @@ nav a.active-link {
     border: none;
 }
 
-/* --- ОБНОВЛЕННЫЕ СТИЛИ РЕПЕРТУАРА --- */
+/* =================================================================== */
+/* ================== НАЧАЛО ОБНОВЛЕННЫХ СТИЛЕЙ ================== */
+/* =================================================================== */
 .repertoire-list {
-    /* Инициализация счетчика для нумерации */
     counter-reset: track-counter;
 }
 .repertoire-item {
     display: grid;
-    /* Определяем колонки: для номера, для информации, для кнопки */
     grid-template-columns: auto 1fr auto;
     gap: 1rem;
     align-items: center;
-    padding: 1rem;
+    padding: 1.25rem 1rem; /* Увеличили вертикальный паддинг */
     border-bottom: 1px solid rgba(0, 255, 255, 0.1);
     transition: background-color 0.3s ease;
 }
 .repertoire-item:hover {
     background-color: rgba(0, 255, 255, 0.05);
 }
-/* Стили для номера трека */
 .repertoire-item::before {
     counter-increment: track-counter;
     content: counter(track-counter);
@@ -449,20 +448,42 @@ nav a.active-link {
     -webkit-text-fill-color: transparent;
     background-clip: text;
     text-fill-color: transparent;
-    min-width: 2rem; /* Чтобы номера 1 и 10 занимали одинаковую ширину */
+    min-width: 2rem;
     text-align: right;
+    align-self: start; /* Выравниваем номер по верху */
+    padding-top: 0.125rem; /* Небольшая коррекция для выравнивания с текстом */
 }
-/* Контейнер для названия и куплетов */
 .repertoire-info {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
 }
-.repertoire-info strong {
+.repertoire-title {
+    font-size: 1.25rem; /* Увеличили шрифт названия */
+    line-height: 1.75rem;
     font-weight: 600;
+    color: #e5e7eb; /* gray-200 */
 }
-.repertoire-info span {
+.repertoire-details {
+    margin-top: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+.repertoire-detail-row {
+    display: flex;
+    align-items: flex-start; /* Выравнивание по верху для длинных строк */
+    gap: 0.5rem;
+    font-size: 0.875rem; /* 14px */
+    line-height: 1.25rem; /* 20px */
     color: #9ca3af; /* gray-400 */
+}
+.repertoire-detail-row i {
+    color: #00ffff;
+    width: 1rem; /* Фиксированная ширина иконки */
+    text-align: center;
+    flex-shrink: 0;
+    margin-top: 0.2rem; /* Сдвигаем иконку чуть ниже для лучшего выравнивания */
 }
 .btn-repertoire {
     background-color: #3b82f6; /* blue-500 */
@@ -483,34 +504,37 @@ nav a.active-link {
     overflow: hidden;
     transition: max-height 0.7s cubic-bezier(0.4, 0, 0.2, 1);
 }
-/* Адаптация репертуара для мобильных */
 @media (max-width: 640px) {
     .repertoire-item {
-        /* Меняем сетку для мобильных */
-        grid-template-columns: auto 1fr; /* Номер | Информация+Кнопка */
-        grid-template-rows: auto auto; /* Две строки */
+        grid-template-columns: auto 1fr;
+        grid-template-rows: auto auto;
         column-gap: 0.75rem;
         row-gap: 0.5rem;
+        padding: 1rem 0.5rem;
     }
     .repertoire-item::before {
-        /* Номер занимает первую строку и первую колонку */
         grid-row: 1 / 2;
         grid-column: 1 / 2;
         align-self: start;
         font-size: 1.25rem;
     }
     .repertoire-info {
-        /* Информация занимает первую строку и вторую колонку */
         grid-row: 1 / 2;
         grid-column: 2 / 3;
     }
+    .repertoire-title {
+        font-size: 1.125rem; /* 18px */
+        line-height: 1.5rem;
+    }
     .btn-repertoire {
-        /* Кнопка занимает вторую строку и вторую колонку */
         grid-row: 2 / 3;
         grid-column: 2 / 3;
-        justify-self: start; /* Кнопка прижимается к левому краю своей ячейки */
+        justify-self: start;
     }
 }
+/* =============================================================== */
+/* ================== КОНЕЦ ОБНОВЛЕННЫХ СТИЛЕЙ ================== */
+/* =============================================================== */
 
 .rider-content-container::-webkit-scrollbar {
     width: 6px;
