@@ -1,6 +1,5 @@
 // --- INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Эти функции можно запустить сразу, они не зависят от размеров и картинок
     setupPreloader();
     setupHeroVideo();
     setupTypingEffect();
@@ -10,7 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
     setupModals();
     setupScrollToTop();
     setupRevealAnimation();
-    setupNavigation(); // Настройка слушателей, но первая проверка будет позже
+    setupNavigation();
+    setupAccordion();
 });
 
 // --- PRELOADER LOGIC ---
@@ -224,6 +224,7 @@ function setupContentToggles() {
         const contentPanels = tabsContainer.closest('section').querySelectorAll('.content-panel');
 
         function updateGlider(targetButton) {
+            if (!glider || !targetButton) return;
             if (window.innerWidth > 640) {
                 glider.style.width = `${targetButton.offsetWidth}px`;
                 glider.style.height = 'calc(100% - 10px)';
@@ -247,7 +248,8 @@ function setupContentToggles() {
         });
 
         const initGlider = () => updateGlider(tabsContainer.querySelector('.tab-btn.active'));
-        initGlider();
+        
+        setTimeout(initGlider, 100);
         window.addEventListener('resize', initGlider);
     });
 }
@@ -256,58 +258,118 @@ function setupContentToggles() {
 function setupRepertoireToggle() {
     const toggleBtn = document.getElementById('toggleRepertoireBtn');
     const container = document.getElementById('hidden-repertoire-container');
-    if (!toggleBtn || !container) return;
+    
+    // Находим последний видимый трек (10-й), который находится прямо перед скрытым контейнером.
+    // Это наш новый, надежный "якорь" для прокрутки.
+    const lastVisibleTrack = document.querySelector('.repertoire-list > #hidden-repertoire-container')?.previousElementSibling;
+
+    if (!toggleBtn || !container || !lastVisibleTrack) return;
     
     toggleBtn.addEventListener('click', () => {
         const isExpanded = container.style.maxHeight && container.style.maxHeight !== "0px";
-        container.style.maxHeight = isExpanded ? "0px" : container.scrollHeight + "px";
-        toggleBtn.textContent = isExpanded ? 'Скрыть репертуар' : 'Показать весь репертуар';
+        if (isExpanded) {
+            // Теперь мы прокручиваем к последнему видимому треку.
+            // опция 'block: 'nearest'' плавно прокрутит к элементу, если он не на экране,
+            // и не будет делать ничего, если он уже виден.
+            lastVisibleTrack.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            
+            container.style.maxHeight = "0px";
+            toggleBtn.textContent = 'Показать весь репертуар';
+        } else {
+            container.style.maxHeight = container.scrollHeight + "px";
+            toggleBtn.textContent = 'Скрыть репертуар';
+        }
     });
 }
 
-// --- MODALS ---
-function setupModals() {
-    document.querySelectorAll('.modal-overlay').forEach(modal => {
-        const closeTriggers = modal.querySelectorAll('.modal-close-btn');
-        const openTriggers = document.querySelectorAll(`[data-modal-trigger="${modal.id}"]`);
-        
-        const openModal = (trigger) => {
-            const videoIframe = modal.querySelector('iframe');
-            if (videoIframe && trigger && trigger.dataset.videoSrc) {
-                const videoSrc = trigger.dataset.videoSrc;
-                const isInstagram = videoSrc.includes('instagram.com');
-                let finalSrc = isInstagram ? videoSrc : `https://www.youtube.com/embed/${videoSrc}?autoplay=1&rel=0`;
-                videoIframe.src = finalSrc;
-                modal.querySelector('.video-iframe-container')?.classList.toggle('instagram-vertical', isInstagram);
-                modal.querySelector('.modal-content')?.classList.toggle('modal-instagram-vertical-content', isInstagram);
-            }
-            modal.classList.add('open');
-            document.body.style.overflow = 'hidden';
-        };
+// --- ACCORDION FOR SETLISTS ---
+function setupAccordion() {
+    const accordionItems = document.querySelectorAll('.accordion-item');
+    if (!accordionItems.length) return;
 
+    accordionItems.forEach(item => {
+        const header = item.querySelector('.accordion-header');
+        const body = item.querySelector('.accordion-body');
+
+        header.addEventListener('click', () => {
+            const isActive = header.classList.contains('active');
+            
+            if (isActive) {
+                header.classList.remove('active');
+                body.style.maxHeight = null;
+            } else {
+                header.classList.add('active');
+                body.style.maxHeight = body.scrollHeight + "px";
+            }
+        });
+    });
+}
+
+
+// --- MODALS (ИСПРАВЛЕННАЯ ВЕРСИЯ) ---
+function setupModals() {
+    // Используем делегирование событий для всех кликов в body
+    document.body.addEventListener('click', e => {
+        const trigger = e.target.closest('[data-modal-trigger]');
+        if (!trigger) return;
+
+        e.preventDefault();
+
+        const modalId = trigger.dataset.modalTrigger;
+        const modal = document.getElementById(modalId);
+        if (!modal) return;
+
+        // Стандартная логика для открытия модального окна
+        const videoIframe = modal.querySelector('iframe');
+        if (videoIframe && trigger.dataset.videoSrc) {
+            const videoSrc = trigger.dataset.videoSrc;
+            const isInstagram = videoSrc.includes('instagram.com');
+            
+            // Используем стандартный URL для встраивания YouTube
+            let finalSrc = isInstagram ? videoSrc : `https://www.youtube.com/embed/${videoSrc}?autoplay=1&rel=0`;
+            
+            videoIframe.src = finalSrc;
+            modal.querySelector('.video-iframe-container')?.classList.toggle('instagram-vertical', isInstagram);
+            modal.querySelector('.modal-content')?.classList.toggle('modal-instagram-vertical-content', isInstagram);
+        }
+        
+        modal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    });
+
+    // Логика закрытия модальных окон
+    document.querySelectorAll('.modal-overlay').forEach(modal => {
         const closeModal = () => {
             modal.classList.remove('open');
             document.body.style.overflow = '';
             const videoIframe = modal.querySelector('iframe');
-            if (videoIframe) setTimeout(() => { videoIframe.src = ''; }, 400);
+            if (videoIframe) {
+                // Прекращаем воспроизведение видео при закрытии
+                setTimeout(() => { videoIframe.src = ''; }, 400);
+            }
         };
 
-        openTriggers.forEach(trigger => {
-            trigger.addEventListener('click', e => {
-                e.preventDefault();
-                openModal(trigger);
-            });
-        });
-
-        closeTriggers.forEach(btn => btn.addEventListener('click', closeModal));
+        modal.querySelector('.modal-close-btn')?.addEventListener('click', closeModal);
         modal.addEventListener('click', e => {
             if (e.target === modal) closeModal();
         });
-        document.addEventListener('keydown', e => {
-            if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
-        });
+    });
+
+    // Закрытие по клавише Escape
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+            document.querySelectorAll('.modal-overlay.open').forEach(modal => {
+                modal.classList.remove('open');
+                document.body.style.overflow = '';
+                const videoIframe = modal.querySelector('iframe');
+                if (videoIframe) {
+                    setTimeout(() => { videoIframe.src = ''; }, 400);
+                }
+            });
+        }
     });
 }
+
 
 // --- GENERIC HELPERS ---
 function setupScrollToTop() {
