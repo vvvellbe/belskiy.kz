@@ -421,7 +421,7 @@ nav a.active-link {
 }
 
 /* =================================================================== */
-/* ================== НАЧАЛО ОБНОВЛЕННЫХ СТИЛЕЙ ================== */
+/* ================== СТИЛИ ДЛЯ РЕПЕРТУАРА И АККОРДЕОНА ================== */
 /* =================================================================== */
 .repertoire-list {
     counter-reset: track-counter;
@@ -430,13 +430,16 @@ nav a.active-link {
     display: grid;
     grid-template-columns: auto 1fr auto;
     gap: 1rem;
-    align-items: center;
-    padding: 1.25rem 1rem; /* Увеличили вертикальный паддинг */
+    align-items: center; 
+    padding: 1.25rem 1rem;
     border-bottom: 1px solid rgba(0, 255, 255, 0.1);
     transition: background-color 0.3s ease;
 }
 .repertoire-item:hover {
     background-color: rgba(0, 255, 255, 0.05);
+}
+.repertoire-list .repertoire-item:last-child {
+    border-bottom: none;
 }
 .repertoire-item::before {
     counter-increment: track-counter;
@@ -449,9 +452,7 @@ nav a.active-link {
     background-clip: text;
     text-fill-color: transparent;
     min-width: 2rem;
-    text-align: right;
-    align-self: start; /* Выравниваем номер по верху */
-    padding-top: 0.125rem; /* Небольшая коррекция для выравнивания с текстом */
+    text-align: center; 
 }
 .repertoire-info {
     display: flex;
@@ -459,10 +460,10 @@ nav a.active-link {
     align-items: flex-start;
 }
 .repertoire-title {
-    font-size: 1.25rem; /* Увеличили шрифт названия */
+    font-size: 1.25rem;
     line-height: 1.75rem;
     font-weight: 600;
-    color: #e5e7eb; /* gray-200 */
+    color: #e5e7eb;
 }
 .repertoire-details {
     margin-top: 0.5rem;
@@ -472,24 +473,24 @@ nav a.active-link {
 }
 .repertoire-detail-row {
     display: flex;
-    align-items: flex-start; /* Выравнивание по верху для длинных строк */
+    align-items: flex-start;
     gap: 0.5rem;
-    font-size: 0.875rem; /* 14px */
-    line-height: 1.25rem; /* 20px */
-    color: #9ca3af; /* gray-400 */
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: #9ca3af;
 }
 .repertoire-detail-row i {
     color: #00ffff;
-    width: 1rem; /* Фиксированная ширина иконки */
+    width: 1rem;
     text-align: center;
     flex-shrink: 0;
-    margin-top: 0.2rem; /* Сдвигаем иконку чуть ниже для лучшего выравнивания */
+    margin-top: 0.2rem;
 }
 .btn-repertoire {
-    background-color: #3b82f6; /* blue-500 */
+    background-color: #3b82f6;
     color: white;
     padding: 0.5rem 1rem;
-    border-radius: 0.375rem; /* rounded-md */
+    border-radius: 0.375rem;
     text-decoration: none;
     transition: background-color 0.3s ease;
     font-size: 0.875rem;
@@ -497,33 +498,102 @@ nav a.active-link {
     white-space: nowrap;
 }
 .btn-repertoire:hover {
-    background-color: #2563eb; /* blue-600 */
+    background-color: #2563eb;
 }
 .hidden-repertoire-container {
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.7s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+.accordion-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.accordion-item {
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    transition: background-color 0.3s ease;
+}
+.accordion-item:hover {
+    background-color: rgba(26, 26, 46, 0.4);
+}
+.accordion-header {
+    width: 100%;
+    background-color: transparent;
+    padding: 1rem 1.5rem;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+}
+.accordion-header .setlist-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #e0e0e0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+.accordion-icon {
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    color: #00ffff;
+}
+.accordion-header.active .accordion-icon {
+    transform: rotate(180deg);
+}
+.accordion-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    background-color: rgba(10, 10, 10, 0.5);
+}
+.accordion-body .repertoire-list {
+    padding: 0.5rem 0;
+    counter-reset: track-counter;
+}
+.accordion-body .repertoire-item {
+    grid-template-columns: auto 1fr auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    align-items: center; /* <<< ФИНАЛЬНОЕ ИЗМЕНЕНИЕ ЗДЕСЬ */
+}
+.accordion-body .repertoire-item::before {
+    counter-increment: track-counter;
+    content: counter(track-counter);
+    display: block;
+}
+
+
 @media (max-width: 640px) {
     .repertoire-item {
         grid-template-columns: auto 1fr;
         grid-template-rows: auto auto;
-        column-gap: 0.75rem;
-        row-gap: 0.5rem;
+        column-gap: 1rem; 
+        row-gap: 1rem;
         padding: 1rem 0.5rem;
+        align-items: start;
     }
     .repertoire-item::before {
         grid-row: 1 / 2;
         grid-column: 1 / 2;
-        align-self: start;
+        align-self: center; 
+        justify-self: center;
         font-size: 1.25rem;
+        line-height: 1.125rem;
+        padding-top: 0.1rem;
+        text-align: center; 
     }
     .repertoire-info {
         grid-row: 1 / 2;
         grid-column: 2 / 3;
     }
     .repertoire-title {
-        font-size: 1.125rem; /* 18px */
+        font-size: 1.125rem;
         line-height: 1.5rem;
     }
     .btn-repertoire {
@@ -531,9 +601,20 @@ nav a.active-link {
         grid-column: 2 / 3;
         justify-self: start;
     }
+    .accordion-header .setlist-title {
+        font-size: 1.125rem;
+    }
+    .accordion-body .repertoire-item {
+        grid-template-columns: auto 1fr;
+        grid-template-rows: auto auto;
+        align-items: start;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        row-gap: 1rem;
+    }
 }
 /* =============================================================== */
-/* ================== КОНЕЦ ОБНОВЛЕННЫХ СТИЛЕЙ ================== */
+/* ================== КОНЕЦ СТИЛЕЙ ДЛЯ РЕПЕРТУАРА ================== */
 /* =============================================================== */
 
 .rider-content-container::-webkit-scrollbar {
