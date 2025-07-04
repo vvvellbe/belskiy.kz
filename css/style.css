@@ -264,6 +264,29 @@ nav a.active-link {
   color: #00ffff;
   font-weight: 700;
 }
+
+/* --- НОВЫЕ СТИЛИ ДЛЯ КНОПКИ "ЗАКАЗАТЬ МЕРОПРИЯТИЕ" --- */
+#navCtaButton {
+    opacity: 0;
+    transform: scale(0.9);
+    pointer-events: none;
+    width: 0;
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: 0;
+    overflow: hidden;
+}
+#navCtaButton.visible {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+    width: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-left: 1rem;
+}
+/* --- КОНЕЦ НОВЫХ СТИЛЕЙ --- */
+
 .section-title {
   font-weight: 700;
   text-transform: uppercase;
