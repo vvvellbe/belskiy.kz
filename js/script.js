@@ -3,11 +3,11 @@ document.addEventListener('DOMContentLoaded', () => {
     setupPreloader();
     setupHeroVideo();
     setupTypingEffect();
-    setupCtaButtonLogic();
+    setupCtaButtonLogic(); // Изменена
     setupContentToggles();
     setupRepertoireToggle();
     setupModals();
-    setupScrollToTop();
+    setupScrollToTop(); // Изменена
     setupRevealAnimation();
     setupNavigation();
     setupAccordion();
@@ -127,24 +127,32 @@ function setupTypingEffect() {
     setTimeout(type, 500);
 }
 
-// --- NAVIGATION & CTA LOGIC ---
+// --- NAVIGATION & CTA LOGIC (ИЗМЕНЕНА) ---
 function setupCtaButtonLogic() {
     const heroCta = document.getElementById('heroCtaButton');
     const navCta = document.getElementById('navCtaButton');
     const hero = document.getElementById('hero');
     const nav = document.querySelector('nav');
 
-    if (!heroCta || !navCta || !hero || !nav) return;
+    if (!navCta || !hero || !nav) return;
 
-    function updateCtaVisibility() {
+    // heroCta может отсутствовать, поэтому делаем проверку
+    const updateCtaVisibility = () => {
+        // Условие: кнопка в шапке появляется, когда нижняя часть hero-секции оказывается выше, чем высота шапки
         const showNavButton = hero.getBoundingClientRect().bottom < nav.offsetHeight;
-        heroCta.classList.toggle('opacity-0', showNavButton);
-        navCta.classList.toggle('opacity-0', !showNavButton);
-    }
+
+        if (heroCta) {
+            heroCta.classList.toggle('opacity-0', showNavButton);
+            heroCta.classList.toggle('pointer-events-none', showNavButton);
+        }
+        navCta.classList.toggle('visible', showNavButton);
+    };
 
     window.addEventListener('scroll', updateCtaVisibility);
+    // Вызываем функцию при загрузке, чтобы установить начальное состояние
     updateCtaVisibility();
 }
+
 
 function setupNavigation() {
     const nav = document.querySelector('nav');
@@ -372,14 +380,37 @@ function setupModals() {
 
 
 // --- GENERIC HELPERS ---
+// --- SCROLL TO TOP (ИЗМЕНЕНА) ---
 function setupScrollToTop() {
     const btn = document.getElementById('scrollToTopBtn');
     if (!btn) return;
-    btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    let lastScrollY = window.scrollY;
+
+    // Плавный скролл наверх по клику
+    btn.addEventListener('click', () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+
+    // Появление/скрытие кнопки в зависимости от направления скролла
     window.addEventListener('scroll', () => {
-        btn.classList.toggle('visible', window.scrollY > 300);
+        const currentScrollY = window.scrollY;
+
+        // Показываем кнопку только если скроллим ВВЕРХ и находимся ниже определенной точки (например, 300px)
+        if (currentScrollY < lastScrollY && currentScrollY > 300) {
+            btn.classList.add('visible');
+        } else {
+            btn.classList.remove('visible');
+        }
+        
+        // Обновляем позицию для следующего события скролла
+        lastScrollY = currentScrollY;
     });
 }
+
 
 function setupRevealAnimation() {
     const revealObserver = new IntersectionObserver((entries, observer) => {
