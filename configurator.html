@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Динамичный прайс</title>
+ <script src="https://cdn.tailwindcss.com"></script>
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+ <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+ <link rel="stylesheet" href="css/style.css">
+ <link rel="stylesheet" href="css/configurator.css">
+ <link rel="icon" href="favicon.png" type="image/png">
+</head>
+<body class="antialiased">
+
+ <nav class="fixed top-0 left-0 right-0 z-50 p-4 scrolled">
+  <div class="container mx-auto flex justify-between items-center">
+   <a href="index.html" class="text-2xl font-bold gradient-text">Валерий Бельский</a>
+   <div class="hidden md:flex items-center" id="desktop-menu-container">
+    <div id="desktop-menu-links" class="flex items-center transition-all duration-300 ease-out">
+     <a href="index.html#about" class="hover:text-cyan-400 transition-colors px-3 lg:px-4 py-2">Обо мне</a>
+     <a href="index.html#services" class="hover:text-cyan-400 transition-colors px-3 lg:px-4 py-2">Услуги</a>
+     <a href="index.html#features" class="hover:text-cyan-400 transition-colors px-3 lg:px-4 py-2">Фишки</a>
+     <a href="index.html#portfolio" class="hover:text-cyan-400 transition-colors px-3 lg:px-4 py-2">Портфолио</a>
+     <a href="index.html#repertoire" class="hover:text-cyan-400 transition-colors px-3 lg:px-4 py-2">Репертуар</a>
+     <a href="configurator.html" class="active-link transition-colors px-3 lg:px-4 py-2">Прайс</a>
+     <a href="index.html#contact" class="hover:text-cyan-400 transition-colors px-3 lg:px-4 py-2">Контакты</a>
+    </div>
+    <a href="https://wa.me/77079292980?text=Здравствуйте%2C%20Валерий!%20Хотел%20бы%20обсудить%20организацию%20мероприятия." target="_blank" rel="noopener noreferrer" id="navCtaButton" class="btn-primary text-sm py-2 rounded-lg transition-all duration-300 ease-out whitespace-nowrap visible">Заказать Мероприятие</a>
+   </div>
+   <div class="md:hidden">
+    <button id="burger-menu-button" class="text-gray-200 hover:text-cyan-400 focus:outline-none">
+     <div class="burger-icon">
+      <span></span>
+      <span></span>
+      <span></span>
+     </div>
+    </button>
+   </div>
+  </div>
+  <div id="mobile-menu-items" class="mobile-menu md:hidden bg-gray-900 bg-opacity-90 backdrop-blur-sm absolute left-0 right-0 top-full shadow-lg">
+   <a href="index.html#about" class="block text-center py-3 px-4 text-lg hover:bg-cyan-600 hover:bg-opacity-30 transition-colors">Обо мне</a>
+   <a href="index.html#services" class="block text-center py-3 px-4 text-lg hover:bg-cyan-600 hover:bg-opacity-30 transition-colors">Услуги</a>
+   <a href="index.html#features" class="block text-center py-3 px-4 text-lg hover:bg-cyan-600 hover:bg-opacity-30 transition-colors">Фишки</a>
+   <a href="index.html#portfolio" class="block text-center py-3 px-4 text-lg hover:bg-cyan-600 hover:bg-opacity-30 transition-colors">Портфолио</a>
+   <a href="index.html#repertoire" class="block text-center py-3 px-4 text-lg hover:bg-cyan-600 hover:bg-opacity-30 transition-colors">Репертуар</a>
+   <a href="configurator.html" class="block text-center py-3 px-4 text-lg bg-cyan-600 bg-opacity-40">Прайс</a>
+   <a href="index.html#contact" class="block text-center py-3 px-4 text-lg hover:bg-cyan-600 hover:bg-opacity-30 transition-colors">Контакты</a>
+  </div>
+ </nav>
+
+ <main class="pt-24 sm:pt-28 md:pt-32">
+  <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-7xl">
+   <header class="text-center mb-10">
+    <h1 class="text-3xl sm:text-4xl font-bold text-white">Динамичный прайс</h1>
+    <p class="text-lg text-gray-400 mt-2">Соберите свой идеальный праздник в реальном времени</p>
+   </header>
+
+   <section>
+    <div class="flex justify-center mb-12">
+     <div class="tabs" id="calculator-mode-toggle">
+      <span class="glider"></span>
+      <button class="tab-btn active" data-target="host-calculator-content"><i class="fas fa-glass-cheers mr-2"></i>Ведущий</button>
+      <button class="tab-btn" data-target="rap-calculator-content"><i class="fas fa-microphone-alt mr-2"></i>Рэп-выступления</button>
+     </div>
+    </div>
+
+    <div class="relative">
+     <div id="host-calculator-content" class="content-panel active">
+      <div class="flex flex-col lg:flex-row gap-8">
+       <div class="w-full lg:w-2/3 flex flex-col gap-8">
+        <div class="config-card rounded-xl p-6 sm:p-8">
+         <h2 class="text-2xl font-semibold text-white mb-6">Параметры вашего мероприятия</h2>
+         <p class="text-sm text-gray-400 mb-6 -mt-4">Измените любой параметр, и прайс ниже мгновенно обновится.</p>
+         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+           <label class="block text-sm font-medium text-gray-300 mb-2">1. Тип площадки?</label>
+           <select id="venue-type" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-2.5 text-white focus:ring-blue-500 focus:border-blue-500">
+            <option value="chamber">Камерная (VIP-кабина / школьный класс)</option>
+            <option value="standard">Стандартная (небольшое кафе / малый-средний зал)</option>
+            <option value="large">Открытая / Большая (терраса / большой зал ресторана)</option>
+           </select>
+          </div>
+          <div>
+           <label class="block text-sm font-medium text-gray-300 mb-2">2. Количество гостей?</label>
+           <select id="guest-count" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-2.5 text-white focus:ring-blue-500 focus:border-blue-500">
+            <option value="1-40">до 40</option>
+            <option value="41-80">41 - 80</option>
+            <option value="81-150">81 - 150</option>
+           </select>
+          </div>
+          <div>
+           <label class="block text-sm font-medium text-gray-300 mb-2">3. Оборудование площадки?</label>
+           <select id="venue-gear" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-2.5 text-white focus:ring-blue-500 focus:border-blue-500">
+            <option value="none">Ничего нет</option>
+            <option value="sound_only">Есть только звук (без DJ)</option>
+            <option value="full_dj_set">Есть всё (звук и DJ)</option>
+           </select>
+          </div>
+          <div>
+           <label class="block text-sm font-medium text-gray-300 mb-2">4. Есть ли в заведении экран?</label>
+           <select id="venue-screen" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-2.5 text-white focus:ring-blue-500 focus:border-blue-500">
+            <option value="no">Нет</option>
+            <option value="yes">Да</option>
+           </select>
+          </div>
+         </div>
+        </div>
+       
+        <div class="program-card rounded-xl p-6 sm:p-8">
+         <h2 class="text-2xl font-semibold text-white mb-6">Соберите вашу программу</h2>
+         <div class="mb-8">
+          <h3 class="text-xl font-semibold text-white">1. Ваш Ведущий (Основа)</h3>
+          <p class="text-sm text-gray-400 mb-4">Включает классические интерактивы, конкурсы и полную координацию вечера. Выберите оптимальную длительность программы:</p>
+          <div id="host-options" class="grid grid-cols-1 sm:grid-cols-3 gap-4"></div>
+         </div>
+         <div id="tech-section" class="mb-8"></div>
+         <div>
+          <h3 class="text-xl font-semibold text-white">3. Наполнение Программы (Креатив)</h3>
+          <p class="text-sm text-gray-400 mb-4">Добавьте эксклюзивные элементы, чтобы сделать вечер незабываемым:</p>
+          <div id="creative-options" class="space-y-4"></div>
+         </div>
+        </div>
+       </div>
+      
+       <div class="w-full lg:w-1/3">
+        <div class="summary-card rounded-xl" data-summary-id="host">
+         <div class="p-6">
+          <h3 class="text-xl font-semibold text-white border-b border-gray-600 pb-4 mb-4">Ваше мероприятие</h3>
+          <div id="summary-list" class="space-y-2 text-gray-300 text-sm mb-6 min-h-[100px]"></div>
+          <div class="border-t border-gray-600 pt-4">
+           <p class="text-gray-400 text-sm">Итоговая стоимость:</p>
+           <p id="total-price" class="text-3xl font-bold text-white">0 ₸</p>
+          </div>
+          <button id="copy-quote-btn" class="btn-primary w-full text-white font-bold py-3 mt-6 rounded-lg flex items-center justify-center gap-2">
+           <i class="fas fa-copy"></i>
+           <span>Скопировать заявку</span>
+          </button>
+          <p class="text-xs text-gray-400 mt-3 text-center">Нажмите, чтобы скопировать детали заказа, а затем отправьте их ведущему в WhatsApp или любой другой мессенджер.</p>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+
+     <div id="rap-calculator-content" class="content-panel">
+      <div class="flex flex-col lg:flex-row gap-8">
+       <div class="w-full lg:w-2/3 flex flex-col gap-8">
+        <div class="config-card rounded-xl p-6 sm:p-8">
+         <h2 class="text-2xl font-semibold text-white mb-4">1. Местоположение</h2>
+         <select id="rap-location" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-2.5 text-white focus:ring-blue-500 focus:border-blue-500">
+          <option value="almaty">В пределах г. Алматы</option>
+          <option value="almaty_region">За пределами Алматы (область/районы)</option>
+          <option value="kz">Другой город Казахстана</option>
+          <option value="intl">Другая страна</option>
+         </select>
+        </div>
+        <div class="program-card rounded-xl p-6 sm:p-8">
+         <h2 class="text-2xl font-semibold text-white mb-4">2. Соберите ваш сет-лист</h2>
+         <div id="rap-package-info" class="mb-6"></div>
+         <div class="flex items-center gap-4 mb-6">
+          <button id="select-all-tracks-btn" class="btn-secondary flex-1 py-2 px-3 rounded-lg">Выбрать все</button>
+          <button id="reset-tracks-btn" class="btn-reset flex-1 py-2 px-3 rounded-lg">Сбросить</button>
+         </div>
+         <div id="track-list-container" class="space-y-3 max-h-[60vh] overflow-y-auto pr-2">
+         </div>
+        </div>
+       </div>
+       <div class="w-full lg:w-1/3">
+        <div class="summary-card rounded-xl" data-summary-id="rap">
+          <div class="p-6">
+           <h3 class="text-xl font-semibold text-white border-b border-gray-600 pb-4 mb-4">Ваше выступление</h3>
+           <div id="rap-summary-list" class="space-y-2 text-gray-300 text-sm mb-6 min-h-[100px]"></div>
+           <div id="rap-notifications" class="mt-4 space-y-3"></div>
+           <div class="border-t border-gray-600 pt-4 mt-4">
+            <p class="text-gray-400 text-sm">Итоговая стоимость:</p>
+            <p id="rap-total-price" class="text-3xl font-bold text-white">0 ₸</p>
+           </div>
+           <button id="copy-rap-quote-btn" class="btn-primary w-full text-white font-bold py-3 mt-6 rounded-lg flex items-center justify-center gap-2">
+            <i class="fas fa-copy"></i>
+            <span>Скопировать заявку</span>
+           </button>
+           <p class="text-xs text-gray-400 mt-3 text-center">Нажмите, чтобы скопировать детали заказа, а затем отправьте их ведущему в WhatsApp или любой другой мессенджер.</p>
+          </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+  </div>
+
+  <div id="host-floating-summary-bar" class="floating-summary-bar">
+   <div class="bar-content">
+    <div id="host-floating-total" class="total-price">Итого: 0 ₸</div>
+    <button id="host-floating-open-modal" class="btn-show-summary">
+     Показать смету (<span id="host-floating-count">0</span>)
+    </button>
+   </div>
+  </div>
+ 
+  <div id="rap-floating-summary-bar" class="floating-summary-bar">
+    <div class="bar-content">
+     <div id="rap-floating-total" class="total-price">Итого: 0 ₸</div>
+     <button id="rap-floating-open-modal" class="btn-show-summary">
+      Показать смету (<span id="rap-floating-count">0</span>)
+     </button>
+    </div>
+   </div>
+
+  <div id="host-summary-modal" class="modal-overlay">
+   <div class="modal-content rounded-xl max-w-lg w-full">
+    <div class="modal-header">
+     <div class="modal-title-group">
+      <div>
+       <h3 class="modal-title">Смета: Ведущий</h3>
+       <p class="modal-subtitle">Детализация выбранных услуг</p>
+      </div>
+     </div>
+     <button class="modal-close-btn text-2xl leading-none">&times;</button>
+    </div>
+    <div id="host-modal-summary-content" class="modal-body"></div>
+    <div class="modal-footer flex-col gap-4">
+     <div class="w-full">
+      <p class="text-gray-400 text-sm">Итоговая стоимость:</p>
+      <p id="host-modal-total-price" class="text-3xl font-bold text-white">0 ₸</p>
+     </div>
+     <button id="host-modal-copy-btn" class="btn-primary w-full text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2 flex-1">
+        <i class="fas fa-copy"></i>
+        <span>Скопировать заявку</span>
+      </button>
+      <p class="text-xs text-gray-400 text-center px-4">Нажмите, чтобы скопировать детали заказа, а затем отправьте их ведущему в WhatsApp или любой другой мессенджер.</p>
+    </div>
+   </div>
+  </div>
+ 
+  <div id="rap-summary-modal" class="modal-overlay">
+   <div class="modal-content rounded-xl max-w-lg w-full">
+    <div class="modal-header">
+     <div class="modal-title-group">
+      <div>
+       <h3 class="modal-title">Смета: Рэп-Выступление</h3>
+       <p class="modal-subtitle">Детализация выбранных треков</p>
+      </div>
+     </div>
+     <button class="modal-close-btn text-2xl leading-none">&times;</button>
+    </div>
+    <div id="rap-modal-summary-content" class="modal-body"></div>
+    <div class="modal-footer flex-col gap-4">
+     <div class="w-full">
+      <p class="text-gray-400 text-sm">Итоговая стоимость:</p>
+      <p id="rap-modal-total-price" class="text-3xl font-bold text-white">0 ₸</p>
+     </div>
+     <button id="rap-modal-copy-btn" class="btn-primary w-full text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2 flex-1">
+        <i class="fas fa-copy"></i>
+        <span>Скопировать заявку</span>
+      </button>
+      <p class="text-xs text-gray-400 text-center px-4">Нажмите, чтобы скопировать детали заказа, а затем отправьте их ведущему в WhatsApp или любой другой мессенджер.</p>
+    </div>
+   </div>
+  </div>
+
+ </main>
+
+ <div id="ai-games-modal" class="modal-overlay">
+  <div class="modal-content rounded-xl max-w-4xl w-full"></div>
+ </div>
+ <div id="eminem-modal" class="modal-overlay">
+  <div class="modal-content rounded-xl max-w-5xl w-full"></div>
+ </div>
+ <div id="riderModal" class="modal-overlay">
+  <div class="modal-content bg-slate-900/95 p-6 sm:p-8 rounded-lg shadow-2xl w-full max-w-3xl relative border border-purple-700/30">
+   <button class="modal-close-btn">&times;</button>
+   <h2 class="text-3xl font-bold mb-6 text-center gradient-text">Райдер для организаторов</h2>
+   <div class="rider-content-container max-h-[70vh] overflow-y-auto pr-4 text-gray-300">
+    <h3 class="font-bold text-xl mb-3 text-cyan-400">1. Техническое обеспечение:</h3>
+    <ul class="list-disc list-inside space-y-2 mb-6">
+     <li><strong>Оборудование:</strong> Звуковая система, соответствующая площадке; высококачественный вокальный микрофон; система сценического мониторинга (приёмник+наушники); сцена необходимого размера; базовое сценическое освещение.</li>
+     <li><strong>Обсуждение альтернатив:</strong> При невозможности выполнить какой-либо пункт райдера, обсудить и согласовать приемлемые альтернативы.</li>
+     <li><strong>Саундчек:</strong> Выделить и гарантировать достаточное время для проведения полноценного саундчека по прибытии на площадку.</li>
+    </ul>
+    <h3 class="font-bold text-xl mb-3 text-cyan-400">2. Логистика:</h3>
+    <ul class="list-disc list-inside space-y-2 mb-6">
+     <li><strong>Проезд:</strong> Организовать и оплатить проезд и багаж (авиа или ж/д) в обе стороны для двух человек (исполнитель и контент-мейкер). Предоставить билеты заблаговременно.</li>
+     <li><strong>Проживание:</strong> Забронировать и оплатить проживание в отеле (не ниже 3 звезд) на весь период поездки для двух человек в одном номере.</li>
+     <li><strong>Местный транспорт:</strong> Организовать и оплатить все необходимые передвижения по городу (трансферы аэропорт/вокзал &lt;=&gt; отель, отель &lt;=&gt; площадка).</li>
+     <li><strong>Питание / Суточные:</strong> Обеспечить питание или выплатить суточные в размере, согласованном в договоре, на весь период поездки для двух человек.</li>
+    </ul>
+    <h3 class="font-bold text-xl mb-3 text-cyan-400">3. Разрешение на создание контента:</h3>
+    <ul class="list-disc list-inside space-y-2 mb-6">
+     <li><strong>Разрешения:</strong> Предоставить разрешение контент-мейкеру на видеосъемку во время выступления, саундчека и за кулисами, а также разрешение на публикацию материала.</li>
+    </ul>
+    <h3 class="font-bold text-xl mb-3 text-cyan-400">4. Финансовые условия:</h3>
+    <ul class="list-disc list-inside space-y-2 mb-6">
+     <li><strong>Гонорар:</strong> 350$</li>
+     <li><strong>Предоплата:</strong> 100% при подписании договора, не позднее чем за 14 календарных дней до мероприятия.</li>
+    </ul>
+    <h3 class="font-bold text-xl mb-3 text-cyan-400">5. Коммуникация и планирование:</h3>
+    <ul class="list-disc list-inside space-y-2 mb-6">
+     <li><strong>Информация о площадке/аудитории:</strong> Предоставить информацию о месте проведения и ожидаемой аудитории.</li>
+     <li><strong>Обсуждение сет-листа:</strong> Обсудить предварительный сет-лист и высказать пожелания.</li>
+     <li><strong>Контактное лицо:</strong> Предоставить контакты ответственного лица на месте.</li>
+    </ul>
+    <h3 class="font-bold text-xl mb-3 text-cyan-400">6. Формальное соглашение:</h3>
+    <ul class="list-disc list-inside space-y-2">
+     <li><strong>Письменный договор:</strong> Подготовить и подписать всеобъемлющий письменный договор, включающий все согласованные пункты.</li>
+    </ul>
+   </div>
+  </div>
+ </div>
+
+ <div id="toast-notification" class="toast">
+  ✅ Заявка скопирована! Теперь отправьте ее в WhatsApp.
+ </div>
+
+
+ <footer class="py-8 text-center border-t border-gray-700 mt-16">
+  <p>© <span id="currentYear"></span> Все права защищены.</p>
+  <p class="text-sm text-gray-500 mt-1">Дизайн и разработка с <i class="fas fa-heart text-red-500"></i> и <i class="fas fa-brain text-cyan-400"></i></p>
+ </footer>
+
+ <script src="js/script.js"></script>
+ <script src="js/configurator-data.js"></script>
+ <script src="js/configurator-app.js"></script>
+ <script src="js/configurator-rap.js"></script>
+
+</body>
+</html>
