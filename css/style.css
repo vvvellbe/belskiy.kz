@@ -265,7 +265,6 @@ nav a.active-link {
   font-weight: 700;
 }
 
-/* --- НОВЫЕ СТИЛИ ДЛЯ КНОПКИ "ЗАКАЗАТЬ МЕРОПРИЯТИЕ" --- */
 #navCtaButton {
     opacity: 0;
     transform: scale(0.9);
@@ -285,7 +284,6 @@ nav a.active-link {
     padding-right: 1rem;
     margin-left: 1rem;
 }
-/* --- КОНЕЦ НОВЫХ СТИЛЕЙ --- */
 
 .section-title {
   font-weight: 700;
@@ -406,26 +404,34 @@ nav a.active-link {
   transform: scale(1) translateY(0);
   opacity: 1;
 }
+
+/* === FIXED: Styles for the 'X' close button === */
+.modal-content > .modal-close-btn {
+  position: absolute;
+  top: 0.75rem; /* 12px */
+  right: 0.75rem; /* 12px */
+  color: white;
+  background-color: rgba(239, 68, 68, 0.8); /* red-500 with slight transparency */
+  border-radius: 9999px;
+  width: 2rem;  /* 32px */
+  height: 2rem;  /* 32px */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem; /* Увеличен для лучшей видимости */
+  line-height: 1;  /* Устанавливаем line-height в 1 для предсказуемости */
+  z-index: 20;
+  transition: all 0.2s ease-in-out;
+  box-sizing: border-box;
+}
+.modal-content > .modal-close-btn:hover {
+  background-color: #dc2626; /* red-600 */
+  transform: scale(1.1);
+}
 .modal-close-btn {
-    position: absolute;
-    top: -0.75rem;
-    right: -0.75rem;
-    color: white;
-    background-color: #ef4444; /* red-500 */
-    border-radius: 9999px;
-    width: 2.5rem;
-    height: 2.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    z-index: 20;
-    transition: all 0.2s ease-in-out;
+  cursor: pointer;
 }
-.modal-close-btn:hover {
-    background-color: #dc2626; /* red-600 */
-    transform: scale(1.1);
-}
+
 .video-iframe-container {
     position: relative;
     width: 100%;
@@ -443,9 +449,6 @@ nav a.active-link {
     border: none;
 }
 
-/* =================================================================== */
-/* ================== СТИЛИ ДЛЯ РЕПЕРТУАРА И АККОРДЕОНА ================== */
-/* =================================================================== */
 .repertoire-list {
     counter-reset: track-counter;
 }
@@ -583,7 +586,7 @@ nav a.active-link {
     grid-template-columns: auto 1fr auto;
     padding-left: 1.5rem;
     padding-right: 1.5rem;
-    align-items: center; /* <<< ФИНАЛЬНОЕ ИЗМЕНЕНИЕ ЗДЕСЬ */
+    align-items: center;
 }
 .accordion-body .repertoire-item::before {
     counter-increment: track-counter;
@@ -636,9 +639,6 @@ nav a.active-link {
         row-gap: 1rem;
     }
 }
-/* =============================================================== */
-/* ================== КОНЕЦ СТИЛЕЙ ДЛЯ РЕПЕРТУАРА ================== */
-/* =============================================================== */
 
 .rider-content-container::-webkit-scrollbar {
     width: 6px;
@@ -754,26 +754,31 @@ nav a.active-link {
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* --- НАЧАЛО ЗАМЕНЫ --- */
+
+/* Убираем Grid-контейнер, он больше не нужен */
+section .relative {
+    position: relative; /* Возвращаем стандартное поведение */
+}
+
 .content-panel {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
     opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.5s ease-out, transform 0.5s ease-out, visibility 0s linear 0.5s;
+    max-height: 0;
+    overflow: hidden;
     visibility: hidden;
-    pointer-events: none;
+    /* УСКОРЯЕМ АНИМАЦИЮ и меняем ее характер на 'ease-out' */
+    transition: opacity 0.25s ease-out, max-height 0.3s ease-out, visibility 0.3s;
 }
 
 .content-panel.active {
-    position: relative;
     opacity: 1;
-    transform: translateY(0);
     visibility: visible;
-    pointer-events: auto;
-    transition-delay: 0s, 0s, 0s;
+    max-height: 5000px; 
+    overflow: visible;
+    transition: opacity 0.25s 0.1s ease-out, max-height 0.3s ease-out;
 }
+
+/* --- КОНЕЦ ЗАМЕНЫ --- */
 
 @media (max-width: 640px) {
     .tabs {
