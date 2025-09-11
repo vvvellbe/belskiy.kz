@@ -526,11 +526,26 @@ nav a.active-link {
 .btn-repertoire:hover {
     background-color: #2563eb;
 }
+/* --- ЗАМЕНИТЬ СТАРЫЙ БЛОК НА ЭТОТ --- */
+/* Новая логика аккордеона репертуара на CSS Grid */
+
 .hidden-repertoire-container {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.7s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+/* Когда JS добавляет класс .is-expanded... */
+.hidden-repertoire-container.is-expanded {
+  /* ...строка плавно расширяется до высоты своего контента */
+  grid-template-rows: 1fr;
+}
+
+/* Внутренняя обертка нужна, чтобы скрыть контент во время анимации */
+.repertoire-inner-wrapper {
+  overflow: hidden;
+}
+/* --- КОНЕЦ НОВОГО БЛОКА --- */
 
 .accordion-container {
     display: flex;
@@ -754,31 +769,19 @@ nav a.active-link {
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* --- НАЧАЛО ЗАМЕНЫ --- */
-
-/* Убираем Grid-контейнер, он больше не нужен */
-section .relative {
-    position: relative; /* Возвращаем стандартное поведение */
-}
-
+/* --- НОВЫЕ СТИЛИ ДЛЯ ТАБОВ --- */
 .content-panel {
-    opacity: 0;
-    max-height: 0;
-    overflow: hidden;
-    visibility: hidden;
-    /* УСКОРЯЕМ АНИМАЦИЮ и меняем ее характер на 'ease-out' */
-    transition: opacity 0.25s ease-out, max-height 0.3s ease-out, visibility 0.3s;
+  display: none; /* По умолчанию все табы скрыты */
+  animation: fadeIn 0.4s ease-in-out; /* Добавляем простое появление */
 }
-
 .content-panel.active {
-    opacity: 1;
-    visibility: visible;
-    max-height: 5000px; 
-    overflow: visible;
-    transition: opacity 0.25s 0.1s ease-out, max-height 0.3s ease-out;
+  display: block; /* Активный таб становится блочным элементом */
 }
-
-/* --- КОНЕЦ ЗАМЕНЫ --- */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+/* --- КОНЕЦ НОВЫХ СТИЛЕЙ ДЛЯ ТАБОВ --- */
 
 @media (max-width: 640px) {
     .tabs {
