@@ -345,7 +345,35 @@ document.addEventListener('DOMContentLoaded', () => {
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(showToast, err => console.error('Не удалось скопировать', err));
         }
-        function showToast() { const toast = document.getElementById('toast-notification'); if (toast) { toast.classList.add('show'); setTimeout(() => { toast.classList.remove('show'); }, 3000); } }
+        // --- ИЗМЕНЕНО: Обновленная функция для показа нотификатора с кнопкой WhatsApp ---
+function showToast() {
+  const toast = document.getElementById('toast-notification');
+  const whatsappBtn = document.getElementById('whatsapp-send-btn');
+
+  if (toast && whatsappBtn) {
+    // Параметры для WhatsApp
+    const phoneNumber = '77079292980'; // Номер в международном формате без +, скобок и дефисов
+    const invitationText = 'Вставьте скопированную заявку сюда.';
+    
+    // Кодируем текст для URL
+    const encodedText = encodeURIComponent(invitationText);
+    
+    // Формируем ссылку
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedText}`;
+    
+    // Устанавливаем ссылку на кнопку
+    whatsappBtn.href = whatsappUrl;
+    
+    // Показываем нотификатор
+    toast.classList.add('show');
+    
+    // Скрываем нотификатор через 6 секунд
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 6000);
+  }
+}
+// --- КОНЕЦ ИЗМЕНЕНИЙ ---
 
         initializeApp();
     })();
