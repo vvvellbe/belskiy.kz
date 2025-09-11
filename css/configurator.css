@@ -39,12 +39,17 @@ section .relative {
     background-color: #1F2937; /* gray-800 */
     border: 1px solid #374151; /* gray-700 */
 }
+/* === НАЧАЛО ИСПРАВЛЕННОГО БЛОКА: Плавные переходы для карточек === */
+
+/* --- Карточки опций (Часы, Техника) --- */
 .option-card {
     background-color: #374151; /* gray-700 */
     border: 1px solid #4B5563; /* gray-600 */
     cursor: pointer;
     position: relative;
-    /* Добавляем плавные переходы */
+    padding: 1rem;
+    border-radius: 0.5rem;
+    /* Анимация для всех изменяемых свойств */
     transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
 }
 .option-card.selected {
@@ -62,6 +67,68 @@ section .relative {
     background-color: #374151;
     border-color: #374151;
 }
+
+/* --- Карточки креативов (AI, Eminem) в модальных окнах --- */
+.creative-card {
+    background-color: #1F2937;
+    border: 1px solid #4B5563;
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    /* Анимация для ховера и тени при выборе */
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.creative-card::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0; bottom: 0; left: 0;
+    border-radius: inherit;
+    border: 2px solid transparent;
+    pointer-events: none;
+    /* Анимация для рамки при выборе */
+    transition: border-color 0.25s ease-in-out;
+}
+.creative-card:hover:not(.disabled) {
+    transform: translateY(-4px);
+    border-color: #6B7280;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+.creative-card.selected::before {
+    border-color: #3B82F6;
+}
+.creative-card.selected {
+    box-shadow: 0 0 25px rgba(59, 130, 246, 0.4);
+}
+.creative-card.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* --- Карточки треков (Рэп-калькулятор) --- */
+.track-card {
+    background-color: #374151;
+    border: 1px solid #4B5563;
+    cursor: pointer;
+    /* Анимация для фона и рамки */
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+.track-card:hover:not(.selected):not(.disabled) {
+    border-color: #6B7280; /* gray-500 */
+    background-color: #4B5563;
+}
+.track-card.selected {
+    border-color: #10B981; /* emerald-500 */
+    background-color: #1F2937;
+}
+.track-card.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* === КОНЕЦ ИСПРАВЛЕННОГО БЛОКА === */
+
 .warning-text {
     color: #FBBF24; /* amber-400 */
 }
@@ -209,41 +276,9 @@ section .relative {
     display: flex;
     gap: 1rem;
 }
-
-.creative-card {
-    background-color: #1F2937;
-    border: 1px solid #4B5563;
-    border-radius: 0.75rem;
-    padding: 1.25rem;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    /* Добавляем плавные переходы */
-    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
-}
 /* Добавляем transition для секции с оборудованием */
 #tech-section {
     transition: opacity 0.3s ease-out, transform 0.3s ease-out;
-}
-.creative-card::before {
-    content: '';
-    position: absolute;
-    top: 0; right: 0; bottom: 0; left: 0;
-    border-radius: 0.75rem;
-    border: 2px solid transparent;
-    pointer-events: none;
-    transition: border-color 0.25s ease;
-}
-.creative-card:hover:not(.disabled) {
-    transform: translateY(-4px);
-    border-color: #6B7280;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-}
-.creative-card.selected::before {
-    border-color: #3B82F6;
-}
-.creative-card.selected {
-    box-shadow: 0 0 25px rgba(59, 130, 246, 0.4);
 }
 .creative-card.disabled {
     opacity: 0.5;
@@ -424,17 +459,6 @@ section .relative {
     opacity: 1;
     z-index: 10000; /* ИЗМЕНЕНО: Выше всего, когда видим */
     pointer-events: auto;
-}
-
-.track-card {
-    background-color: #374151;
-    border: 1px solid #4B5563;
-    transition: all 0.2s ease-in-out;
-    cursor: pointer;
-}
-.track-card.selected {
-    border-color: #10B981; /* emerald-500 */
-    background-color: #1F2937;
 }
 .track-card.disabled {
     opacity: 0.5;
