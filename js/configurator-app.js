@@ -1,5 +1,3 @@
-/* === НАЧАЛО ИСПРАВЛЕННОГО ФАЙЛА configurator-app.js === */
-
 document.addEventListener('DOMContentLoaded', () => {
     // --- HOST CALCULATOR LOGIC (IIFE to isolate scope) ---
     (() => {
@@ -9,15 +7,59 @@ document.addEventListener('DOMContentLoaded', () => {
         let selection = {};
         let DOMElements = {};
 
+        /**
+         * Устанавливает обработчики событий для иконки информации о ретуши.
+         * Адаптируется под десктоп (hover) и мобильные устройства (click).
+         */
+        function setupRetouchTooltip() {
+            const container = hostCalculator.querySelector('#retouch-info-container');
+            if (!container) return;
+
+            const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+            if (isTouchDevice) {
+                // --- Мобильная версия (по клику) ---
+                container.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    container.classList.toggle('active');
+                });
+
+                // Закрытие тултипа при клике в любом другом месте
+                document.addEventListener('click', (e) => {
+                    if (container.classList.contains('active') && !container.contains(e.target)) {
+                        container.classList.remove('active');
+                    }
+                }, true);
+
+            } else {
+                // --- Десктопная версия (по наведению) ---
+                container.addEventListener('mouseenter', () => {
+                    container.classList.add('active');
+                });
+
+                container.addEventListener('mouseleave', () => {
+                    container.classList.remove('active');
+                });
+            }
+        }
+
         function reRenderUI() {
             if (!DOMElements.hostOptions) return;
             readParameters();
             DOMElements.hostCards.forEach(card => {
                 card.classList.toggle('selected', card.dataset.value === selection.hostHours);
             });
+            updateVenueScreenToggle();
             updateTechSection();
             updateCreativeCardsUI();
+            updatePhotographerSection();
             updateSummaryAndPrice();
+        }
+        
+        function updateVenueScreenToggle() {
+            DOMElements.venueScreenToggleBtns.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.value === selection.venueScreen);
+            });
         }
 
         function updateTechSection() {
@@ -33,7 +75,9 @@ document.addEventListener('DOMContentLoaded', () => {
         function updateTechCardStates() {
             DOMElements.allTechCards.forEach(card => {
                 const cardValue = card.dataset.value;
-                let isDisabled = false, disabledReason = null, warning = null;
+                let isDisabled = false,
+                    disabledReason = null,
+                    warning = null;
                 if (selection.projectorNeeded && cardValue === 'COMPACT') { isDisabled = true; disabledReason = 'Требует работы DJ'; }
                 if (selection.guestCount === '81-150' && cardValue === 'COMPACT') { isDisabled = true; disabledReason = 'Не подходит для 80+ гостей'; }
                 if ((selection.venueType === 'large' || selection.guestCount === '41-80' || selection.venueType === 'standard') && cardValue === 'COMPACT' && !isDisabled) { warning = 'Мощности может не хватить'; }
@@ -48,13 +92,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 else if (warning) { contentDiv.insertAdjacentHTML('beforeend', `<p class="text-sm warning-text mt-2">⚠️ ${warning}</p>`); }
             });
         }
-        
+
+        // --- НАЧАЛО ИЗМЕНЕНИЙ (ИСПРАВЛЕНИЕ БАГА) ---
         function updateProjectorCardState() {
             const card = DOMElements.projectorCard;
             if (!card) return;
             const venueHasScreen = selection.venueScreen === 'yes';
-            card.parentElement.classList.toggle('hidden', venueHasScreen);
-            if (!venueHasScreen) {
+
+            if (venueHasScreen) {
+                // Если экран есть, скрываем опцию проектора и сбрасываем его выбор
+                card.parentElement.classList.add('hidden');
+                selection.projectorNeeded = false;
+            } else {
+                // Если экрана нет, показываем опцию и настраиваем её состояние
+                card.parentElement.classList.remove('hidden');
                 let isDisabled = false, disabledReason = null;
                 if (selection.guestCount === '81-150') { isDisabled = true; disabledReason = 'Неэффективен для >80 гостей'; }
                 card.classList.toggle('disabled', isDisabled);
@@ -63,7 +114,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (isDisabled && disabledReason) { card.querySelector('div').insertAdjacentHTML('beforeend', `<p class="text-sm disabled-reason mt-2">🛑 ${disabledReason}</p>`); }
             }
         }
-        
+        // --- КОНЕЦ ИЗМЕНЕНИЙ ---
+
         function updateCreativeCardsUI() {
             const aiCard = DOMElements.creativeOptions.querySelector('[data-creative-type="ai"]');
             if (aiCard) {
@@ -85,16 +137,53 @@ document.addEventListener('DOMContentLoaded', () => {
                 eminemCard.querySelector('[data-reset-target="eminem"]').classList.toggle('hidden', !isSelected);
             }
         }
-        
+
+        function updatePhotographerSection() {
+            const section = DOMElements.photographer.section;
+            if (!section) return;
+            
+            DOMElements.photographer.toggleBtns.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.value === selection.photographerNeeded);
+            });
+
+            const isNeeded = selection.photographerNeeded === 'yes';
+            section.classList.toggle('active', isNeeded); 
+            if (isNeeded) {
+                const hours = selection.photographerHours;
+                DOMElements.photographer.hoursOutput.textContent = `${hours} час${hours > 1 && hours < 5 ? 'а' : hours >= 5 ? 'ов' : ''}`;
+                DOMElements.photographer.hoursSlider.value = hours;
+                const minPhotos = hours * 30;
+                const maxPhotos = hours * 50;
+                DOMElements.photographer.photoCountOutput.innerHTML = `<i class="fas fa-images mr-2"></i>Вы получите примерно ${minPhotos}-${maxPhotos} фотографий в цветокоррекции.`;
+                const photoHourPrice = hours * PRICES.PHOTOGRAPHER.baseHourRate;
+                if (DOMElements.photographer.hoursCostOutput) {
+                    DOMElements.photographer.hoursCostOutput.textContent = `(${photoHourPrice.toLocaleString('ru-RU')} ₸)`;
+                }
+                DOMElements.photographer.retouchInput.value = selection.additionalRetouch;
+                const additionalCost = selection.additionalRetouch * PRICES.PHOTOGRAPHER.additionalRetouchPrice;
+                DOMElements.photographer.retouchCost.innerHTML = `Стоимость: <span class="text-white font-bold">${additionalCost.toLocaleString('ru-RU')} ₸</span>`;
+            }
+        }
+
         function handleOptionSelection(group, value) {
-            if (group === 'host') { selection.hostHours = value; } 
-            else if (group === 'tech') {
+            if (group === 'host') {
+                selection.hostHours = value;
+            } else if (group === 'tech') {
                 selection.techOption = selection.techOption === value ? null : value;
-                if (selection.techOption === null && selection.projectorNeeded) { selection.projectorNeeded = false; }
+                if (selection.techOption === null && selection.projectorNeeded) {
+                    selection.projectorNeeded = false;
+                }
             } else if (group === 'creative' && value === 'PROJECTOR') {
                 selection.projectorNeeded = !selection.projectorNeeded;
-                if (selection.projectorNeeded) { enforceDjForProjector(); } 
-                else { Object.keys(selection.creative.ai_games).forEach(gameKey => { if (selection.creative.ai_games[gameKey] && PRICES.CREATIVE.AI_GAMES[gameKey]?.requiresScreen) { selection.creative.ai_games[gameKey] = false; } }); }
+                if (selection.projectorNeeded) {
+                    enforceDjForProjector();
+                } else {
+                    Object.keys(selection.creative.ai_games).forEach(gameKey => {
+                        if (selection.creative.ai_games[gameKey] && PRICES.CREATIVE.AI_GAMES[gameKey]?.requiresScreen) {
+                            selection.creative.ai_games[gameKey] = false;
+                        }
+                    });
+                }
             }
             reRenderUI();
         }
@@ -120,11 +209,35 @@ document.addEventListener('DOMContentLoaded', () => {
                 copyQuoteBtn: hostCalculator.querySelector('#copy-quote-btn'),
                 toastNotification: document.getElementById('toast-notification'),
                 summaryCard: hostCalculator.querySelector('[data-summary-id="host"]'),
+                venueScreenToggleBtns: hostCalculator.querySelectorAll('.screen-toggle-btn'),
+                photographer: {
+                    section: hostCalculator.querySelector('#photographer-section'),
+                    toggleBtns: hostCalculator.querySelectorAll('.photographer-toggle-btn'),
+                    hoursSlider: hostCalculator.querySelector('#photo-hours-slider'),
+                    hoursOutput: hostCalculator.querySelector('#photo-hours-output'),
+                    hoursCostOutput: hostCalculator.querySelector('#photographer-hours-cost'),
+                    photoCountOutput: hostCalculator.querySelector('#photo-count-output'),
+                    retouchInput: hostCalculator.querySelector('#additional-retouch-input'),
+                    retouchCost: hostCalculator.querySelector('#additional-retouch-cost'),
+                    decrementBtn: hostCalculator.querySelector('#decrement-retouch'),
+                    incrementBtn: hostCalculator.querySelector('#increment-retouch'),
+                }
             };
-            selection = { hostHours: '6', projectorNeeded: false, techOption: 'STANDARD', creative: { ai_games: {}, eminem_tracks: {} }, totalPrice: 0, venueType: 'standard', guestCount: '1-40', venueGear: 'none', venueScreen: 'no' };
+            
+            selection = {
+                hostHours: '6', projectorNeeded: false, techOption: 'STANDARD',
+                creative: { ai_games: {}, eminem_tracks: {} },
+                totalPrice: 0, venueType: 'standard', guestCount: '1-40',
+                venueGear: 'none', venueScreen: 'no',
+                photographerNeeded: 'no', photographerHours: 1, additionalRetouch: 0
+            };
+
+            setupRetouchTooltip();
+
             DOMElements.hostCards.forEach(card => card.addEventListener('click', () => handleOptionSelection('host', card.dataset.value)));
             DOMElements.allTechCards.forEach(card => card.addEventListener('click', () => { if (!card.classList.contains('disabled')) handleOptionSelection('tech', card.dataset.value) }));
             if (DOMElements.projectorCard) DOMElements.projectorCard.addEventListener('click', () => { if (!DOMElements.projectorCard.classList.contains('disabled')) handleOptionSelection('creative', 'PROJECTOR') });
+            
             DOMElements.creativeOptions.addEventListener('click', (e) => {
                 const resetButton = e.target.closest('[data-reset-target]');
                 if (resetButton) {
@@ -135,10 +248,45 @@ document.addEventListener('DOMContentLoaded', () => {
                     reRenderUI();
                 }
             });
+
+            DOMElements.venueScreenToggleBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    selection.venueScreen = btn.dataset.value;
+                    reRenderUI();
+                });
+            });
+
+            DOMElements.photographer.toggleBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    selection.photographerNeeded = btn.dataset.value;
+                    reRenderUI();
+                });
+            });
+            DOMElements.photographer.hoursSlider.addEventListener('input', (e) => {
+                selection.photographerHours = parseInt(e.target.value, 10);
+                reRenderUI();
+            });
+            DOMElements.photographer.retouchInput.addEventListener('change', (e) => {
+                selection.additionalRetouch = parseInt(e.target.value, 10) || 0;
+                if (selection.additionalRetouch < 0) selection.additionalRetouch = 0;
+                reRenderUI();
+            });
+            DOMElements.photographer.decrementBtn.addEventListener('click', () => {
+                if (selection.additionalRetouch > 0) {
+                    selection.additionalRetouch--;
+                    reRenderUI();
+                }
+            });
+            DOMElements.photographer.incrementBtn.addEventListener('click', () => {
+                selection.additionalRetouch++;
+                reRenderUI();
+            });
+
             reRenderUI();
             setupFloatingBar();
             DOMElements.parameterSelects.forEach(sel => sel.addEventListener('change', reRenderUI));
             DOMElements.copyQuoteBtn.addEventListener('click', () => copyToClipboard(generatePlainTextQuote()));
+            
             document.body.addEventListener('click', (e) => {
                 const modalTrigger = e.target.closest('[data-modal-trigger]');
                 if (!modalTrigger || e.target.closest('[data-reset-target]')) return;
@@ -147,11 +295,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (modalId === 'ai-games-modal') renderAIGamesModal();
                 if (modalId === 'eminem-modal') renderEminemModal();
             });
+            
             DOMElements.aiGamesModal.addEventListener('click', handleAiModalClicks);
             DOMElements.eminemModal.addEventListener('click', handleEminemModalClicks);
-            document.addEventListener('calculatorModeChanged', () => updateFloatingBarUI(selection.totalPrice, getItemsCount()));
+            
+            document.addEventListener('calculatorModeChanged', () => {
+                if (hostCalculator.classList.contains('active')) {
+                    reRenderUI();
+                } else {
+                    updateFloatingBarUI(0, 0); 
+                }
+            });
         }
-        
+
         function getItemsCount() {
             let count = 0;
             if (PRICES.HOST[selection.hostHours]) count++;
@@ -159,6 +315,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (selection.projectorNeeded) count++;
             count += Object.values(selection.creative.ai_games || {}).filter(Boolean).length;
             if (Object.keys(selection.creative.eminem_tracks || {}).length > 0) count++;
+            if (selection.photographerNeeded === 'yes') count++;
             return count;
         }
 
@@ -167,7 +324,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (gameCard && !gameCard.classList.contains('disabled')) {
                 const key = gameCard.dataset.gameKey;
                 selection.creative.ai_games[key] = !selection.creative.ai_games[key];
-                updateAIGamesModalUI(); 
+                updateAIGamesModalUI();
                 reRenderUI();
             }
             if (e.target.id === 'reset-ai-selection') {
@@ -178,8 +335,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.target.id === 'add-projector-from-modal') {
                 selection.projectorNeeded = true;
                 enforceDjForProjector();
-                reRenderUI(); 
-                renderAIGamesModal(); 
+                reRenderUI();
+                renderAIGamesModal();
             }
         }
 
@@ -188,8 +345,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const selectedCount = Object.keys(selection.creative.eminem_tracks || {}).length;
             if (trackCard && !trackCard.classList.contains('disabled')) {
                 const id = trackCard.dataset.trackId;
-                if (selection.creative.eminem_tracks[id]) { delete selection.creative.eminem_tracks[id]; } 
-                else if (selectedCount < 5) { selection.creative.eminem_tracks[id] = true; }
+                if (selection.creative.eminem_tracks[id]) {
+                    delete selection.creative.eminem_tracks[id];
+                } else if (selectedCount < 5) {
+                    selection.creative.eminem_tracks[id] = true;
+                }
             }
             if (e.target.id === 'reset-eminem-selection') {
                 selection.creative.eminem_tracks = {};
@@ -209,19 +369,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 card.classList.toggle('disabled', isDisabled);
             });
         }
-        
+
         function updateEminemModalUI() {
-             const modal = DOMElements.eminemModal;
-             const selectedTracks = selection.creative.eminem_tracks || {};
-             const selectedCount = Object.keys(selectedTracks).length;
-             const limitReached = selectedCount >= 5;
-             modal.querySelectorAll('[data-track-id]').forEach(card => {
+            const modal = DOMElements.eminemModal;
+            const selectedTracks = selection.creative.eminem_tracks || {};
+            const selectedCount = Object.keys(selectedTracks).length;
+            const limitReached = selectedCount >= 5;
+            modal.querySelectorAll('[data-track-id]').forEach(card => {
                 const isSelected = !!selectedTracks[card.dataset.trackId];
                 card.classList.toggle('selected', isSelected);
                 card.classList.toggle('disabled', limitReached && !isSelected);
-             });
-             modal.querySelector('.count').textContent = `${selectedCount}/5`;
-             modal.querySelector('.limit-reached')?.classList.toggle('hidden', !limitReached);
+            });
+            modal.querySelector('.count').textContent = `${selectedCount}/5`;
+            modal.querySelector('.limit-reached')?.classList.toggle('hidden', !limitReached);
         }
 
         function renderAIGamesModal() {
@@ -259,11 +419,11 @@ document.addEventListener('DOMContentLoaded', () => {
             selection.venueType = DOMElements.parameterSelects[0].value;
             selection.guestCount = DOMElements.parameterSelects[1].value;
             selection.venueGear = DOMElements.parameterSelects[2].value;
-            selection.venueScreen = DOMElements.parameterSelects[3].value;
             if (oldVenueGear !== selection.venueGear) {
                 selection.projectorNeeded = false;
                 if (selection.venueGear === 'none') {
-                    const venue = selection.venueType, guests = selection.guestCount;
+                    const venue = selection.venueType,
+                          guests = selection.guestCount;
                     if (venue === 'large' || guests === '81-150') selection.techOption = 'MAXI';
                     else if (venue === 'standard' || guests === '41-80') selection.techOption = 'STANDARD';
                     else selection.techOption = 'COMPACT';
@@ -274,35 +434,41 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         }
+
         function enforceDjForProjector() {
             if (selection.venueGear === 'sound_only') { selection.techOption = 'DJ_WORK_ONLY'; } 
             else if (selection.venueGear === 'none' && (selection.techOption === 'COMPACT' || !selection.techOption)) { selection.techOption = 'STANDARD'; }
         }
+
         function updateSummaryAndPrice() {
-            let total = 0; let baseItems = [], techItems = [], creativeItems = [], itemsCount = 0;
-            const hostPrice = PRICES.HOST[selection.hostHours]; if (hostPrice) { total += hostPrice; baseItems.push({ name: `Ведущий (до ${selection.hostHours} ч)`, price: hostPrice }); itemsCount++; }
-            if (selection.venueGear === 'full_dj_set') { techItems.push({ name: '✅ Пакет не требуется', price: null }); } else if (selection.techOption && PRICES.TECH[selection.techOption]) { const tech = PRICES.TECH[selection.techOption]; total += tech.price; techItems.push({ name: tech.name, price: tech.price }); itemsCount++; }
-            if (selection.projectorNeeded) { total += PRICES.PROJECTOR.price; techItems.push({ name: PRICES.PROJECTOR.name, price: PRICES.PROJECTOR.price }); itemsCount++; }
-            Object.keys(selection.creative.ai_games).forEach(key => { if (selection.creative.ai_games[key]) { const game = PRICES.CREATIVE.AI_GAMES[key]; total += game.price; creativeItems.push({ name: game.name, price: game.price }); itemsCount++; } });
-            const selectedTracks = Object.keys(selection.creative.eminem_tracks || {}); if (selectedTracks.length > 0) { const eminem = PRICES.CREATIVE.EMINEM; total += eminem.basePrice; const trackNames = selectedTracks.map(id => TRACK_LIST.find(t => t.id === id)?.name).filter(Boolean); creativeItems.push({ name: `${eminem.name} (${selectedTracks.length} тр.)`, price: eminem.basePrice, tracks: trackNames }); itemsCount++; }
+            let total = 0; let baseItems = [], techItems = [], creativeItems = [], photographerItems = [];
+            const hostPrice = PRICES.HOST[selection.hostHours]; if (hostPrice) { total += hostPrice; baseItems.push({ name: `Ведущий (до ${selection.hostHours} ч)`, price: hostPrice }); }
+            if (selection.venueGear === 'full_dj_set') { techItems.push({ name: '✅ Пакет не требуется', price: null }); } else if (selection.techOption && PRICES.TECH[selection.techOption]) { const tech = PRICES.TECH[selection.techOption]; total += tech.price; techItems.push({ name: tech.name, price: tech.price }); }
+            if (selection.projectorNeeded) { total += PRICES.PROJECTOR.price; techItems.push({ name: PRICES.PROJECTOR.name, price: PRICES.PROJECTOR.price }); }
+            Object.keys(selection.creative.ai_games).forEach(key => { if (selection.creative.ai_games[key]) { const game = PRICES.CREATIVE.AI_GAMES[key]; total += game.price; creativeItems.push({ name: game.name, price: game.price }); } });
+            const selectedTracks = Object.keys(selection.creative.eminem_tracks || {}); if (selectedTracks.length > 0) { const eminem = PRICES.CREATIVE.EMINEM; total += eminem.basePrice; const trackNames = selectedTracks.map(id => TRACK_LIST.find(t => t.id === id)?.name).filter(Boolean); creativeItems.push({ name: `${eminem.name} (${selectedTracks.length} тр.)`, price: eminem.basePrice, tracks: trackNames }); }
+            if (selection.photographerNeeded === 'yes') { const photoHourPrice = selection.photographerHours * PRICES.PHOTOGRAPHER.baseHourRate; const additionalRetouchCost = selection.additionalRetouch * PRICES.PHOTOGRAPHER.additionalRetouchPrice; const totalPhotoCost = photoHourPrice + additionalRetouchCost; total += totalPhotoCost; photographerItems.push({ name: `Работа фотографа (${selection.photographerHours} ч)`, price: photoHourPrice }); if (selection.additionalRetouch > 0) { photographerItems.push({ name: `Доп. ретушь (${selection.additionalRetouch} фото)`, price: additionalRetouchCost }); } }
             const buildCategoryHtml = (title, icon, items) => { if (!items.length) return ''; let itemsHtml = items.map(item => { let trackListHtml = item.tracks ? `<ul class="summary-track-list">${item.tracks.map(t => `<li>${t}</li>`).join('')}</ul>` : ''; const priceHtml = item.price !== null ? `<span class="summary-item-price">${item.price.toLocaleString('ru-RU')} ₸</span>` : ''; const nameClass = item.price === null ? 'is-free' : ''; return `<div class="summary-item"><div class="summary-item-name ${nameClass}">${item.name}</div>${priceHtml}</div>${trackListHtml}`; }).join(''); return `<div class="summary-category"><div class="summary-category-header"><i class="fas ${icon}"></i><span>${title}</span></div><div class="summary-items-container">${itemsHtml}</div></div>`; };
-            DOMElements.summaryListEl.innerHTML = [buildCategoryHtml('Основа', 'fa-microphone-alt', baseItems), buildCategoryHtml('Тех. Оснащение', 'fa-volume-up', techItems), buildCategoryHtml('Креативные фишки', 'fa-star', creativeItems)].filter(Boolean).join('<hr class="summary-separator">');
+            DOMElements.summaryListEl.innerHTML = [buildCategoryHtml('Основа', 'fa-microphone-alt', baseItems), buildCategoryHtml('Тех. Оснащение', 'fa-cogs', techItems), buildCategoryHtml('Услуги фотографа', 'fa-camera-retro', photographerItems), buildCategoryHtml('Креативные фишки', 'fa-star', creativeItems)].filter(Boolean).join('<hr class="summary-separator">');
             DOMElements.totalPriceEl.textContent = `${Math.round(total).toLocaleString('ru-RU')} ₸`; selection.totalPrice = Math.round(total);
             updateFloatingBarUI(total, getItemsCount());
         }
+
         function generatePlainTextQuote() {
             let messageParts = ["Здравствуйте, Валерий!", "Сформировал(а) смету на belskiy.kz:\n", `*УСЛУГА: Ведущий мероприятий*`, `\n*ПАРАМЕТРЫ МЕРОПРИЯТИЯ:*`];
             const paramText = { venueType: { 'chamber': 'Камерная', 'standard': 'Стандартная', 'large': 'Открытая/Большая' }, venueGear: { 'none': 'Ничего нет', 'sound_only': 'Только звук', 'full_dj_set': 'Есть всё' }, venueScreen: { 'no': 'Нет', 'yes': 'Да' } };
             messageParts.push(`- Тип площадки: ${paramText.venueType[selection.venueType]}`); messageParts.push(`- Количество гостей: ${selection.guestCount}`); messageParts.push(`- Оборудование: ${paramText.venueGear[selection.venueGear]}`); messageParts.push(`- Экран: ${paramText.venueScreen[selection.venueScreen]}`);
-            let baseServices = [], techServices = [], creativeServices = []; if (PRICES.HOST[selection.hostHours]) { baseServices.push(`- Ведущий (до ${selection.hostHours} ч): ${PRICES.HOST[selection.hostHours].toLocaleString('ru-RU')} ₸`); }
+            let baseServices = [], techServices = [], creativeServices = [], photoServices = []; if (PRICES.HOST[selection.hostHours]) { baseServices.push(`- Ведущий (до ${selection.hostHours} ч): ${PRICES.HOST[selection.hostHours].toLocaleString('ru-RU')} ₸`); }
             if (selection.venueGear !== 'full_dj_set' && selection.techOption && PRICES.TECH[selection.techOption]) { techServices.push(`- ${PRICES.TECH[selection.techOption].name}: ${PRICES.TECH[selection.techOption].price.toLocaleString('ru-RU')} ₸`); }
             if (selection.projectorNeeded) { techServices.push(`- ${PRICES.PROJECTOR.name}: ${PRICES.PROJECTOR.price.toLocaleString('ru-RU')} ₸`); }
+            if (selection.photographerNeeded === 'yes') { const photoHourPrice = selection.photographerHours * PRICES.PHOTOGRAPHER.baseHourRate; photoServices.push(`- Работа фотографа (${selection.photographerHours} ч): ${photoHourPrice.toLocaleString('ru-RU')} ₸`); if (selection.additionalRetouch > 0) { const additionalRetouchCost = selection.additionalRetouch * PRICES.PHOTOGRAPHER.additionalRetouchPrice; photoServices.push(`- Доп. ретушь (${selection.additionalRetouch} фото): ${additionalRetouchCost.toLocaleString('ru-RU')} ₸`); } }
             Object.keys(selection.creative.ai_games || {}).filter(key => selection.creative.ai_games[key]).forEach(key => creativeServices.push(`- ${PRICES.CREATIVE.AI_GAMES[key].name}: ${PRICES.CREATIVE.AI_GAMES[key].price.toLocaleString('ru-RU')} ₸`));
-            if (baseServices.length) messageParts.push('\n*ОСНОВА:*', ...baseServices); if (techServices.length) messageParts.push('\n*ТЕХНИЧЕСКОЕ ОСНАЩЕНИЕ:*', ...techServices); if (creativeServices.length) messageParts.push('\n*КРЕАТИВНЫЕ ФИШКИ:*', ...creativeServices);
+            if (baseServices.length) messageParts.push('\n*ОСНОВА:*', ...baseServices); if (techServices.length) messageParts.push('\n*ТЕХНИЧЕСКОЕ ОСНАЩЕНИЕ:*', ...techServices); if (photoServices.length) messageParts.push('\n*УСЛУГИ ФОТОГРАФА:*', ...photoServices); if (creativeServices.length) messageParts.push('\n*КРЕАТИВНЫЕ ФИШКИ:*', ...creativeServices);
             const selectedTracks = Object.keys(selection.creative.eminem_tracks || {}); if (selectedTracks.length > 0) { messageParts.push('\n*СЕТ-ЛИСТ EMINEM TRIBUTE SHOW:*'); selectedTracks.forEach(id => messageParts.push(`- ${TRACK_LIST.find(t => t.id === id)?.name || ''}`)); messageParts.push(`- Стоимость блока: ${PRICES.CREATIVE.EMINEM.basePrice.toLocaleString('ru-RU')} ₸`); }
             messageParts.push(`\n*ИТОГОВАЯ СТОИМОСТЬ: ${selection.totalPrice.toLocaleString('ru-RU')} ₸*`);
             return messageParts.join('\n');
         }
+
         function setupFloatingBar() {
             const bar = document.getElementById('host-floating-summary-bar'); const modal = document.getElementById('host-summary-modal'); const openBtn = document.getElementById('host-floating-open-modal'); const modalCopyBtn = document.getElementById('host-modal-copy-btn'); if (!bar || !modal || !openBtn || !modalCopyBtn) return;
             const openModal = () => { modal.classList.add('open'); document.body.classList.add('modal-open'); }; const closeModal = () => { modal.classList.remove('open'); document.body.classList.remove('modal-open'); };
@@ -311,29 +477,20 @@ document.addEventListener('DOMContentLoaded', () => {
             const summaryCardObserver = new IntersectionObserver((entries) => { entries.forEach(entry => { if (hostCalculator.classList.contains('active')) { bar.classList.toggle('hidden-by-scroll', entry.isIntersecting); } }); }, { threshold: 0.1 });
             if (DOMElements.summaryCard) summaryCardObserver.observe(DOMElements.summaryCard);
         }
-        
-        // --- ФИНАЛЬНОЕ ИСПРАВЛЕНИЕ ДЛЯ ПЛАВАЮЩЕЙ ПАНЕЛИ ---
+
         function updateFloatingBarUI(total, itemsCount) {
             const bar = document.getElementById('host-floating-summary-bar');
             if (!bar) return;
-
-            // Панель видна ТОЛЬКО если есть выбранные опции И активна вкладка "Ведущий"
             const shouldBeVisible = total > 0 && hostCalculator.classList.contains('active');
-            
             bar.classList.toggle('visible', shouldBeVisible);
-
             if (window.innerWidth < 768) {
                 const rapBarIsVisible = document.getElementById('rap-floating-summary-bar')?.classList.contains('visible');
-                // Устанавливаем отступ только если наша панель видима
                 if (shouldBeVisible) {
                     document.body.style.paddingBottom = bar.offsetHeight + 20 + 'px';
-                } 
-                // Убираем отступ, только если и вторая панель тоже не видна
-                else if (!rapBarIsVisible) {
+                } else if (!rapBarIsVisible) {
                     document.body.style.paddingBottom = '0px';
                 }
             }
-
             if (shouldBeVisible) {
                 document.getElementById('host-floating-total').textContent = `Итого: ${total.toLocaleString('ru-RU')} ₸`;
                 document.getElementById('host-floating-count').textContent = itemsCount;
@@ -345,38 +502,23 @@ document.addEventListener('DOMContentLoaded', () => {
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(showToast, err => console.error('Не удалось скопировать', err));
         }
-        // --- ИЗМЕНЕНО: Обновленная функция для показа нотификатора с кнопкой WhatsApp ---
-function showToast() {
-  const toast = document.getElementById('toast-notification');
-  const whatsappBtn = document.getElementById('whatsapp-send-btn');
 
-  if (toast && whatsappBtn) {
-    // Параметры для WhatsApp
-    const phoneNumber = '77079292980'; // Номер в международном формате без +, скобок и дефисов
-    const invitationText = 'Вставьте скопированную заявку сюда.';
-    
-    // Кодируем текст для URL
-    const encodedText = encodeURIComponent(invitationText);
-    
-    // Формируем ссылку
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedText}`;
-    
-    // Устанавливаем ссылку на кнопку
-    whatsappBtn.href = whatsappUrl;
-    
-    // Показываем нотификатор
-    toast.classList.add('show');
-    
-    // Скрываем нотификатор через 6 секунд
-    setTimeout(() => {
-      toast.classList.remove('show');
-    }, 6000);
-  }
-}
-// --- КОНЕЦ ИЗМЕНЕНИЙ ---
+        function showToast() {
+            const toast = document.getElementById('toast-notification');
+            const whatsappBtn = document.getElementById('whatsapp-send-btn');
+            if (toast && whatsappBtn) {
+                const phoneNumber = '77079292980';
+                const invitationText = 'Вставьте скопированную заявку сюда.';
+                const encodedText = encodeURIComponent(invitationText);
+                const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedText}`;
+                whatsappBtn.href = whatsappUrl;
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 6000);
+            }
+        }
 
         initializeApp();
     })();
 });
-
-/* === КОНЕЦ ИСПРАВЛЕННОГО ФАЙЛА === */
