@@ -93,18 +93,15 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // --- НАЧАЛО ИЗМЕНЕНИЙ (ИСПРАВЛЕНИЕ БАГА) ---
         function updateProjectorCardState() {
             const card = DOMElements.projectorCard;
             if (!card) return;
             const venueHasScreen = selection.venueScreen === 'yes';
 
             if (venueHasScreen) {
-                // Если экран есть, скрываем опцию проектора и сбрасываем его выбор
                 card.parentElement.classList.add('hidden');
                 selection.projectorNeeded = false;
             } else {
-                // Если экрана нет, показываем опцию и настраиваем её состояние
                 card.parentElement.classList.remove('hidden');
                 let isDisabled = false, disabledReason = null;
                 if (selection.guestCount === '81-150') { isDisabled = true; disabledReason = 'Неэффективен для >80 гостей'; }
@@ -114,7 +111,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (isDisabled && disabledReason) { card.querySelector('div').insertAdjacentHTML('beforeend', `<p class="text-sm disabled-reason mt-2">🛑 ${disabledReason}</p>`); }
             }
         }
-        // --- КОНЕЦ ИЗМЕНЕНИЙ ---
 
         function updateCreativeCardsUI() {
             const aiCard = DOMElements.creativeOptions.querySelector('[data-creative-type="ai"]');
@@ -223,6 +219,35 @@ document.addEventListener('DOMContentLoaded', () => {
                     incrementBtn: hostCalculator.querySelector('#increment-retouch'),
                 }
             };
+            
+            // --- НАЧАЛО ИСПРАВЛЕНИЯ БАГА С БЛОКОМ ФОТОГРАФА ---
+            // Изолируем блок фотографа от основной логики вкладок, чтобы избежать конфликта стилей
+            const photographerSection = DOMElements.photographer.section;
+            if (photographerSection && photographerSection.classList.contains('content-panel')) {
+                photographerSection.classList.remove('content-panel');
+                photographerSection.classList.add('photographer-block'); // Присваиваем уникальный класс
+
+                // Динамически создаем и добавляем стили для нового класса в head документа
+                const style = document.createElement('style');
+                style.textContent = `
+                    .photographer-block {
+                        opacity: 0;
+                        max-height: 0;
+                        overflow: hidden;
+                        visibility: hidden;
+                        transition: opacity 0.3s ease-out, max-height 0.4s ease-out, visibility 0.4s;
+                    }
+                    .photographer-block.active {
+                        opacity: 1;
+                        visibility: visible;
+                        max-height: 1000px; /* Достаточная высота для содержимого */
+                        overflow: visible;
+                        margin-bottom: 2rem;
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            // --- КОНЕЦ ИСПРАВЛЕНИЯ ---
             
             selection = {
                 hostHours: '6', projectorNeeded: false, techOption: 'STANDARD',
