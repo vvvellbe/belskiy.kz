@@ -438,29 +438,78 @@ section .relative {
     box-shadow: 0 4px 15px rgba(251, 191, 36, 0.2);
 }
 
-/* Исправление #3: Наложение Toast-уведомления */
+/* === НАЧАЛО ИЗМЕНЕНИЙ: Обновленный нотификатор с кнопкой WhatsApp === */
 .toast {
-    position: fixed;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%) translateY(150%);
-    background-color: #10B981;
-    color: white;
-    padding: 1rem 2rem;
-    border-radius: 0.5rem;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-    z-index: 999; /* ИЗМЕНЕНО: Ниже модальных окон, но выше большинства элементов */
-    font-weight: 600;
-    opacity: 0;
-    pointer-events: none; /* Не блокирует клики, когда невидим */
-    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(150%);
+  background-color: #1F2937; /* gray-800 */
+  color: white;
+  padding: 0.75rem 0.75rem 0.75rem 1.25rem;
+  border-radius: 0.75rem; /* Увеличен радиус */
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  z-index: 999;
+  font-weight: 600;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border: 1px solid #374151; /* gray-700 */
+  width: 90%;
+  max-width: 380px; /* Ограничиваем максимальную ширину */
 }
+
 .toast.show {
-    transform: translateX(-50%) translateY(0);
-    opacity: 1;
-    z-index: 10000; /* ИЗМЕНЕНО: Выше всего, когда видим */
-    pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+  z-index: 10000;
+  pointer-events: auto;
 }
+
+.toast-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.toast-icon {
+  color: #34D399; /* emerald-400 */
+  font-size: 1.25rem;
+}
+
+.toast-text {
+  font-size: 0.95rem;
+}
+
+.toast-button {
+  background-color: #25D366;
+  color: white;
+  padding: 0.6rem 1rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+  white-space: nowrap; /* Предотвращает перенос текста кнопки */
+}
+
+.toast-button:hover {
+  background-color: #1DA851;
+  transform: scale(1.05);
+}
+
+.toast-button i {
+  font-size: 1.1rem;
+}
+/* === КОНЕЦ ИЗМЕНЕНИЙ === */
+
 .track-card.disabled {
     opacity: 0.5;
     cursor: not-allowed;
