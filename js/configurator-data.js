@@ -18,7 +18,14 @@ const PRICES = {
     },
     EMINEM: { name: 'Eminem Tribute Show', basePrice: 20000 }
   },
-  PROJECTOR: { price: 30000, name: 'Аренда проектора и экрана' }
+// Внутри объекта PRICES, после ключа PROJECTOR
+PROJECTOR: { price: 30000, name: 'Аренда проектора и экрана' },
+
+// --- НАЧАЛО ВСТАВКИ ---
+PHOTOGRAPHER: {
+    baseHourRate: 40000,
+    additionalRetouchPrice: 2000
+}
 };
 
 const PRICES_RAP = {
