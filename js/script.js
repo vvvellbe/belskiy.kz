@@ -289,6 +289,13 @@ function setupContentToggles() {
 
       targetPanel.classList.add('active');
       targetPanel.style.display = 'block';
+      
+      // --- НАЧАЛО ИСПРАВЛЕНИЯ ---
+      // Отправляем глобальный сигнал о том, что режим калькулятора изменился.
+      // Скрипты обоих калькуляторов (configurator-*.js) "услышат" это
+      // и корректно обновят видимость своих плавающих смет.
+      document.dispatchEvent(new CustomEvent('calculatorModeChanged'));
+      // --- КОНЕЦ ИСПРАВЛЕНИЯ ---
     }
 
     tabButtons.forEach(button => {
