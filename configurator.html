@@ -113,7 +113,7 @@
            <label class="block text-sm font-medium text-gray-300 mb-2">1. Тип площадки?</label>
            <select id="venue-type" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-2.5 text-white focus:ring-blue-500 focus:border-blue-500">
             <option value="chamber">Камерная (VIP-кабина / школьный класс)</option>
-            <option value="standard">Стандартная (небольшое кафе / малый-средний зал)</option>
+            <option value="standard" selected>Стандартная (небольшое кафе / малый-средний зал)</option>
             <option value="large">Открытая / Большая (терраса / большой зал ресторана)</option>
            </select>
           </div>
@@ -146,15 +146,96 @@
         <div class="program-card rounded-xl p-6 sm:p-8">
          <h2 class="text-2xl font-semibold text-white mb-6">Соберите вашу программу</h2>
          <div class="mb-8">
-          <h3 class="text-xl font-semibold text-white">1. Ваш Ведущий (Основа)</h3>
-          <p class="text-sm text-gray-400 mb-4">Включает классические интерактивы, конкурсы и полную координацию вечера. Выберите оптимальную длительность программы:</p>
-          <div id="host-options" class="grid grid-cols-1 sm:grid-cols-3 gap-4"></div>
+             <h3 class="text-xl font-semibold text-white">1. Ваш Ведущий (Основа)</h3>
+             <p class="text-sm text-gray-400 mb-4">Включает классические интерактивы, конкурсы и полную координацию вечера. Выберите оптимальную длительность программы:</p>
+             <div id="host-options" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                 <div class="option-card" data-group="host" data-value="2">
+                     <div><h4 class="font-semibold text-white">до 2 часов</h4><p class="text-sm text-gray-400 mt-1">Экспресс-программа</p></div>
+                     <p class="font-semibold text-lg text-white mt-3">80 000 ₸</p>
+                 </div>
+                 <div class="option-card" data-group="host" data-value="4">
+                     <div><h4 class="font-semibold text-white">до 4 часов</h4><p class="text-sm text-gray-400 mt-1">Динамичное событие</p></div>
+                     <p class="font-semibold text-lg text-white mt-3">160 000 ₸</p>
+                 </div>
+                 <div class="option-card" data-group="host" data-value="6">
+                     <div><h4 class="font-semibold text-white">до 6 часов</h4><p class="text-sm text-gray-400 mt-1">Полноценное мероприятие</p></div>
+                     <p class="font-semibold text-lg text-white mt-3">240 000 ₸</p>
+                 </div>
+             </div>
          </div>
-         <div id="tech-section" class="mb-8"></div>
+         <div id="tech-section" class="mb-8">
+            <h3 class="text-xl font-semibold text-white">2. Техническое Оснащение</h3>
+            <p class="text-sm text-gray-400 mb-4">Оборудование для вашего мероприятия:</p>
+            
+            <div id="tech-container-full-dj" class="hidden">
+                <div class="option-card selected rounded-lg p-4">
+                    <h4 class="font-semibold text-green-400">✅ Площадка полностью укомплектована</h4>
+                    <p class="text-sm text-gray-400">Используется оборудование и DJ вашего заведения.</p>
+                </div>
+            </div>
+
+            <div id="tech-container-sound-only" class="hidden">
+                 <p class="text-sm text-gray-400 mb-4">Выберите решение для вашей площадки:</p>
+                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                     <div class="option-card" data-group="tech" data-value="DJ_WORK_ONLY">
+                         <div><h4 class="font-semibold text-white">Работа DJ</h4><p class="text-sm text-gray-400 mt-1">Наш DJ будет работать на вашем звуке</p></div>
+                         <p class="font-semibold text-lg text-white mt-3">+ 130 000 ₸</p>
+                     </div>
+                     <div class="option-card" data-group="tech" data-value="COMPACT">
+                         <div><h4 class="font-semibold text-white">Комплект «Компакт»</h4><p class="text-sm text-gray-400 mt-1">Аудиосистема JBL (без DJ), вместо оборудования заведения.</p></div>
+                         <p class="font-semibold text-lg text-white mt-3">+ 20 000 ₸</p>
+                     </div>
+                 </div>
+            </div>
+
+            <div id="tech-container-no-gear" class="hidden">
+                <p class="text-sm text-gray-400 mb-4">Подберем звук под вашу площадку и гостей:</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="option-card" data-group="tech" data-value="COMPACT">
+                         <div><h4 class="font-semibold text-white">Комплект «Компакт»</h4><p class="text-sm text-gray-400 mt-1">До 40 гостей, камерная площадка.</p></div>
+                         <p class="font-semibold text-lg text-white mt-3">+ 20 000 ₸</p>
+                    </div>
+                    <div class="option-card" data-group="tech" data-value="STANDARD">
+                         <div><h4 class="font-semibold text-white">Комплект «Стандарт»</h4><p class="text-sm text-gray-400 mt-1">До 80 гостей, стандартный зал.</p></div>
+                         <p class="font-semibold text-lg text-white mt-3">+ 200 000 ₸</p>
+                    </div>
+                    <div class="option-card" data-group="tech" data-value="MAXI">
+                         <div><h4 class="font-semibold text-white">Комплект «Максимум»</h4><p class="text-sm text-gray-400 mt-1">До 150 гостей, большой зал / улица.</p></div>
+                         <p class="font-semibold text-lg text-white mt-3">+ 230 000 ₸</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="projector-option-container" class="mt-4">
+                 <div class="option-card flex items-start justify-between" data-group="creative" data-value="PROJECTOR">
+                    <div>
+                        <h4 class="font-semibold text-white">Проектор с экраном</h4>
+                        <p class="text-sm text-gray-400 mt-1">Используется в темное время/помещении.</p>
+                        <p class="text-sm warning-text mt-2">⚠️ Требует работы DJ (при выборе, DJ добавляется автоматически)</p>
+                    </div>
+                    <div class="text-right ml-4 flex-shrink-0">
+                        <p class="font-semibold text-white">+ 30 000 ₸</p>
+                    </div>
+                </div>
+            </div>
+         </div>
          <div>
-          <h3 class="text-xl font-semibold text-white">3. Наполнение Программы (Креатив)</h3>
-          <p class="text-sm text-gray-400 mb-4">Добавьте эксклюзивные элементы, чтобы сделать вечер незабываемым:</p>
-          <div id="creative-options" class="space-y-4"></div>
+             <h3 class="text-xl font-semibold text-white">3. Наполнение Программы (Креатив)</h3>
+             <p class="text-sm text-gray-400 mb-4">Добавьте эксклюзивные элементы, чтобы сделать вечер незабываемым:</p>
+             <div id="creative-options" class="space-y-4">
+                 <div class="option-card" data-modal-trigger="ai-games-modal" data-creative-type="ai">
+                     <div class="flex items-center justify-between">
+                         <div><h4 class="font-semibold text-white">Интерактивное AI-Шоу</h4><p class="text-sm text-gray-400" data-creative-subtitle>Персонализация вечера нового уровня</p></div>
+                         <div class="text-right ml-2 flex items-center gap-2 md:gap-3 flex-shrink-0"><p class="font-semibold text-white whitespace-nowrap" data-creative-price>от 5 000 ₸</p><button class="btn-reset py-2 px-3 text-sm rounded-lg hidden" data-reset-target="ai">Сбросить</button><button class="btn-primary text-white font-bold py-2 px-3 text-sm rounded-lg">Настроить</button></div>
+                     </div>
+                 </div>
+                 <div class="option-card" data-modal-trigger="eminem-modal" data-creative-type="eminem">
+                     <div class="flex items-center justify-between">
+                         <div><h4 class="font-semibold text-white">Eminem Tribute Show</h4><p class="text-sm text-gray-400" data-creative-subtitle>Соберите свой сет-лист (до 5 треков)</p></div>
+                         <div class="text-right ml-2 flex items-center gap-2 md:gap-3 flex-shrink-0"><p class="font-semibold text-white whitespace-nowrap" data-creative-price>+ 20 000 ₸</p><button class="btn-reset py-2 px-3 text-sm rounded-lg hidden" data-reset-target="eminem">Сбросить</button><button class="btn-primary text-white font-bold py-2 px-3 text-sm rounded-lg">Настроить</button></div>
+                     </div>
+                 </div>
+             </div>
          </div>
         </div>
        </div>
@@ -299,10 +380,12 @@
  </main>
 
  <div id="ai-games-modal" class="modal-overlay">
-  <div class="modal-content rounded-xl max-w-4xl w-full"></div>
+  <div class="modal-content rounded-xl max-w-4xl w-full">
+    </div>
  </div>
  <div id="eminem-modal" class="modal-overlay">
-  <div class="modal-content rounded-xl max-w-5xl w-full"></div>
+  <div class="modal-content rounded-xl max-w-5xl w-full">
+     </div>
  </div>
  <div id="riderModal" class="modal-overlay">
   <div class="modal-content bg-slate-900/95 p-6 sm:p-8 rounded-lg shadow-2xl w-full max-w-3xl relative border border-purple-700/30">
