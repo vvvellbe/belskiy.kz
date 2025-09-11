@@ -797,3 +797,187 @@ section .relative {
   background-color: #7c3aed; /* Более тёмный фиолетовый */
   transform: scale(1.1);
 }
+/* === НАЧАЛО: Стили для блока "Фотограф" === */
+
+/* Стили для кастомного переключателя Да/Нет */
+.photographer-toggle-btn,
+.screen-toggle-btn {
+    background-color: transparent;
+    color: #9CA3AF; /* gray-400 */
+}
+.photographer-toggle-btn.active,
+.screen-toggle-btn.active {
+    background-color: #3B82F6; /* blue-500 */
+    color: #FFFFFF;
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+}
+
+/* Стили для ползунка (слайдера) */
+.photographer-slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 8px;
+    background: #374151; /* gray-700 */
+    border-radius: 5px;
+    outline: none;
+    transition: opacity .2s;
+}
+
+.photographer-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    background: #00ffff;
+    cursor: pointer;
+    border-radius: 50%;
+    border: 3px solid #1F2937; /* gray-800 */
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.photographer-slider:hover::-webkit-slider-thumb {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 1);
+}
+
+.photographer-slider::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    background: #00ffff;
+    cursor: pointer;
+    border-radius: 50%;
+    border: 3px solid #1F2937;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.photographer-slider:hover::-moz-range-thumb {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 1);
+}
+
+/* Стили для инпута ретуши (+/-) */
+.retouch-control-btn {
+    background-color: #374151; /* gray-700 */
+    color: #E5E7EB; /* gray-200 */
+    border: 1px solid #4B5563; /* gray-600 */
+    transition: background-color 0.2s ease;
+}
+.retouch-control-btn:hover {
+    background-color: #4B5563; /* gray-600 */
+}
+.retouch-input-field {
+    background-color: #1F2937; /* gray-800 */
+    border-top: 1px solid #4B5563;
+    border-bottom: 1px solid #4B5563;
+    color: #F9FAFB; /* gray-50 */
+    font-weight: 600;
+}
+.retouch-input-field:focus {
+    outline: none;
+    border-color: #3B82F6; /* blue-500 */
+    box-shadow: none;
+    ring: none;
+}
+/* Убираем стрелки в input[type=number] */
+.retouch-input-field::-webkit-outer-spin-button,
+.retouch-input-field::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.retouch-input-field[type=number] {
+  -moz-appearance: textfield;
+}
+
+/* Стили для подсказки (tooltip) */
+.tooltip-trigger {
+    cursor: pointer;
+}
+.tooltip-content {
+    visibility: hidden;
+    opacity: 0;
+    background-color: #1F2937; /* gray-800 */
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px 12px;
+    position: absolute;
+    z-index: 10;
+    border: 1px solid #374151; /* gray-700 */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    width: 250px;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    transition: opacity 0.3s;
+}
+.tooltip-content.visible {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Добавляем отступ для секции фотографа, чтобы она не "прилипала" к следующей */
+#photographer-section.content-panel.active {
+    margin-bottom: 2rem; /* 32px */
+}
+
+.photographer-hours-cost {
+    font-size: 0.9rem; /* 14.4px */
+    font-weight: 600;
+    color: #9CA3AF; /* gray-400 */
+    transition: color 0.3s ease;
+}
+
+/* === START: Tooltip for Retouch Info === */
+#retouch-info-container {
+    position: relative;
+}
+
+#retouch-info-container .tooltip-content {
+    visibility: hidden;
+    opacity: 0;
+    background-color: #1F2937; /* gray-800 */
+    color: #E5E7EB; /* gray-200 */
+    border-radius: 0.5rem; /* 8px */
+    padding: 0.75rem 1rem; /* 12px 16px */
+    position: absolute;
+    z-index: 10;
+    bottom: 140%; /* Расположение над иконкой */
+    left: 50%;
+    transform: translateX(-50%);
+    border: 1px solid #374151; /* gray-700 */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    transition: opacity 0.3s ease, visibility 0.3s;
+    pointer-events: none;
+}
+
+/* Стрелка для тултипа (внешняя рамка) */
+#retouch-info-container .tooltip-content::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #374151 transparent transparent transparent;
+}
+
+/* Стрелка для тултипа (внутренняя заливка) */
+#retouch-info-container .tooltip-content::before {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #1F2937 transparent transparent transparent;
+    z-index: 1; /* Поверх рамки */
+}
+
+/* Класс для отображения тултипа */
+#retouch-info-container.active .tooltip-content {
+    visibility: visible;
+    opacity: 1;
+}
+/* === END: Tooltip for Retouch Info === */
+/* === КОНЕЦ: Стили для блока "Фотограф" === */
