@@ -256,8 +256,8 @@ function setupContentToggles() {
   document.querySelectorAll('.tabs').forEach(tabsContainer => {
     const glider = tabsContainer.querySelector('.glider');
     const tabButtons = tabsContainer.querySelectorAll('.tab-btn');
-    const contentContainer = tabsContainer.closest('section').querySelector('.relative');
-    const contentPanels = contentContainer.querySelectorAll('.content-panel');
+    const section = tabsContainer.closest('section');
+    const contentPanels = section.querySelectorAll('.content-panel');
 
     function updateGlider(targetButton) {
       if (!glider || !targetButton) return;
@@ -273,75 +273,56 @@ function setupContentToggles() {
     }
 
     function switchPanels(button) {
-      if (button.classList.contains('active') || !contentContainer) return;
+      if (button.classList.contains('active')) return;
+      const targetPanelId = button.dataset.target;
+      const targetPanel = section.querySelector(`#${targetPanelId}`);
+      if (!targetPanel) return;
 
       tabButtons.forEach(btn => btn.classList.remove('active'));
       button.classList.add('active');
       updateGlider(button);
 
-      const targetPanelId = button.dataset.target;
-      const targetPanel = document.getElementById(targetPanelId);
-
-      // 1. Измеряем высоту целевого (пока еще невидимого) контента
-      const newHeight = targetPanel.scrollHeight;
-
-      // 3. Переключаем классы, чтобы запустить анимацию проявления контента
       contentPanels.forEach(panel => {
-        panel.classList.toggle('active', panel.id === targetPanelId);
+        panel.classList.remove('active');
+        panel.style.display = 'none';
       });
 
-      if (window.innerWidth < 768) {
-        document.body.style.paddingBottom = '0px';
-      }
-      document.dispatchEvent(new CustomEvent('calculatorModeChanged'));
+      targetPanel.classList.add('active');
+      targetPanel.style.display = 'block';
     }
 
     tabButtons.forEach(button => {
       button.addEventListener('click', () => switchPanels(button));
     });
 
-    // Устанавливаем правильную высоту при первоначальной загрузке
-    const initiallyActiveButton = tabsContainer.querySelector('.tab-btn.active');
-    if (initiallyActiveButton) {
-      const initiallyActivePanel = document.getElementById(initiallyActiveButton.dataset.target);
-      if (contentContainer && initiallyActivePanel) {
-        setTimeout(() => {
-        }, 300);
+    const initGlider = () => {
+      const activeButton = tabsContainer.querySelector('.tab-btn.active');
+      if (activeButton) {
+        updateGlider(activeButton);
       }
-    }
-
-    // Пересчет высоты при изменении размера окна
-    const initGliderAndResize = () => {
-        const activeButton = tabsContainer.querySelector('.tab-btn.active');
-        if (activeButton) {
-            updateGlider(activeButton);
-            const activePanel = document.getElementById(activeButton.dataset.target);
-            if (activePanel) {
-            }
-        }
     };
     
-    setTimeout(initGliderAndResize, 100);
-    window.addEventListener('resize', initGliderAndResize);
+    setTimeout(initGlider, 100);
+    window.addEventListener('resize', initGlider);
   });
 }
 
 // --- КОНЕЦ ЗАМЕНЫ ---
 
 // --- REPERTOIRE TOGGLE ---
+// --- ЗАМЕНИТЬ СТАРУЮ ФУНКЦИЮ НА ЭТУ ---
 function setupRepertoireToggle() {
   const toggleBtn = document.getElementById('toggleRepertoireBtn');
   const container = document.getElementById('hidden-repertoire-container');
- 
   const lastVisibleTrack = document.querySelector('.repertoire-list > #hidden-repertoire-container')?.previousElementSibling;
 
   if (!toggleBtn || !container || !lastVisibleTrack) return;
- 
+
   toggleBtn.addEventListener('click', () => {
     const isExpanded = container.style.maxHeight && container.style.maxHeight !== "0px";
+    
     if (isExpanded) {
       lastVisibleTrack.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-     
       container.style.maxHeight = "0px";
       toggleBtn.textContent = 'Показать весь репертуар';
     } else {
