@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 DOMElements.photographer.hoursSlider.value = hours;
                 const minPhotos = hours * 30;
                 const maxPhotos = hours * 50;
-                DOMElements.photographer.photoCountOutput.innerHTML = `<i class="fas fa-images mr-2"></i>Вы получите примерно ${minPhotos}-${maxPhotos} фотографий в цветокоррекции.`;
+                DOMElements.photographer.photoCountOutput.innerHTML = `<i class="fas fa-images mr-2"></i>Вы получите примерно ${minPhotos}-${maxPhotos} фотографий в базовой обработке.`;
                 const photoHourPrice = hours * PRICES.PHOTOGRAPHER.baseHourRate;
                 if (DOMElements.photographer.hoursCostOutput) {
                     DOMElements.photographer.hoursCostOutput.textContent = `(${photoHourPrice.toLocaleString('ru-RU')} ₸)`;
