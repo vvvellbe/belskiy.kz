@@ -250,14 +250,18 @@ function setupMobileMenu() {
   });
 }
 
-// --- НАЧАЛО ЗАМЕНЫ ---
-
 function setupContentToggles() {
   document.querySelectorAll('.tabs').forEach(tabsContainer => {
     const glider = tabsContainer.querySelector('.glider');
     const tabButtons = tabsContainer.querySelectorAll('.tab-btn');
     const section = tabsContainer.closest('section');
-    const contentPanels = section.querySelectorAll('.content-panel');
+    
+    // --- УНИВЕРСАЛЬНЫЙ ФИКС: ---
+    // Находим ВСЕ панели в секции, а затем отфильтровываем вложенные.
+    // Это гарантирует, что мы работаем только с панелями верхнего уровня,
+    // независимо от HTML-структуры в разных секциях.
+    const allPanelsInScope = Array.from(section.querySelectorAll('.content-panel'));
+    const contentPanels = allPanelsInScope.filter(panel => !panel.parentElement.closest('.content-panel'));
 
     function updateGlider(targetButton) {
       if (!glider || !targetButton) return;
@@ -282,6 +286,7 @@ function setupContentToggles() {
       button.classList.add('active');
       updateGlider(button);
 
+      // Эта операция теперь безопасна для всех страниц.
       contentPanels.forEach(panel => {
         panel.classList.remove('active');
         panel.style.display = 'none';
@@ -290,12 +295,8 @@ function setupContentToggles() {
       targetPanel.classList.add('active');
       targetPanel.style.display = 'block';
       
-      // --- НАЧАЛО ИСПРАВЛЕНИЯ ---
-      // Отправляем глобальный сигнал о том, что режим калькулятора изменился.
-      // Скрипты обоих калькуляторов (configurator-*.js) "услышат" это
-      // и корректно обновят видимость своих плавающих смет.
+      // Вызов события оставляем, он нужен для калькулятора и не мешает главной.
       document.dispatchEvent(new CustomEvent('calculatorModeChanged'));
-      // --- КОНЕЦ ИСПРАВЛЕНИЯ ---
     }
 
     tabButtons.forEach(button => {
@@ -313,8 +314,6 @@ function setupContentToggles() {
     window.addEventListener('resize', initGlider);
   });
 }
-
-// --- КОНЕЦ ЗАМЕНЫ ---
 
 // --- REPERTOIRE TOGGLE ---
 // --- ЗАМЕНИТЬ СТАРУЮ ФУНКЦИЮ НА ЭТУ ---
