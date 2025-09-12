@@ -184,154 +184,180 @@ document.addEventListener('DOMContentLoaded', () => {
             reRenderUI();
         }
 
-        function initializeApp() {
-            DOMElements = {
-                totalPriceEl: hostCalculator.querySelector('#total-price'),
-                summaryListEl: hostCalculator.querySelector('#summary-list'),
-                aiGamesModal: document.getElementById('ai-games-modal'),
-                eminemModal: document.getElementById('eminem-modal'),
-                hostOptions: hostCalculator.querySelector('#host-options'),
-                hostCards: hostCalculator.querySelectorAll('[data-group="host"]'),
-                techSection: hostCalculator.querySelector('#tech-section'),
-                techSectionContainers: {
-                    fullDjSet: document.getElementById('tech-container-full-dj'),
-                    soundOnly: document.getElementById('tech-container-sound-only'),
-                    noGear: document.getElementById('tech-container-no-gear'),
-                },
-                allTechCards: hostCalculator.querySelectorAll('[data-group="tech"]'),
-                projectorCard: hostCalculator.querySelector('[data-value="PROJECTOR"]'),
-                creativeOptions: hostCalculator.querySelector('#creative-options'),
-                parameterSelects: hostCalculator.querySelectorAll('select'),
-                copyQuoteBtn: hostCalculator.querySelector('#copy-quote-btn'),
-                toastNotification: document.getElementById('toast-notification'),
-                summaryCard: hostCalculator.querySelector('[data-summary-id="host"]'),
-                venueScreenToggleBtns: hostCalculator.querySelectorAll('.screen-toggle-btn'),
-                photographer: {
-                    section: hostCalculator.querySelector('#photographer-section'),
-                    toggleBtns: hostCalculator.querySelectorAll('.photographer-toggle-btn'),
-                    hoursSlider: hostCalculator.querySelector('#photo-hours-slider'),
-                    hoursOutput: hostCalculator.querySelector('#photo-hours-output'),
-                    hoursCostOutput: hostCalculator.querySelector('#photographer-hours-cost'),
-                    photoCountOutput: hostCalculator.querySelector('#photo-count-output'),
-                    retouchInput: hostCalculator.querySelector('#additional-retouch-input'),
-                    retouchCost: hostCalculator.querySelector('#additional-retouch-cost'),
-                    decrementBtn: hostCalculator.querySelector('#decrement-retouch'),
-                    incrementBtn: hostCalculator.querySelector('#increment-retouch'),
-                }
-            };
-            
-            // --- НАЧАЛО ИСПРАВЛЕНИЯ БАГА С БЛОКОМ ФОТОГРАФА ---
-            // Изолируем блок фотографа от основной логики вкладок, чтобы избежать конфликта стилей
-            const photographerSection = DOMElements.photographer.section;
-            if (photographerSection && photographerSection.classList.contains('content-panel')) {
-                photographerSection.classList.remove('content-panel');
-                photographerSection.classList.add('photographer-block'); // Присваиваем уникальный класс
-
-                // Динамически создаем и добавляем стили для нового класса в head документа
-                const style = document.createElement('style');
-                style.textContent = `
-                    .photographer-block {
-                        opacity: 0;
-                        max-height: 0;
-                        overflow: hidden;
-                        visibility: hidden;
-                        transition: opacity 0.3s ease-out, max-height 0.4s ease-out, visibility 0.4s;
-                    }
-                    .photographer-block.active {
-                        opacity: 1;
-                        visibility: visible;
-                        max-height: 1000px; /* Достаточная высота для содержимого */
-                        overflow: visible;
-                        margin-bottom: 2rem;
-                    }
-                `;
-                document.head.appendChild(style);
-            }
-            // --- КОНЕЦ ИСПРАВЛЕНИЯ ---
-            
-            selection = {
-                hostHours: '6', projectorNeeded: false, techOption: 'STANDARD',
-                creative: { ai_games: {}, eminem_tracks: {} },
-                totalPrice: 0, venueType: 'standard', guestCount: '1-40',
-                venueGear: 'none', venueScreen: 'no',
-                photographerNeeded: 'no', photographerHours: 1, additionalRetouch: 0
-            };
-
-            setupRetouchTooltip();
-
-            DOMElements.hostCards.forEach(card => card.addEventListener('click', () => handleOptionSelection('host', card.dataset.value)));
-            DOMElements.allTechCards.forEach(card => card.addEventListener('click', () => { if (!card.classList.contains('disabled')) handleOptionSelection('tech', card.dataset.value) }));
-            if (DOMElements.projectorCard) DOMElements.projectorCard.addEventListener('click', () => { if (!DOMElements.projectorCard.classList.contains('disabled')) handleOptionSelection('creative', 'PROJECTOR') });
-            
-            DOMElements.creativeOptions.addEventListener('click', (e) => {
-                const resetButton = e.target.closest('[data-reset-target]');
-                if (resetButton) {
-                    e.preventDefault(); e.stopPropagation();
-                    const target = resetButton.dataset.resetTarget;
-                    if (target === 'ai') selection.creative.ai_games = {};
-                    else if (target === 'eminem') selection.creative.eminem_tracks = {};
-                    reRenderUI();
-                }
-            });
-
-            DOMElements.venueScreenToggleBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    selection.venueScreen = btn.dataset.value;
-                    reRenderUI();
-                });
-            });
-
-            DOMElements.photographer.toggleBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    selection.photographerNeeded = btn.dataset.value;
-                    reRenderUI();
-                });
-            });
-            DOMElements.photographer.hoursSlider.addEventListener('input', (e) => {
-                selection.photographerHours = parseInt(e.target.value, 10);
-                reRenderUI();
-            });
-            DOMElements.photographer.retouchInput.addEventListener('change', (e) => {
-                selection.additionalRetouch = parseInt(e.target.value, 10) || 0;
-                if (selection.additionalRetouch < 0) selection.additionalRetouch = 0;
-                reRenderUI();
-            });
-            DOMElements.photographer.decrementBtn.addEventListener('click', () => {
-                if (selection.additionalRetouch > 0) {
-                    selection.additionalRetouch--;
-                    reRenderUI();
-                }
-            });
-            DOMElements.photographer.incrementBtn.addEventListener('click', () => {
-                selection.additionalRetouch++;
-                reRenderUI();
-            });
-
-            reRenderUI();
-            setupFloatingBar();
-            DOMElements.parameterSelects.forEach(sel => sel.addEventListener('change', reRenderUI));
-            DOMElements.copyQuoteBtn.addEventListener('click', () => copyToClipboard(generatePlainTextQuote()));
-            
-            document.body.addEventListener('click', (e) => {
-                const modalTrigger = e.target.closest('[data-modal-trigger]');
-                if (!modalTrigger || e.target.closest('[data-reset-target]')) return;
-                if (!modalTrigger.closest('#host-calculator-content')) return;
-                const modalId = modalTrigger.dataset.modalTrigger;
-                if (modalId === 'ai-games-modal') renderAIGamesModal();
-                if (modalId === 'eminem-modal') renderEminemModal();
-            });
-            
-            DOMElements.aiGamesModal.addEventListener('click', handleAiModalClicks);
-            DOMElements.eminemModal.addEventListener('click', handleEminemModalClicks);
-            
-            document.addEventListener('calculatorModeChanged', () => {
-                if (hostCalculator.classList.contains('active')) {
-                    reRenderUI();
-                } else {
-                    updateFloatingBarUI(0, 0); 
-                }
-            });
+function initializeApp() {
+    DOMElements = {
+        totalPriceEl: hostCalculator.querySelector('#total-price'),
+        summaryListEl: hostCalculator.querySelector('#summary-list'),
+        aiGamesModal: document.getElementById('ai-games-modal'),
+        eminemModal: document.getElementById('eminem-modal'),
+        hostOptions: hostCalculator.querySelector('#host-options'),
+        hostCards: hostCalculator.querySelectorAll('[data-group="host"]'),
+        techSection: hostCalculator.querySelector('#tech-section'),
+        techSectionContainers: {
+            fullDjSet: document.getElementById('tech-container-full-dj'),
+            soundOnly: document.getElementById('tech-container-sound-only'),
+            noGear: document.getElementById('tech-container-no-gear'),
+        },
+        allTechCards: hostCalculator.querySelectorAll('[data-group="tech"]'),
+        projectorCard: hostCalculator.querySelector('[data-value="PROJECTOR"]'),
+        creativeOptions: hostCalculator.querySelector('#creative-options'),
+        parameterSelects: hostCalculator.querySelectorAll('select'),
+        copyQuoteBtn: hostCalculator.querySelector('#copy-quote-btn'),
+        toastNotification: document.getElementById('toast-notification'),
+        summaryCard: hostCalculator.querySelector('[data-summary-id="host"]'),
+        venueScreenToggleBtns: hostCalculator.querySelectorAll('.screen-toggle-btn'),
+        photographer: {
+            section: hostCalculator.querySelector('#photographer-section'),
+            toggleBtns: hostCalculator.querySelectorAll('.photographer-toggle-btn'),
+            hoursSlider: hostCalculator.querySelector('#photo-hours-slider'),
+            hoursOutput: hostCalculator.querySelector('#photo-hours-output'),
+            hoursCostOutput: hostCalculator.querySelector('#photographer-hours-cost'),
+            photoCountOutput: hostCalculator.querySelector('#photo-count-output'),
+            retouchInput: hostCalculator.querySelector('#additional-retouch-input'),
+            retouchCost: hostCalculator.querySelector('#additional-retouch-cost'),
+            decrementBtn: hostCalculator.querySelector('#decrement-retouch'),
+            incrementBtn: hostCalculator.querySelector('#increment-retouch'),
         }
+    };
+
+    // --- НАЧАЛО ИСПРАВЛЕНИЯ БАГА С БЛОКОМ ФОТОГРАФА ---
+    const photographerSection = DOMElements.photographer.section;
+
+    if (photographerSection) {
+        // 1. Проверяем, есть ли у секции фотографа конфликтный класс
+        if (photographerSection.classList.contains('content-panel')) {
+            // 2. Удаляем его, чтобы избежать управления через логику табов
+            photographerSection.classList.remove('content-panel');
+        }
+
+        // 3. Добавляем уникальный класс для управления только этой секцией
+        photographerSection.classList.add('photographer-details-block');
+
+        // 4. Динамически создаем и добавляем стили для плавного появления/скрытия
+        // Это гарантирует, что стили будут работать, даже если их нет в основном CSS-файле
+        const styleId = 'photographer-fix-styles';
+        if (!document.getElementById(styleId)) {
+            const style = document.createElement('style');
+            style.id = styleId;
+            style.textContent = `
+                .photographer-details-block {
+                    opacity: 0;
+                    max-height: 0;
+                    overflow: hidden;
+                    visibility: hidden;
+                    transition: opacity 0.3s ease-out, max-height 0.4s ease-out, visibility 0.4s, margin-bottom 0.4s ease-out;
+                    margin-bottom: 0;
+                }
+                .photographer-details-block.active {
+                    opacity: 1;
+                    visibility: visible;
+                    max-height: 1000px; /* Достаточная высота для содержимого */
+                    margin-bottom: 2rem; /* Возвращаем отступ, когда блок видим */
+                }
+            `;
+            document.head.appendChild(style);
+        }
+    }
+    // --- КОНЕЦ ИСПРАВЛЕНИЯ ---
+    
+    selection = {
+        hostHours: '6',
+        projectorNeeded: false,
+        techOption: 'STANDARD',
+        creative: {
+            ai_games: {},
+            eminem_tracks: {}
+        },
+        totalPrice: 0,
+        venueType: 'standard',
+        guestCount: '1-40',
+        venueGear: 'none',
+        venueScreen: 'no',
+        photographerNeeded: 'no',
+        photographerHours: 1,
+        additionalRetouch: 0
+    };
+
+    setupRetouchTooltip();
+
+    DOMElements.hostCards.forEach(card => card.addEventListener('click', () => handleOptionSelection('host', card.dataset.value)));
+    DOMElements.allTechCards.forEach(card => card.addEventListener('click', () => {
+        if (!card.classList.contains('disabled')) handleOptionSelection('tech', card.dataset.value)
+    }));
+    if (DOMElements.projectorCard) DOMElements.projectorCard.addEventListener('click', () => {
+        if (!DOMElements.projectorCard.classList.contains('disabled')) handleOptionSelection('creative', 'PROJECTOR')
+    });
+
+    DOMElements.creativeOptions.addEventListener('click', (e) => {
+        const resetButton = e.target.closest('[data-reset-target]');
+        if (resetButton) {
+            e.preventDefault();
+            e.stopPropagation();
+            const target = resetButton.dataset.resetTarget;
+            if (target === 'ai') selection.creative.ai_games = {};
+            else if (target === 'eminem') selection.creative.eminem_tracks = {};
+            reRenderUI();
+        }
+    });
+
+    DOMElements.venueScreenToggleBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            selection.venueScreen = btn.dataset.value;
+            reRenderUI();
+        });
+    });
+
+    DOMElements.photographer.toggleBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            selection.photographerNeeded = btn.dataset.value;
+            reRenderUI();
+        });
+    });
+    DOMElements.photographer.hoursSlider.addEventListener('input', (e) => {
+        selection.photographerHours = parseInt(e.target.value, 10);
+        reRenderUI();
+    });
+    DOMElements.photographer.retouchInput.addEventListener('change', (e) => {
+        selection.additionalRetouch = parseInt(e.target.value, 10) || 0;
+        if (selection.additionalRetouch < 0) selection.additionalRetouch = 0;
+        reRenderUI();
+    });
+    DOMElements.photographer.decrementBtn.addEventListener('click', () => {
+        if (selection.additionalRetouch > 0) {
+            selection.additionalRetouch--;
+            reRenderUI();
+        }
+    });
+    DOMElements.photographer.incrementBtn.addEventListener('click', () => {
+        selection.additionalRetouch++;
+        reRenderUI();
+    });
+
+    reRenderUI();
+    setupFloatingBar();
+    DOMElements.parameterSelects.forEach(sel => sel.addEventListener('change', reRenderUI));
+    DOMElements.copyQuoteBtn.addEventListener('click', () => copyToClipboard(generatePlainTextQuote()));
+
+    document.body.addEventListener('click', (e) => {
+        const modalTrigger = e.target.closest('[data-modal-trigger]');
+        if (!modalTrigger || e.target.closest('[data-reset-target]')) return;
+        if (!modalTrigger.closest('#host-calculator-content')) return;
+        const modalId = modalTrigger.dataset.modalTrigger;
+        if (modalId === 'ai-games-modal') renderAIGamesModal();
+        if (modalId === 'eminem-modal') renderEminemModal();
+    });
+
+    DOMElements.aiGamesModal.addEventListener('click', handleAiModalClicks);
+    DOMElements.eminemModal.addEventListener('click', handleEminemModalClicks);
+
+    document.addEventListener('calculatorModeChanged', () => {
+        if (hostCalculator.classList.contains('active')) {
+            reRenderUI();
+        } else {
+            updateFloatingBarUI(0, 0);
+        }
+    });
+}
 
         function getItemsCount() {
             let count = 0;
