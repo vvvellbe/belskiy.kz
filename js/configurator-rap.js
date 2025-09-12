@@ -205,14 +205,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function formatDuration(minSeconds, maxSeconds) {
+function formatDuration(minSeconds, maxSeconds) {
         if (minSeconds === 0) return '0 мин. 00 сек.';
+        
         const format = (s) => {
-            const m = Math.floor((s % 3600) / 60), secs = s % 60;
-            return `${m} мин. ${secs.toString().padStart(2, '0')} сек.`;
+            const h = Math.floor(s / 3600);
+            const m = Math.floor((s % 3600) / 60);
+            const secs = s % 60;
+
+            const hDisplay = h > 0 ? `${h} ч. ` : '';
+            const mDisplay = `${m} мин. `;
+            const sDisplay = `${secs.toString().padStart(2, '0')} сек.`;
+
+            // Собираем строку, убирая лишние пробелы в начале, если часов нет
+            return `${hDisplay}${mDisplay}${sDisplay}`.trim();
         };
+
         const minFormatted = format(minSeconds);
         if (minSeconds === maxSeconds) return minFormatted;
+        
         return `${minFormatted} - ${format(maxSeconds)}`;
     }
 
