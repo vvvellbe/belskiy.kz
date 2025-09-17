@@ -423,4 +423,10 @@ allModals.forEach(modal => {
         }
     initializeApp();
     })();
-}
+} // <-- Эта скобка закрывает самую первую функцию initializeHostCalculator
+
+// Вызываем функцию при первой загрузке страницы
+initializeHostCalculator();
+
+// Добавляем слушатель события для навигации внутри Astro
+document.addEventListener('astro:page-load', initializeHostCalculator);
