@@ -1,5 +1,4 @@
 /* === НАЧАЛО ИСПРАВЛЕННОГО ФАЙЛА configurator-rap.js === */
-
 function initializeRapCalculator() {
     const rapCalculatorContent = document.getElementById('rap-calculator-content');
     if (!rapCalculatorContent) return;
