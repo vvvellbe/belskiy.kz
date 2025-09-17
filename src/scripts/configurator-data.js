@@ -1,4 +1,4 @@
-const PRICES = {
+export const PRICES = {
   HOST: { '2': 80000, '4': 160000, '6': 240000 },
   TECH: {
     COMPACT: { price: 20000, name: 'Комплект "Компакт"', desc: 'Аудиосистема JBL (без DJ)' },
@@ -28,7 +28,7 @@ PHOTOGRAPHER: {
 }
 };
 
-const PRICES_RAP = {
+export const PRICES_RAP = {
   TIERS: {
     'START': { name: 'Пакет "Старт"', price: 40000, tracks: 5, desc: 'Идеально для короткого, яркого выступления (1-5 треков).' },
     'DRIVE': { name: 'Пакет "Драйв"', price: 100000, tracks: 14, desc: 'Оптимальный набор для полноценного шоу (6-14 треков).' },
@@ -40,7 +40,7 @@ const PRICES_RAP = {
   }
 };
 
-const TRACK_LIST = [
+export const TRACK_LIST = [
   { id: 'mockingbird', name: 'Mockingbird', structure: 'от 1 куплета и 1 припева до 2 куплетов и 2 припевов', duration: 'от 2:15 до 4:10', minDurationSeconds: 135, maxDurationSeconds: 250, url: 'https://www.youtube.com/watch?v=2WZBG1n3dTo' },
   { id: 'without-me', name: 'Without Me', structure: 'от 1 куплета и 1 припева до 2 куплетов и 2 припевов', duration: 'от 2:05 до 3:05', minDurationSeconds: 125, maxDurationSeconds: 185, url: 'https://www.youtube.com/watch?v=jD5TE5C32oI' },
   { id: 'lose-yourself', name: 'Lose Yourself', structure: 'от 1 куплета и 1 припева до 3 куплетов и 3 припевов', duration: 'от 1:35 до 4:35', minDurationSeconds: 95, maxDurationSeconds: 275, url: 'https://www.youtube.com/watch?v=-5hTQFPnz54' },

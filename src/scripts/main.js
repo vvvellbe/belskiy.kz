@@ -176,16 +176,21 @@ function setupNavbarScroll() {
 // --- Запускаем все функции ---
 
 // Эта функция будет выполняться при каждой загрузке страницы в Astro
+// src/scripts/main.js (НОВЫЙ, ИСПРАВЛЕННЫЙ КОНЕЦ ФАЙЛА)
+
+// --- Запускаем все функции ---
+
 function initializePageScripts() {
+    setupPreloader(); 
     setupRevealAnimation();
     setupVideoModal();
     setupScrollToTop();
     setupNavbarScroll();
 }
 
-// Запускаем прелоадер немедленно, не дожидаясь загрузки всего DOM
-setupPreloader();
-
-// А вот остальные функции будут ждать, пока вся страница будет готова
+// Вешаем слушатель для будущих переходов между страницами
 document.addEventListener('astro:page-load', initializePageScripts);
+
+// И ВЫЗЫВАЕМ ФУНКЦИЮ СРАЗУ для первой, начальной загрузки страницы.
+// Это гарантирует, что setupPreloader() запустится до события window.load.
 initializePageScripts();

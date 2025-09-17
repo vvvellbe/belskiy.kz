@@ -1,6 +1,6 @@
 /* === НАЧАЛО ИСПРАВЛЕННОГО ФАЙЛА configurator-rap.js === */
 
-document.addEventListener('DOMContentLoaded', () => {
+function initializeRapCalculator() {
     const rapCalculatorContent = document.getElementById('rap-calculator-content');
     if (!rapCalculatorContent) return;
 
@@ -330,4 +330,9 @@ function showToast() {
 // --- КОНЕЦ ИЗМЕНЕНИЙ ---
 
     initializeRapApp();
-});
+}
+
+document.addEventListener('astro:page-load', initializeRapCalculator);
+
+// Вызываем функцию и при первой загрузке
+initializeRapCalculator();
