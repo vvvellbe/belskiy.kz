@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import About from '../components/About.astro';
+import Services from '../components/Services.astro';
+import Features from '../components/Features.astro';
+import Portfolio from '../components/Portfolio.astro';
+import Repertoire from '../components/Repertoire.astro';
+import Pricing from '../components/Pricing.astro';
+import Contact from '../components/Contact.astro';
+import Footer from '../components/Footer.astro';
+---
+<BaseLayout title="Валерий Бельский - ведущий мероприятий Алматы">
+  <Header />
+  <Hero client:load />
+  <About />
+  <Services />
+  <Features />
+  <Portfolio client:load />
+  <Repertoire client:load />
+  <Pricing />
+  <Contact />
+  <Footer />
+</BaseLayout>

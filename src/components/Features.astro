@@ -1,0 +1,27 @@
+---
+import Card from '../components/Card.astro';
+---
+<section id="features" class="py-16 md:py-24 bg-opacity-50 bg-gray-950">
+  <div class="container mx-auto px-6 reveal">
+    <div class="text-center md:text-left">
+      <h2 class="section-title text-3xl md:text-4xl mb-12 gradient-text">Мои Фишки</h2>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <Card align="left">
+        <h3 slot="title" class="text-4xl text-purple-400 mb-3 break-words">AI-Персонализация</h3>
+        Создаю уникальный контент (шутки, интерактивы, поздравления) с помощью AI, адаптированный под ваше мероприятие и гостей.
+      </Card>
+
+      <Card align="left">
+        <h3 slot="title" class="text-4xl text-amber-400 mb-3 break-words">Эксклюзивные рэп-каверы</h3>
+        Зажгу ваше мероприятие фирменными рэп-выступлениями с песнями Эминема.
+      </Card>
+
+      <Card align="left">
+        <h3 slot="title" class="text-4xl text-pink-400 mb-3 break-words">Интерактивные Шоу-Программы</h3>
+        Вовлекаю каждого гостя в процесс с помощью современных интерактивов и технологичных решений.
+      </Card>
+    </div>
+  </div>
+</section>
