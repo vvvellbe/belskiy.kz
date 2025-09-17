@@ -1,5 +1,5 @@
 // Оборачиваем всю логику в одну функцию-инициализатор
-function initializeConfigurator() {
+function initializeHostCalculator() {
 
     // ========================================================================
     // --- ГЛОБАЛЬНАЯ ЛОГИКА МОДАЛЬНЫХ ОКОН (Теперь работает для всей страницы) ---
@@ -424,9 +424,3 @@ allModals.forEach(modal => {
     initializeApp();
     })();
 }
-
-// "Подвешиваем" запуск нашего конфигуратора на правильное событие Astro
-document.addEventListener('astro:page-load', initializeConfigurator);
-
-// Вызываем функцию и при первой загрузке
-initializeConfigurator();

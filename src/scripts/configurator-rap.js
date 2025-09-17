@@ -1,6 +1,5 @@
 /* === НАЧАЛО ИСПРАВЛЕННОГО ФАЙЛА configurator-rap.js === */
-
-document.addEventListener('DOMContentLoaded', () => {
+function initializeRapCalculator() {
     const rapCalculatorContent = document.getElementById('rap-calculator-content');
     if (!rapCalculatorContent) return;
 
@@ -328,6 +327,5 @@ function showToast() {
   }
 }
 // --- КОНЕЦ ИЗМЕНЕНИЙ ---
-
-    initializeRapApp();
-});
+    initializeRapApp(); // Эта строка тоже остается внутри.
+}
