@@ -1,99 +1,103 @@
 ---
-// Подключаем все стили и глобальный скрипт здесь
+// Подключаем стили
 import '../styles/global.css';
 import '../styles/base.css';
 import '../styles/modal.css';
+
+// Импортируем изображения для их оптимизации Astro
+import ogImage from '../assets/valeriy-belskiy-og.jpg';
+import schemaImage from '../assets/valeriy-belskiy.jpg';
+
 const { title } = Astro.props;
+
+// --- JSON-LD Схемы для SEO ---
+// Мы создаем объекты здесь, чтобы безопасно вставить их в HTML ниже
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Валерий Бельский",
+  "jobTitle": "Ведущий мероприятий",
+  "description": "Современный ведущий мероприятий в Алматы с AI-персонализацией и яркими рэп-выступлениями. Алматинский Эминем.",
+  "image": new URL(schemaImage.src, Astro.site).href, // Astro создаст полную ссылку на оптимизированное изображение
+  "url": "https://belskiy.kz",
+  "sameAs": ["https://www.instagram.com/vvvellbe", "https://t.me/VVVELLBE", "https://www.tiktok.com/@vvvellbe", "https://wa.me/77079292980", "https://www.youtube.com/@VVVELLBE"],
+  "knowsAbout": ["Ведение мероприятий", "Организация праздников", "AI персонализация контента", "Рэп выступления", "Свадьбы", "Юбилеи", "Корпоративы", "Выпускные", "Годики (1 жас)"],
+  "nationality": { "@type": "Country", "name": "Kazakhstan" },
+  "birthDate": "1998-10-15",
+  "gender": "https://schema.org/Male",
+  "address": { "@type": "PostalAddress", "addressLocality": "Алматы", "addressCountry": "KZ" }
+};
+
+const serviceSchema = {
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "name": "Валерий Бельский - Ведущий Мероприятий в Алматы",
+  "alternateName": "Алматинский Эминем",
+  "image": new URL(schemaImage.src, Astro.site).href, // Astro создаст полную ссылку на оптимизированное изображение
+  "url": "https://belskiy.kz",
+  "telephone": "+77079292980",
+  "email": "vvvellbe@gmail.com",
+  "address": { "@type": "PostalAddress", "addressLocality": "Алматы", "addressCountry": "KZ" },
+  "areaServed": { "@type": "City", "name": "Алматы" },
+  "description": "Профессиональный ведущий мероприятий в Алматы. Уникальные шоу-программы с AI-персонализацией и рэп-выступлениями для свадеб, юбилеев, корпоративов и других событий.",
+  "priceRange": "от 120 000 ₸",
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Услуги ведущего мероприятий",
+    "itemListElement": [
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Ведение Свадеб" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Ведение Юбилеев" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Ведение Корпоративов" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Ведение Выпускных" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Ведение Годиков (1 жас)" } }
+    ]
+  },
+  "potentialAction": { "@type": "OrderAction", "target": "https://wa.me/77079292980?text=Здравствуйте%2C%20Валерий!%20Хотел%20бы%20обсудить%20организацию%20мероприятия." }
+};
 ---
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content="Валерий Бельский – современный ведущий мероприятий в Алматы с AI-персонализацией и яркими рэп-выступлениями. Организация незабываемых свадеб, юбилеев, корпоративов. Закажите ваше идеальное событие!" />
 
-<!DOCTYPE html>
-<html lang="ru">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>{title}</title>
-		<meta name="description" content="Валерий Бельский – современный ведущий мероприятий в Алматы с AI-персонализацией и яркими рэп-выступлениями. Организация незабываемых свадеб, юбилеев, корпоративов. Закажите ваше идеальное событие!" />
+    <meta property="og:title" content="Валерий Бельский - ведущий мероприятий Алматы" />
+    <meta property="og:description" content="Современный ведущий мероприятий в Алматы с AI-персонализацией и яркими рэп-выступлениями. Закажите ваше идеальное событие!" />
+    <meta property="og:image" content={new URL(ogImage.src, Astro.site).href} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Фото Валерия Бельского - ведущего мероприятий в Алматы" />
+    <meta property="og:url" content="https://belskiy.kz" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:site_name" content="Валерий Бельский - Ведущий Мероприятий" />
 
-		<meta property="og:title" content="Валерий Бельский - ведущий мероприятий Алматы" />
-		<meta property="og:description" content="Современный ведущий мероприятий в Алматы с AI-персонализацией и яркими рэп-выступлениями. Закажите ваше идеальное событие!" />
-		<meta property="og:image" content="/assets/images/valeriy-belskiy-og.jpg" />
-		<meta property="og:image:width" content="1200" />
-		<meta property="og:image:height" content="630" />
-		<meta property="og:image:alt" content="Фото Валерия Бельского - ведущего мероприятий в Алматы" />
-		<meta property="og:url" content="https://belskiy.kz" />
-		<meta property="og:type" content="website" />
-		<meta property="og:locale" content="ru_RU" />
-		<meta property="og:site_name" content="Валерий Бельский - Ведущий Мероприятий" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@vvvellbe" />
+    <meta name="twitter:title" content="Валерий Бельский - ведущий мероприятий Алматы" />
+    <meta name="twitter:description" content="Современный ведущий мероприятий в Алматы с AI-персонализацией и яркими рэп-выступлениями." />
+    <meta name="twitter:image" content={new URL(ogImage.src, Astro.site).href} />
 
-		<meta name="twitter:card" content="summary_large_image" />
-		<meta name="twitter:site" content="@vvvellbe" />
-		<meta name="twitter:title" content="Валерий Бельский - ведущий мероприятий Алматы" />
-		<meta name="twitter:description" content="Современный ведущий мероприятий в Алматы с AI-персонализацией и яркими рэп-выступлениями." />
-		<meta name="twitter:image" content="/assets/images/valeriy-belskiy-og.jpg" />
+    <script is:inline>
+        (function (w, d, s, l, i) {
+            w[l] = w[l] || [];
+            w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+            var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s),
+                dl = l != 'dataLayer' ? '&l=' + l : '';
+            j.async = true;
+            j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+            f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-KBVB6P68');
+    </script>
 
-		<script is:inline>
-			(function (w, d, s, l, i) {
-				w[l] = w[l] || [];
-				w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
-				var f = d.getElementsByTagName(s)[0],
-					j = d.createElement(s),
-					dl = l != 'dataLayer' ? '&l=' + l : '';
-				j.async = true;
-				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
-				f.parentNode.insertBefore(j, f);
-			})(window, document, 'script', 'dataLayer', 'GTM-KBVB6P68');
-		</script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="icon" href="/favicon.png" type="image/png" />
 
-		<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-		<link rel="icon" href="/favicon.png" type="image/png" />
-
-		<script type="application/ld+json" is:inline>
-			{
-				"@context": "https://schema.org",
-				"@type": "Person",
-				"name": "Валерий Бельский",
-				"jobTitle": "Ведущий мероприятий",
-				"description": "Современный ведущий мероприятий в Алматы с AI-персонализацией и яркими рэп-выступлениями. Алматинский Эминем.",
-				"image": "/assets/images/valeriy-belskiy.jpg",
-				"url": "https://belskiy.kz",
-				"sameAs": ["https://www.instagram.com/vvvellbe", "https://t.me/VVVELLBE", "https://www.tiktok.com/@vvvellbe", "https://wa.me/77079292980", "https://www.youtube.com/@VVVELLBE"],
-				"knowsAbout": ["Ведение мероприятий", "Организация праздников", "AI персонализация контента", "Рэп выступления", "Свадьбы", "Юбилеи", "Корпоративы", "Выпускные", "Годики (1 жас)"],
-				"nationality": { "@type": "Country", "name": "Kazakhstan" },
-				"birthDate": "1998-10-15",
-				"gender": "https://schema.org/Male",
-				"address": { "@type": "PostalAddress", "addressLocality": "Алматы", "addressCountry": "KZ" }
-			}
-		</script>
-		<script type="application/ld+json" is:inline>
-			{
-				"@context": "https://schema.org",
-				"@type": "ProfessionalService",
-				"name": "Валерий Бельский - Ведущий Мероприятий в Алматы",
-				"alternateName": "Алматинский Эминем",
-				"image": "/assets/images/valeriy-belskiy.jpg",
-				"url": "https://belskiy.kz",
-				"telephone": "+77079292980",
-				"email": "vvvellbe@gmail.com",
-				"address": { "@type": "PostalAddress", "addressLocality": "Алматы", "addressCountry": "KZ" },
-				"areaServed": { "@type": "City", "name": "Алматы" },
-				"description": "Профессиональный ведущий мероприятий в Алматы. Уникальные шоу-программы с AI-персонализацией и рэп-выступлениями для свадеб, юбилеев, корпоративов и других событий.",
-				"priceRange": "от 120 000 ₸",
-				"hasOfferCatalog": {
-					"@type": "OfferCatalog",
-					"name": "Услуги ведущего мероприятий",
-					"itemListElement": [
-						{ "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Ведение Свадеб" } },
-						{ "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Ведение Юбилеев" } },
-						{ "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Ведение Корпоративов" } },
-						{ "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Ведение Выпускных" } },
-						{ "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Ведение Годиков (1 жас)" } }
-					]
-				},
-				"potentialAction": { "@type": "OrderAction", "target": "https://wa.me/77079292980?text=Здравствуйте%2C%20Валерий!%20Хотел%20бы%20обсудить%20организацию%20мероприятия." }
-			}
-		</script>
-	</head>
+    <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+</head>
 
 	<body class="body-preloading">
 		<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KBVB6P68" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
