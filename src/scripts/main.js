@@ -172,20 +172,25 @@ function setupBottomNavHighlighting() {
 
   const currentPath = window.location.pathname;
 
-  // Часть 1: Подсветка для конкретной страницы (например, /configurator)
-  // Убираем подсветку со всех кнопок перед проверкой
-  navLinks.forEach(link => link.classList.remove('active'));
-  
-  const currentLink = document.querySelector(`.nav-item[href^="${currentPath}"]`);
-  if (currentLink && currentPath !== '/') {
-    currentLink.classList.add('active');
-  }
+  // --- Часть 1: Подсветка для конкретных страниц (например, /configurator) ---
+  let isPageSpecific = false;
+  navLinks.forEach(link => {
+    const linkPath = new URL(link.href).pathname.replace(/\/$/, '');
+    const cleanCurrentPath = currentPath.replace(/\/$/, '');
+    
+    if (linkPath === cleanCurrentPath && cleanCurrentPath !== '') {
+      link.classList.add('active');
+      isPageSpecific = true;
+    } else {
+      link.classList.remove('active');
+    }
+  });
 
-  // Часть 2: Логика слежения за скроллом (только для главной страницы)
-  if (currentPath !== '/' && currentPath !== '/index.html' && currentPath !== '') {
+  if (isPageSpecific) {
     return;
   }
 
+  // --- Часть 2: Финальная логика слежения за скроллом на главной странице ---
   const sections = Array.from(navLinks)
     .map(link => {
       const hash = new URL(link.href).hash;
@@ -196,46 +201,32 @@ function setupBottomNavHighlighting() {
 
   if (sections.length === 0) return;
 
-  let activeSectionId = '';
-
-  // Настраиваем "наблюдателя" по-новому
   const observerOptions = {
-    root: null,
-    // Эта магия означает: "сработай, когда верх секции достигнет 40% высоты экрана"
-    rootMargin: '-40% 0px -60% 0px', 
+    rootMargin: '-40% 0px -60% 0px',
     threshold: 0,
   };
 
   const observerCallback = (entries) => {
     entries.forEach(entry => {
+      const sectionId = entry.target.id;
+      const activeLink = document.querySelector(`.nav-item[data-nav-item="${sectionId}"]`);
+      if (!activeLink) return;
+
       if (entry.isIntersecting) {
-        // Запоминаем ID последней секции, вошедшей в зону видимости
-        activeSectionId = entry.target.id;
-      }
-    });
-    
-    // А теперь отдельно обновляем классы для ВСЕХ кнопок
-    navLinks.forEach(link => {
-      const linkId = link.getAttribute('data-nav-item');
-      if (linkId === activeSectionId) {
-        link.classList.add('active');
+        // Секция вошла в зону видимости.
+        // Сначала гасим все остальные, чтобы активной была только одна.
+        navLinks.forEach(link => link.classList.remove('active'));
+        // А затем подсвечиваем нужную.
+        activeLink.classList.add('active');
       } else {
-        link.classList.remove('active');
+        // Секция покинула зону видимости, просто гасим ее.
+        activeLink.classList.remove('active');
       }
     });
   };
 
   const observer = new IntersectionObserver(observerCallback, observerOptions);
   sections.forEach(section => observer.observe(section));
-
-  // При загрузке страницы, если мы наверху, подсвечиваем "Портфолио"
-  if (window.scrollY < 200) {
-    const portfolioLink = document.querySelector('.nav-item[data-nav-item="portfolio"]');
-    if (portfolioLink) {
-      navLinks.forEach(link => link.classList.remove('active'));
-      portfolioLink.classList.add('active');
-    }
-  }
 }
 // --- КОНЕЦ НОВОГО КОДА ---
 
