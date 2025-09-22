@@ -1,11 +1,9 @@
 // astro.config.mjs
 import { defineConfig } from 'astro/config';
-import tailwindcss from '@tailwindcss/vite';
+import tailwind from '@astrojs/tailwind'; // <-- ИМПОРТИРУЕМ ПРАВИЛЬНУЮ ИНТЕГРАЦИЮ
 
 export default defineConfig({
   site: 'https://belskiy.kz',
   base: '/',
-  vite: {
-    plugins: [tailwindcss()]
-  }
+  integrations: [tailwind()] // <-- ПОДКЛЮЧАЕМ ЕЕ ЗДЕСЬ
 });
