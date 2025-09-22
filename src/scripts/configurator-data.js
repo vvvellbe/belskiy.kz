@@ -6,6 +6,16 @@ export const PRICES = {
     MAXI: { price: 230000, name: 'Комплект "Максимум"', desc: 'DJ + Расширенный комплект звука' },
     DJ_WORK_ONLY: { price: 130000, name: 'Работа DJ (на вашем звуке)'}
   },
+  
+  NEW_YEAR: {
+    HOST: { '2': 280000, '4': 380000, '6': 480000 },
+    TECH: {
+        STANDARD: { price: 250000 }, 
+        MAXI: { price: 300000 },
+        DJ_WORK_ONLY: { price: 200000 }
+    }
+  },
+
   CREATIVE: {
     AI_GAMES: {
       RZHAKAPELLA: { name: 'Ржакапелла', price: 15000, desc: 'Нейросеть превращает забавные факты о гостях в смешную песню. Задача зала — угадать её непредсказуемую концовку. Возможен видеоряд.', requiresScreen: false },

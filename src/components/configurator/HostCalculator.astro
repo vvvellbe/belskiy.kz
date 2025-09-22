@@ -5,8 +5,13 @@
                 <h2 class="text-2xl font-semibold text-white mb-6">Параметры вашего мероприятия</h2>
                 <p class="text-sm text-gray-400 mb-6 -mt-4">Измените любой параметр, и прайс ниже мгновенно обновится.</p>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
                     <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-2">1. Тип площадки?</label>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">1. Дата мероприятия?</label>
+                        <input type="date" id="event-date" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-2.5 text-white focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">2. Тип площадки?</label>
                         <select id="venue-type" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-2.5 text-white focus:ring-blue-500 focus:border-blue-500">
                             <option value="chamber">Камерная (VIP-кабина / школьный класс)</option>
                             <option value="standard" selected>Стандартная (небольшое кафе / малый-средний зал)</option>
@@ -14,7 +19,7 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-2">2. Количество гостей?</label>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">3. Количество гостей?</label>
                         <select id="guest-count" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-2.5 text-white focus:ring-blue-500 focus:border-blue-500">
                             <option value="1-40">до 40</option>
                             <option value="41-80">41 - 80</option>
@@ -22,7 +27,7 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-2">3. Есть ли оборудование у площадки?</label>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">4. Есть ли оборудование у площадки?</label>
                         <select id="venue-gear" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-2.5 text-white focus:ring-blue-500 focus:border-blue-500">
                             <option value="none">Ничего нет</option>
                             <option value="sound_only">Есть только звук (без DJ)</option>
@@ -30,7 +35,7 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-2">4. Есть ли в заведении экран?</label>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">5. Есть ли в заведении экран?</label>
                         <div class="flex items-center space-x-3 bg-gray-700 border border-gray-600 rounded-lg p-1 w-min">
                             <button data-value="no" class="screen-toggle-btn active px-4 py-1.5 rounded-md text-sm font-semibold transition-colors">Нет</button>
                             <button data-value="yes" class="screen-toggle-btn px-4 py-1.5 rounded-md text-sm font-semibold transition-colors">Да</button>
@@ -38,14 +43,14 @@
                     </div>
                     <div class="md:col-span-2">
                         <label class="block text-sm font-medium text-gray-300 mb-2">
-                        <i class="text-cyan-400"></i>5. Нужен ли фотограф?
+                        <i class="text-cyan-400"></i>6. Нужен ли фотограф?
                         </label>
                         <div class="flex items-center space-x-3 bg-gray-700 border border-gray-600 rounded-lg p-1 w-min">
                             <button data-value="no" class="photographer-toggle-btn active px-4 py-1.5 rounded-md text-sm font-semibold transition-colors">Нет</button>
                             <button data-value="yes" class="photographer-toggle-btn px-4 py-1.5 rounded-md text-sm font-semibold transition-colors">Да</button>
                         </div>
                     </div>
-                </div>
+                    </div>
             </div>
 
             <div class="program-card rounded-xl p-6 sm:p-8">
