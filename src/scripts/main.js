@@ -14,72 +14,79 @@ function setupRevealAnimation() {
 
 // --- Логика для модального окна видео ---
 function setupVideoModal() {
-  const modal = document.getElementById('videoModal');
-  const iframe = document.getElementById('videoIframe');
-  const videoLinks = document.querySelectorAll('[data-modal-trigger="videoModal"]');
-  if (!(modal instanceof HTMLElement) || !(iframe instanceof HTMLIFrameElement) || videoLinks.length === 0) return;
+  const modal = document.getElementById('videoModal');
+  const iframe = document.getElementById('videoIframe');
+  if (!(modal instanceof HTMLElement) || !(iframe instanceof HTMLIFrameElement)) return;
 
-  const modalEl = modal;
-  const iframeEl = iframe;
-  const modalContent = modalEl.querySelector('.modal-content');
-  const iframeContainer = modalEl.querySelector('.video-iframe-container');
-  const closeBtn = modalEl.querySelector('.modal-close-btn');
+  const modalEl = modal;
+  const iframeEl = iframe;
+  const modalContent = modalEl.querySelector('.modal-content');
+  const iframeContainer = modalEl.querySelector('.video-iframe-container');
+  const closeBtn = modalEl.querySelector('.modal-close-btn');
 
-  const closeModal = () => {
-      // 1. Remove the 'open' class to START the closing animation
-      modalEl.classList.remove('open');
+  const closeModal = () => {
+    modalEl.classList.remove('open');
+    setTimeout(() => {
+      iframeEl.setAttribute('src', '');
+      if (iframeContainer && modalContent) {
+        iframeContainer.classList.remove('instagram-vertical');
+        modalContent.classList.remove('modal-instagram-vertical-content');
+      }
+      document.removeEventListener('keydown', onEsc);
+    }, 400); 
+  };
+  
+  const closeModalRef = closeModal;
 
-      // 2. Wait for the animation to finish (400ms, as in your CSS)
-      setTimeout(() => {
-        // 3. Only THEN clear the video source and reset styles
-        iframeEl.setAttribute('src', '');
-        if (iframeContainer && modalContent) {
-          iframeContainer.classList.remove('instagram-vertical');
-          modalContent.classList.remove('modal-instagram-vertical-content');
-        }
-        document.removeEventListener('keydown', onEsc);
-      }, 400); // This duration MUST match your CSS transition duration
-    };
+  function onEsc(ev) {
+    if (ev.key === 'Escape') closeModalRef();
+  }
+
+  function onModalClick(e) {
+    if (e.target === modalEl) closeModalRef();
+  }
+
+  // Эта функция осталась почти без изменений, но теперь ее вызывает обработчик событий
+  function openModal(triggerElement) {
+    const videoSrc = triggerElement.dataset ? triggerElement.dataset.videoSrc : null;
+    if (!videoSrc) return;
+
+    let embedUrl = videoSrc;
+    if (videoSrc.includes('instagram.com')) {
+      embedUrl = videoSrc;
+    } else if (!videoSrc.includes('embed')) {
+      embedUrl = `https://www.youtube.com/embed/${videoSrc}?autoplay=1`;
+    }
+
+    const isInstagram = videoSrc.includes('instagram.com');
+    if (iframeContainer && modalContent) {
+      iframeContainer.classList.toggle('instagram-vertical', isInstagram);
+      modalContent.classList.toggle('modal-instagram-vertical-content', isInstagram);
+    }
+
+    iframeEl.setAttribute('src', embedUrl);
+    modalEl.classList.add('open');
+    document.addEventListener('keydown', onEsc);
+  }
   
-  const closeModalRef = closeModal;
-
-  function onEsc(ev) {
-    if (ev.key === 'Escape') closeModalRef();
-  }
-
-  function onModalClick(e) {
-    if (e.target === modalEl) closeModalRef();
-  }
-
-  function openModal(e) {
-    e.preventDefault();
-    const currentLink = e.currentTarget;
-    if (!(currentLink instanceof HTMLElement)) return;
-
-    const videoSrc = currentLink.dataset ? currentLink.dataset.videoSrc : null;
-    if (!videoSrc) return;
-
-    let embedUrl = videoSrc;
-    if (videoSrc.includes('instagram.com')) {
-      embedUrl = videoSrc;
-    } else if (!videoSrc.includes('embed')) {
-      embedUrl = `https://www.youtube.com/embed/${videoSrc}?autoplay=1`;
+  // --- ГЛАВНОЕ ИЗМЕНЕНИЕ: ИСПОЛЬЗУЕМ ДЕЛЕГИРОВАНИЕ СОБЫТИЙ ---
+  // Мы вешаем ОДИН обработчик на всю страницу, который будет ловить клики
+  // по всем кнопкам с атрибутом [data-modal-trigger="videoModal"], даже по тем, 
+  // которые появятся в будущем.
+  document.body.addEventListener('click', function(e) {
+    // Проверяем, был ли клик по нашей кнопке или внутри нее
+    const trigger = e.target.closest('[data-modal-trigger="videoModal"]');
+    
+    // Если да, то запускаем открытие модального окна
+    if (trigger) {
+      e.preventDefault(); // Отменяем стандартное поведение (на всякий случай)
+      openModal(trigger); // Передаем найденную кнопку в функцию открытия
     }
+  });
 
-    const isInstagram = videoSrc.includes('instagram.com');
-    if (iframeContainer && modalContent) {
-      iframeContainer.classList.toggle('instagram-vertical', isInstagram);
-      modalContent.classList.toggle('modal-instagram-vertical-content', isInstagram);
-    }
-
-    iframeEl.setAttribute('src', embedUrl);
-    modalEl.classList.add('open');
-    document.addEventListener('keydown', onEsc);
-  }
-
-  videoLinks.forEach((link) => link.addEventListener('click', openModal));
-  if (closeBtn instanceof HTMLElement) closeBtn.addEventListener('click', closeModal);
-  modalEl.addEventListener('click', onModalClick);
+  // Эти обработчики для закрытия окна остаются как были
+  if (closeBtn instanceof HTMLElement) closeBtn.addEventListener('click', closeModal);
+  modalEl.addEventListener('click', onModalClick);
 }
 
 // --- Логика для прелоадера ---

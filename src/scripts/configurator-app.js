@@ -357,6 +357,9 @@ function initializeHostCalculator() {
             return count;
         }
         function handleAiModalClicks(e) {
+            if (e.target.closest('[data-modal-trigger="videoModal"]')) {
+            return;
+            }
             const gameCard = e.target.closest('[data-game-key]');
             if (gameCard && !gameCard.classList.contains('disabled')) { const key = gameCard.dataset.gameKey; selection.creative.ai_games[key] = !selection.creative.ai_games[key]; updateAIGamesModalUI(); reRenderUI(); }
             if (e.target.id === 'reset-ai-selection') { selection.creative.ai_games = {}; updateAIGamesModalUI(); reRenderUI(); }
@@ -394,17 +397,55 @@ function initializeHostCalculator() {
             eminemModal.querySelector('.count').textContent = `${selectedCount}/5`;
             eminemModal.querySelector('.limit-reached')?.classList.toggle('hidden', !limitReached);
         }
-        function renderAIGamesModal() {
-            if (!aiGamesModal) return;
-            const modalContent = aiGamesModal.querySelector('.modal-content');
-            const screenAvailable = selection.venueScreen === 'yes' || selection.projectorNeeded;
-            const canAddProjector = selection.venueScreen === 'no' && !selection.projectorNeeded && selection.guestCount !== '81-150';
-            let gamesHTML = '';
-            for (const [key, game] of Object.entries(PRICES.CREATIVE.AI_GAMES)) { const isSelected = selection.creative.ai_games[key]; let isDisabled = game.requiresScreen && !screenAvailable; let disabledReason = isDisabled ? 'Для этой игры нужен экран или проектор' : null; gamesHTML += `<div class="creative-card ${isSelected ? 'selected' : ''} ${isDisabled ? 'disabled' : ''}" data-game-key="${key}"><div class="card-header"><h4 class="card-title">${game.name}</h4><p class="card-price">+${game.price.toLocaleString('ru-RU')} ₸</p></div><p class="card-desc">${game.desc}</p>${isDisabled ? `<div class="card-footer"><p class="disabled-reason">🛑 ${disabledReason}</p></div>` : ''}</div>`; }
-            const addProjectorButtonHTML = canAddProjector ? `<button id="add-projector-from-modal" class="btn-add-projector"><i class="mr-2"></i>Добавить Проектор (+${PRICES.PROJECTOR.price.toLocaleString('ru-RU')} ₸)</button>` : '';
-            const projectorWarningHTML = !screenAvailable ? `<div class="text-center mb-4"><p class="text-amber-400 font-medium text-sm">⚠️ Некоторым играм требуется экран.</p>${canAddProjector ? '<p class="text-xs text-gray-400 mt-1">Для управления проектором будет автоматически добавлен DJ.</p>' : ''}${!canAddProjector && selection.venueScreen === 'no' ? `<p class="text-red-400 text-xs mt-1">Проектор не может быть добавлен для ${selection.guestCount === '81-150' ? '>80 гостей' : 'данных условий'}.</p>` : ''}</div>` : '';
-            modalContent.innerHTML = `<div class="modal-header"><div class="modal-title-group"><div><h3 class="modal-title">AI-ШОУ</h3><p class="modal-subtitle">Выберите уникальные интерактивы для ваших гостей</p></div></div><button class="modal-close-btn js-modal-close">&times;</button></div><div class="modal-body"><div class="grid grid-cols-1 md:grid-cols-2 gap-4">${gamesHTML}</div></div><div class="modal-footer flex-col">${projectorWarningHTML}<div class="footer-actions">${addProjectorButtonHTML}<button id="reset-ai-selection" class="btn-reset py-3 px-6 rounded-lg">Сбросить</button><button class="btn-primary font-bold py-3 px-8 rounded-lg js-modal-close">Готово</button></div></div>`;
-        }
+        function renderAIGamesModal() {
+            if (!aiGamesModal) return;
+
+            const videoExamples = {
+                RZHAKAPELLA: '207MMfO-PCQ',
+                II_POSLOVITSY: 'XKWj6H1m3KM',
+                NEURO_FILTERS: '3dmlrrxFnLU',
+                CHTO_BYLO_DALSHE: '1j_P1ekuKsI'
+            };
+
+            const modalContent = aiGamesModal.querySelector('.modal-content');
+            const screenAvailable = selection.venueScreen === 'yes' || selection.projectorNeeded;
+            const canAddProjector = selection.venueScreen === 'no' && !selection.projectorNeeded && selection.guestCount !== '81-150';
+            let gamesHTML = '';
+
+            for (const [key, game] of Object.entries(PRICES.CREATIVE.AI_GAMES)) {
+                const isSelected = !!selection.creative.ai_games[key];
+                const isDisabled = game.requiresScreen && !screenAvailable;
+                const disabledReason = isDisabled ? `<p class="disabled-reason">🛑 Для этой игры нужен экран или проектор</p>` : '';
+
+                const videoId = videoExamples[key];
+                const exampleButtonHTML = videoId
+                    ? `<button class="btn-youtube" data-modal-trigger="videoModal" data-video-src="${videoId}">
+                        <i class="fab fa-youtube mr-2"></i>Пример
+                    </button>`
+                    : '';
+
+                // --- ИЗМЕНЕНО: Создаем "подвал" для кнопки и предупреждений ---
+                const footerContent = `${disabledReason} ${exampleButtonHTML}`;
+                const hasFooter = disabledReason || exampleButtonHTML;
+
+                gamesHTML += `
+                <div class="creative-card ai-game-card ${isSelected ? 'selected' : ''} ${isDisabled ? 'disabled' : ''}" data-game-key="${key}">
+                    <div class="ai-card-main-content">
+                    <div class="card-header">
+                        <h4 class="card-title">${game.name}</h4>
+                        <p class="card-price">+${game.price.toLocaleString('ru-RU')} ₸</p>
+                    </div>
+                    <p class="card-desc">${game.desc}</p>
+                    </div>
+                    ${hasFooter ? `<div class="ai-card-footer">${footerContent}</div>` : ''}
+                </div>
+                `;
+            }
+            
+            const addProjectorButtonHTML = canAddProjector ? `<button id="add-projector-from-modal" class="btn-add-projector"><i class="mr-2"></i>Добавить Проектор (+${PRICES.PROJECTOR.price.toLocaleString('ru-RU')} ₸)</button>` : '';
+            const projectorWarningHTML = !screenAvailable ? `<div class="text-center mb-4"><p class="text-amber-400 font-medium text-sm">⚠️ Некоторым играм требуется экран.</p>${canAddProjector ? '<p class="text-xs text-gray-400 mt-1">Для управления проектором будет автоматически добавлен DJ.</p>' : ''}${!canAddProjector && selection.venueScreen === 'no' ? `<p class="text-red-400 text-xs mt-1">Проектор не может быть добавлен для ${selection.guestCount === '81-150' ? '>80 гостей' : 'данных условий'}.</p>` : ''}</div>` : '';
+            modalContent.innerHTML = `<div class="modal-header"><div class="modal-title-group"><div><h3 class="modal-title">AI-ШОУ</h3><p class="modal-subtitle">Выберите уникальные интерактивы для ваших гостей</p></div></div><button class="modal-close-btn js-modal-close">&times;</button></div><div class="modal-body"><div class="grid grid-cols-1 md:grid-cols-2 gap-4">${gamesHTML}</div></div><div class="modal-footer flex-col">${projectorWarningHTML}<div class="footer-actions">${addProjectorButtonHTML}<button id="reset-ai-selection" class="btn-reset py-3 px-6 rounded-lg">Сбросить</button><button class="btn-primary font-bold py-3 px-8 rounded-lg js-modal-close">Готово</button></div></div>`;
+        }
         function renderEminemModal() {
             if (!eminemModal) return;
             const modalContent = eminemModal.querySelector('.modal-content');

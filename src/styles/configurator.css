@@ -1041,3 +1041,29 @@ section .relative {
   cursor: pointer; /* Делаем иконку "кликабельной" на вид */
 }
 /* --- КОНЕЦ: Стили для иконки календаря --- */
+/* === Финальные стили для подвала карточки AI-игры (вертикальное расположение) === */
+
+.ai-game-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.ai-card-main-content {
+  flex-grow: 1;
+}
+
+.ai-card-footer {
+  margin-top: auto; /* Прижимает подвал к низу карточки */
+  padding-top: 1rem; /* Даёт воздух от текста описания */
+  display: flex;
+  flex-direction: column; /* ГЛАВНОЕ: ставим элементы друг под другом */
+  align-items: stretch;  /* Растягиваем и кнопку, и текст на всю ширину */
+  gap: 0.75rem; /* Расстояние между уведомлением и кнопкой */
+}
+
+.ai-card-footer .disabled-reason {
+  margin: 0;
+  text-align: left; /* Выравнивание текста уведомления */
+  font-size: 0.8rem;
+}
