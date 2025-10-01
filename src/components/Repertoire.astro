@@ -1,5 +1,85 @@
 ---
 import '../styles/tabs.css';
+
+// --- НАШ ЕДИНЫЙ СПИСОК ТРЕКОВ ---
+const allTracks = [
+  { id: 'mockingbird', title: 'Mockingbird', structure: 'от 1 куплета и 1 припева до 2 куплетов и 2 припевов', duration: 'от 2:15 до 4:10', videoId: '2WZBG1n3dTo' },
+  { id: 'without_me', title: 'Without Me', structure: 'от 1 куплета и 1 припева до 2 куплетов и 2 припевов', duration: 'от 2:05 до 3:05', videoId: 'jD5TE5C32oI' },
+  { id: 'lose_yourself', title: 'Lose Yourself', structure: 'от 1 куплета и 1 припева до 3 куплетов и 3 припевов', duration: 'от 1:35 до 4:35', videoId: '-5hTQFPnz54' },
+  { id: 'real_slim_shady', title: 'Real Slim Shady', structure: '1 куплет и 1 припев', duration: '1:50', videoId: '8_5eteU3fMY' },
+  { id: 'superman', title: 'Superman', structure: '1 куплет и 1 припев', duration: '1:55', videoId: 'YWwLk-FBUqk' },
+  { id: 'love_the_way_you_lie', title: 'Love The Way You Lie', structure: 'от 1 куплета и 1 припева до 2 куплетов и 2 припевов', duration: 'от 1:40 до 2:55', videoId: 'J5f8N7fDgEE' },
+  { id: 'stan', title: 'Stan', structure: '3 припева и 1 куплет', duration: '2:00', videoId: '2sSMLL0BT6A' },
+  { id: 'rap_god', title: 'Rap God', structure: '1 припев + быстрая часть', duration: '0:55', videoId: '1Di6T_CYKUw' },
+  { id: 'monster', title: 'Monster', structure: '1 куплет и 1 припев', duration: '1:25', videoId: 'IXR_LfjMlT8' },
+  { id: 'smack_that', title: 'Smack That', structure: '1 куплет и 2 припева', duration: '1:50', videoId: 'TdRnFP2NSZE' },
+  { id: 'not_afraid', title: 'Not Afraid', structure: 'от 1 куплета и 1 припева до 1 бриджа, 2 куплетов и 2 припевов', duration: 'от 1:30 до 3:00', videoId: 'j0igfpz9wMk' },
+  { id: 'houdini', title: 'Houdini', structure: '1 куплет, 1 бридж и 1 припев', duration: '1:40', videoId: '22tVWwmTie8' },
+  { id: 'beautiful', title: 'Beautiful', structure: '1 куплет, 1 припев', duration: '1:55', videoId: 'GQAe-jqR4ZA' },
+  { id: 'space_bound', title: 'Space Bound', structure: 'от 1 куплета и 1 припева до 2 куплетов, 1 бриджа и 2 припевов', duration: 'от 1:40 до 3:10', videoId: 'gLwNQTcEF34' },
+  { id: 'airplanes', title: 'Airplanes', structure: '1 куплет, 1 бридж и 2 припева', duration: '2:35', videoId: 'lvG0kNWR8AE' },
+  { id: 'when_im_gone', title: 'When I’m Gone', structure: '1 куплет и 1 припев', duration: '1:20', videoId: '7mTsW-rDEIg' },
+  { id: 'godzilla', title: 'Godzilla', structure: '1 припев и быстрая часть', duration: '1:00', videoId: 'P92ByHRwa5k' },
+  { id: 'till_i_collapse', title: 'Till I Collapse', structure: 'интро, 1 куплет, 1 припев и аутро', duration: '2:25', videoId: 'cIdIldktihI' },
+  { id: 'you_dont_know', title: 'You Don’t Know', structure: '1 куплет и 2 припева', duration: '1:30', videoId: 'q46sR5uXBbw' },
+  { id: 'i_need_a_doctor', title: 'I Need a Doctor', structure: '2 припева и 1 куплет', duration: '1:45', videoId: 'fsoekvs-RmE' },
+  { id: 'no_love', title: 'No Love', structure: '1 куплет и 1 припев', duration: '2:30', videoId: 'zBkKB1CEQUY' },
+  { id: 'fast_lane', title: 'Fast Lane', structure: '1 куплет и 1 припев', duration: '1:10', videoId: 'mTVSxKNF1Hg' },
+  { id: 'forever', title: 'Forever', structure: '1 куплет и 2 припева', duration: '1:50', videoId: 'eDuRoPIOBjE' },
+  { id: 'despicable', title: 'Despicable', structure: '1 куплет', duration: '2:15', videoId: 'hPeGwtnB7Sc' },
+  { id: 'venom', title: 'Venom', structure: '1 куплет и 1 припев', duration: '1:45', videoId: 'DVDXrZMlgTM' },
+  { id: 'sing_for_the_moment', title: 'Sing For The Moment', structure: 'интро, 1 куплет и 1 припев', duration: '1:40', videoId: 'D4hAVemuQXY' },
+  { id: 'my_name_is', title: 'My Name Is', structure: '1 куплет и 2 припева', duration: '1:30', videoId: 'sNPnbI1arSE' },
+  { id: 'ass_like_that', title: 'Ass Like That', structure: '1 куплет и 2 припева', duration: '1:40', videoId: 'um4-d7VzZiE' },
+  { id: 'cleanin_out_my_closet', title: 'Cleanin’ Out My Closet', structure: '1 куплет и 1 припев', duration: '1:20', videoId: 'RQ9_TKayu9s' },
+  { id: 'hailies_song', title: 'Hailie’s Song', structure: '2 куплета и 2 припева', duration: '3:25', videoId: 'tD5oQQ-CQ4E' },
+  { id: 'just_lose_it', title: 'Just Lose It', structure: '1 куплет и 1 припев', duration: '1:30', videoId: '70PAy7yXjPI' },
+  { id: 'shake_that_ass', title: 'Shake That Ass', structure: '1 куплет, 1 припев и 1 бридж', duration: '1:40', videoId: 'WrjwGPb0Hvw' },
+  { id: 'we_made_you', title: 'We Made You', structure: '1 куплет, 1 припев, 1 бридж и аутро', duration: '2:15', videoId: 'RSdKmX2BH7o' },
+  { id: 'marshall_mathers', title: 'Marshall Mathers', structure: '1 куплет и 3 припева', duration: '2:30', videoId: 'XGSrs0QIUAc' },
+  { id: 'like_a_toy_soldiers', title: 'Like a Toy Soldiers', structure: '1 куплет и 2 припева', duration: '2:20', videoId: 'lexLAjh8fPA' },
+  { id: 'business', title: 'Business', structure: '1 куплет и 1 припев', duration: '1:10', videoId: 'P05bTId-92A' },
+  { id: 'all_she_wrote', title: 'All She Wrote', structure: '1 куплет и 2 припева', duration: '1:45', videoId: 'OItsfklZC-Y' },
+  { id: 'forgot_about_dre', title: 'Forgot About Dre', structure: '1 куплет и 2 припева', duration: '1:45', videoId: 'QFcv5Ma8u8k' },
+];
+
+// --- НАШ СПИСОК ПОДБОРОК (СЕТ-ЛИСТОВ) ---
+const setlists = [
+    { 
+        title: 'Золотые Хиты', 
+        icon: 'fas fa-star text-amber-400', 
+        trackIds: ['lose_yourself', 'without_me', 'real_slim_shady', 'love_the_way_you_lie', 'monster', 'not_afraid', 'mockingbird', 'stan', 'forgot_about_dre'] 
+    },
+    { 
+        title: 'Взрыв энергии', 
+        icon: 'fas fa-rocket text-red-500', 
+        trackIds: ['till_i_collapse', 'rap_god', 'venom', 'sing_for_the_moment', 'you_dont_know', 'lose_yourself', 'forever', 'business', 'i_need_a_doctor', 'all_she_wrote'] 
+    },
+    { 
+        title: 'Клубные хиты', 
+        icon: 'fas fa-fire text-orange-500', 
+        trackIds: ['smack_that', 'ass_like_that', 'shake_that_ass', 'superman', 'without_me', 'real_slim_shady', 'monster', 'houdini', 'we_made_you'] 
+    },
+    { 
+        title: 'Немного грусти', 
+        icon: 'fas fa-heart-broken text-sky-400', 
+        trackIds: ['stan', 'mockingbird', 'beautiful', 'space_bound', 'love_the_way_you_lie', 'airplanes', 'when_im_gone', 'hailies_song', 'cleanin_out_my_closet', 'marshall_mathers', 'like_a_toy_soldiers'] 
+    },
+    { 
+        title: 'Весёлый вайб', 
+        icon: 'fas fa-sun text-yellow-400', 
+        trackIds: ['my_name_is', 'without_me', 'real_slim_shady', 'houdini', 'just_lose_it', 'shake_that_ass', 'ass_like_that', 'we_made_you'] 
+    },
+    { 
+        title: 'Техничный хип-хоп', 
+        icon: 'fas fa-gears text-slate-400', 
+        trackIds: ['rap_god', 'godzilla', 'no_love', 'fast_lane', 'forever', 'despicable'] 
+    }
+];
+
+// Разделяем треки на видимые и скрытые
+const visibleTracks = allTracks.slice(0, 10);
+const hiddenTracks = allTracks.slice(10);
 ---
 
 <section id="repertoire" class="py-16 md:py-24 bg-opacity-50 bg-gray-950">
@@ -17,644 +97,207 @@ import '../styles/tabs.css';
             </div>
         </div>
 
-        <div id="repertoire-all-tracks" class="content-panel active">
-            <div class="repertoire-list max-w-4xl mx-auto">
-                <div class="repertoire-item">
-                    <div class="repertoire-info">
-                        <strong class="repertoire-title">Mockingbird</strong>
-                        <div class="repertoire-details">
-                            <div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>от 1 куплета и 1 припева до 2 куплетов и 2 припевов</span></div>
-                            <div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>от 2:15 до 4:10</span></div>
-                        </div>
-                    </div>
-                    <a href="#" data-modal-trigger="videoModal" data-video-src="2WZBG1n3dTo" class="btn-repertoire">Смотреть пример</a>
-                </div>
-                <div class="repertoire-item">
-                    <div class="repertoire-info">
-                        <strong class="repertoire-title">Without Me</strong>
-                        <div class="repertoire-details">
-                            <div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>от 1 куплета и 1 припева до 2 куплетов и 2 припевов</span></div>
-                            <div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>от 2:05 до 3:05</span></div>
-                        </div>
-                    </div>
-                    <a href="#" data-modal-trigger="videoModal" data-video-src="jD5TE5C32oI" class="btn-repertoire">Смотреть пример</a>
-                </div>
-                <div class="repertoire-item">
-                    <div class="repertoire-info">
-                        <strong class="repertoire-title">Lose Yourself</strong>
-                        <div class="repertoire-details">
-                            <div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>от 1 куплета и 1 припева до 3 куплетов и 3 припевов</span></div>
-                            <div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>от 1:35 до 4:35</span></div>
-                        </div>
-                    </div>
-                    <a href="#" data-modal-trigger="videoModal" data-video-src="-5hTQFPnz54" class="btn-repertoire">Смотреть пример</a>
-                </div>
-                <div class="repertoire-item">
-                    <div class="repertoire-info">
-                        <strong class="repertoire-title">Real Slim Shady</strong>
-                        <div class="repertoire-details">
-                            <div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет и 1 припев</span></div>
-                            <div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:50</span></div>
-                        </div>
-                    </div>
-                    <a href="#" data-modal-trigger="videoModal" data-video-src="8_5eteU3fMY" class="btn-repertoire">Смотреть пример</a>
-                </div>
-                <div class="repertoire-item">
-                    <div class="repertoire-info">
-                        <strong class="repertoire-title">Superman</strong>
-                        <div class="repertoire-details">
-                            <div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет и 1 припев</span></div>
-                            <div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:55</span></div>
-                        </div>
-                    </div>
-                    <a href="#" data-modal-trigger="videoModal" data-video-src="YWwLk-FBUqk" class="btn-repertoire">Смотреть пример</a>
-                </div>
-                <div class="repertoire-item">
-                    <div class="repertoire-info">
-                        <strong class="repertoire-title">Love The Way You Lie</strong>
-                        <div class="repertoire-details">
-                            <div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>от 1 куплета и 1 припева до 2 куплетов и 2 припевов</span></div>
-                            <div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>от 1:40 до 2:55</span></div>
-                        </div>
-                    </div>
-                    <a href="#" data-modal-trigger="videoModal" data-video-src="J5f8N7fDgEE" class="btn-repertoire">Смотреть пример</a>
-                </div>
-                <div class="repertoire-item">
-                    <div class="repertoire-info">
-                        <strong class="repertoire-title">Stan</strong>
-                        <div class="repertoire-details">
-                            <div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>3 припева и 1 куплет</span></div>
-                            <div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>2:00</span></div>
-                        </div>
-                    </div>
-                    <a href="#" data-modal-trigger="videoModal" data-video-src="2sSMLL0BT6A" class="btn-repertoire">Смотреть пример</a>
-                </div>
-                <div class="repertoire-item">
-                    <div class="repertoire-info">
-                        <strong class="repertoire-title">Rap God</strong>
-                        <div class="repertoire-details">
-                            <div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 припев + быстрая часть</span></div>
-                            <div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>0:55</span></div>
-                        </div>
-                    </div>
-                    <a href="#" data-modal-trigger="videoModal" data-video-src="1Di6T_CYKUw" class="btn-repertoire">Смотреть пример</a>
-                </div>
-                <div class="repertoire-item">
-                    <div class="repertoire-info">
-                        <strong class="repertoire-title">Monster</strong>
-                        <div class="repertoire-details">
-                            <div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет и 1 припев</span></div>
-                            <div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:25</span></div>
-                        </div>
-                    </div>
-                    <a href="#" data-modal-trigger="videoModal" data-video-src="IXR_LfjMlT8" class="btn-repertoire">Смотреть пример</a>
-                </div>
-                <div class="repertoire-item">
-                    <div class="repertoire-info">
-                        <strong class="repertoire-title">Smack That</strong>
-                        <div class="repertoire-details">
-                            <div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет и 2 припева</span></div>
-                            <div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:50</span></div>
-                        </div>
-                    </div>
-                    <a href="#" data-modal-trigger="videoModal" data-video-src="TdRnFP2NSZE" class="btn-repertoire">Смотреть пример</a>
-                </div>
-                
-                <div id="hidden-repertoire-container" class="hidden-repertoire-container">
-                    <div class="repertoire-item">
-                        <div class="repertoire-info">
-                            <strong class="repertoire-title">Not Afraid</strong>
-                            <div class="repertoire-details">
-                                <div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>от 1 куплета и 1 припева до 1 бриджа, 2 куплетов и 2 припевов</span></div>
-                                <div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>от 1:30 до 3:00</span></div>
-                            </div>
-                        </div>
-                        <a href="#" data-modal-trigger="videoModal" data-video-src="j0igfpz9wMk" class="btn-repertoire">Смотреть пример</a>
-                    </div>
-                    <div class="repertoire-item">
-                        <div class="repertoire-info">
-                            <strong class="repertoire-title">Houdini</strong>
-                            <div class="repertoire-details">
-                                <div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет, 1 бридж и 1 припев</span></div>
-                                <div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:40</span></div>
-                            </div>
-                        </div>
-                        <a href="#" data-modal-trigger="videoModal" data-video-src="22tVWwmTie8" class="btn-repertoire">Смотреть пример</a>
-                    </div>
-                    <div class="repertoire-item">
-                        <div class="repertoire-info">
-                            <strong class="repertoire-title">Beautiful</strong>
-                            <div class="repertoire-details">
-                                <div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет, 1 припев</span></div>
-                                <div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:55</span></div>
-                            </div>
-                        </div>
-                        <a href="#" data-modal-trigger="videoModal" data-video-src="GQAe-jqR4ZA" class="btn-repertoire">Смотреть пример</a>
-                    </div>
-                    <div class="repertoire-item">
-                        <div class="repertoire-info">
-                            <strong class="repertoire-title">Space Bound</strong>
-                            <div class="repertoire-details">
-                                <div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>от 1 куплета и 1 припева до 2 куплетов, 1 бриджа и 2 припевов</span></div>
-                                <div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>от 1:40 до 3:10</span></div>
-                            </div>
-                        </div>
-                        <a href="#" data-modal-trigger="videoModal" data-video-src="gLwNQTcEF34" class="btn-repertoire">Смотреть пример</a>
-                    </div>
-                    <div class="repertoire-item">
-                        <div class="repertoire-info">
-                            <strong class="repertoire-title">Airplanes</strong>
-                            <div class="repertoire-details">
-                                <div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет, 1 бридж и 2 припева</span></div>
-                                <div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>2:35</span></div>
-                            </div>
-                        </div>
-                        <a href="#" data-modal-trigger="videoModal" data-video-src="lvG0kNWR8AE" class="btn-repertoire">Смотреть пример</a>
-                    </div>
-                    <div class="repertoire-item">
-                        <div class="repertoire-info">
-                            <strong class="repertoire-title">When I’m Gone</strong>
-                            <div class="repertoire-details">
-                                <div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет и 1 припев</span></div>
-                                <div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:20</span></div>
-                            </div>
-                        </div>
-                        <a href="#" data-modal-trigger="videoModal" data-video-src="7mTsW-rDEIg" class="btn-repertoire">Смотреть пример</a>
-                    </div>
-                    <div class="repertoire-item">
-                        <div class="repertoire-info">
-                            <strong class="repertoire-title">Godzilla</strong>
-                            <div class="repertoire-details">
-                                <div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 припев и быстрая часть</span></div>
-                                <div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:00</span></div>
-                            </div>
-                        </div>
-                        <a href="#" data-modal-trigger="videoModal" data-video-src="P92ByHRwa5k" class="btn-repertoire">Смотреть пример</a>
-                    </div>
-                    <div class="repertoire-item">
-                        <div class="repertoire-info">
-                            <strong class="repertoire-title">Till I Collapse</strong>
-                            <div class="repertoire-details">
-                                <div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>интро, 1 куплет, 1 припев и аутро</span></div>
-                                <div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>2:25</span></div>
-                            </div>
-                        </div>
-                        <a href="#" data-modal-trigger="videoModal" data-video-src="cIdIldktihI" class="btn-repertoire">Смотреть пример</a>
-                    </div>
-                    <div class="repertoire-item">
-                        <div class="repertoire-info">
-                            <strong class="repertoire-title">You Don’t Know</strong>
-                            <div class="repertoire-details">
-                                <div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет и 2 припева</span></div>
-                                <div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:30</span></div>
-                            </div>
-                        </div>
-                        <a href="#" data-modal-trigger="videoModal" data-video-src="q46sR5uXBbw" class="btn-repertoire">Смотреть пример</a>
-                    </div>
-                    <div class="repertoire-item">
-                        <div class="repertoire-info">
-                            <strong class="repertoire-title">I Need a Doctor</strong>
-                            <div class="repertoire-details">
-                                <div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>2 припева и 1 куплет</span></div>
-                                <div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:45</span></div>
-                            </div>
-                        </div>
-                        <a href="#" data-modal-trigger="videoModal" data-video-src="fsoekvs-RmE" class="btn-repertoire">Смотреть пример</a>
-                    </div>
-                    <div class="repertoire-item">
-                        <div class="repertoire-info">
-                            <strong class="repertoire-title">No Love</strong>
-                            <div class="repertoire-details">
-                                <div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет и 1 припев</span></div>
-                                <div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>2:30</span></div>
-                            </div>
-                        </div>
-                        <a href="#" data-modal-trigger="videoModal" data-video-src="zBkKB1CEQUY" class="btn-repertoire">Смотреть пример</a>
-                    </div>
-                    <div class="repertoire-item">
-                        <div class="repertoire-info">
-                            <strong class="repertoire-title">Fast Lane</strong>
-                            <div class="repertoire-details">
-                                <div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет и 1 припев</span></div>
-                                <div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:10</span></div>
-                            </div>
-                        </div>
-                        <a href="#" data-modal-trigger="videoModal" data-video-src="mTVSxKNF1Hg" class="btn-repertoire">Смотреть пример</a>
-                    </div>
-                    <div class="repertoire-item">
-                        <div class="repertoire-info">
-                            <strong class="repertoire-title">Forever</strong>
-                            <div class="repertoire-details">
-                                <div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет и 2 припева</span></div>
-                                <div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:50</span></div>
-                            </div>
-                        </div>
-                        <a href="#" data-modal-trigger="videoModal" data-video-src="eDuRoPIOBjE" class="btn-repertoire">Смотреть пример</a>
-                    </div>
-                    <div class="repertoire-item">
-                        <div class="repertoire-info">
-                            <strong class="repertoire-title">Despicable</strong>
-                            <div class="repertoire-details">
-                                <div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет</span></div>
-                                <div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>2:15</span></div>
-                            </div>
-                        </div>
-                        <a href="#" data-modal-trigger="videoModal" data-video-src="hPeGwtnB7Sc" class="btn-repertoire">Смотреть пример</a>
-                    </div>
-                    <div class="repertoire-item">
-                        <div class="repertoire-info">
-                            <strong class="repertoire-title">Venom</strong>
-                            <div class="repertoire-details">
-                                <div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет и 1 припев</span></div>
-                                <div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:45</span></div>
-                            </div>
-                        </div>
-                        <a href="#" data-modal-trigger="videoModal" data-video-src="DVDXrZMlgTM" class="btn-repertoire">Смотреть пример</a>
-                    </div>
-                    <div class="repertoire-item">
-                        <div class="repertoire-info">
-                            <strong class="repertoire-title">Sing For The Moment</strong>
-                            <div class="repertoire-details">
-                                <div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>интро, 1 куплет и 1 припев</span></div>
-                                <div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:40</span></div>
-                            </div>
-                        </div>
-                        <a href="#" data-modal-trigger="videoModal" data-video-src="D4hAVemuQXY" class="btn-repertoire">Смотреть пример</a>
-                    </div>
-                    <div class="repertoire-item">
-                        <div class="repertoire-info">
-                            <strong class="repertoire-title">My Name Is</strong>
-                            <div class="repertoire-details">
-                                <div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет и 2 припева</span></div>
-                                <div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:30</span></div>
-                            </div>
-                        </div>
-                        <a href="#" data-modal-trigger="videoModal" data-video-src="sNPnbI1arSE" class="btn-repertoire">Смотреть пример</a>
-                    </div>
-                    <div class="repertoire-item">
-                        <div class="repertoire-info">
-                            <strong class="repertoire-title">Ass Like That</strong>
-                            <div class="repertoire-details">
-                                <div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет и 2 припева</span></div>
-                                <div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:40</span></div>
-                            </div>
-                        </div>
-                        <a href="#" data-modal-trigger="videoModal" data-video-src="um4-d7VzZiE" class="btn-repertoire">Смотреть пример</a>
-                    </div>
-                    <div class="repertoire-item">
-                        <div class="repertoire-info">
-                            <strong class="repertoire-title">Cleanin’ Out My Closet</strong>
-                            <div class="repertoire-details">
-                                <div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет и 1 припев</span></div>
-                                <div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:20</span></div>
-                            </div>
-                        </div>
-                        <a href="#" data-modal-trigger="videoModal" data-video-src="RQ9_TKayu9s" class="btn-repertoire">Смотреть пример</a>
-                    </div>
-                    <div class="repertoire-item">
-                        <div class="repertoire-info">
-                            <strong class="repertoire-title">Hailie’s Song</strong>
-                            <div class="repertoire-details">
-                                <div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>2 куплета и 2 припева</span></div>
-                                <div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>3:25</span></div>
-                            </div>
-                        </div>
-                        <a href="#" data-modal-trigger="videoModal" data-video-src="tD5oQQ-CQ4E" class="btn-repertoire">Смотреть пример</a>
-                    </div>
-                    <div class="repertoire-item">
-                        <div class="repertoire-info">
-                            <strong class="repertoire-title">Just Lose It</strong>
-                            <div class="repertoire-details">
-                                <div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет и 1 припев</span></div>
-                                <div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:30</span></div>
-                            </div>
-                        </div>
-                        <a href="#" data-modal-trigger="videoModal" data-video-src="70PAy7yXjPI" class="btn-repertoire">Смотреть пример</a>
-                    </div>
-                    <div class="repertoire-item">
-                        <div class="repertoire-info">
-                            <strong class="repertoire-title">Shake That Ass</strong>
-                            <div class="repertoire-details">
-                                <div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет, 1 припев и 1 бридж</span></div>
-                                <div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:40</span></div>
-                            </div>
-                        </div>
-                        <a href="#" data-modal-trigger="videoModal" data-video-src="WrjwGPb0Hvw" class="btn-repertoire">Смотреть пример</a>
-                    </div>
-                    <div class="repertoire-item">
-                        <div class="repertoire-info">
-                            <strong class="repertoire-title">We Made You</strong>
-                            <div class="repertoire-details">
-                                <div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет, 1 припев, 1 бридж и аутро</span></div>
-                                <div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>2:15</span></div>
-                            </div>
-                        </div>
-                        <a href="#" data-modal-trigger="videoModal" data-video-src="RSdKmX2BH7o" class="btn-repertoire">Смотреть пример</a>
-                    </div>
-                    <div class="repertoire-item">
-                        <div class="repertoire-info">
-                            <strong class="repertoire-title">Marshall Mathers</strong>
-                            <div class="repertoire-details">
-                                <div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет и 3 припева</span></div>
-                                <div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>2:30</span></div>
-                            </div>
-                        </div>
-                        <a href="#" data-modal-trigger="videoModal" data-video-src="XGSrs0QIUAc" class="btn-repertoire">Смотреть пример</a>
-                    </div>
-                    <div class="repertoire-item">
-                        <div class="repertoire-info">
-                            <strong class="repertoire-title">Like a Toy Soldiers</strong>
-                            <div class="repertoire-details">
-                                <div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет и 2 припева</span></div>
-                                <div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>2:20</span></div>
-                            </div>
-                        </div>
-                        <a href="#" data-modal-trigger="videoModal" data-video-src="lexLAjh8fPA" class="btn-repertoire">Смотреть пример</a>
-                    </div>
-                    <div class="repertoire-item">
-                        <div class="repertoire-info">
-                            <strong class="repertoire-title">Business</strong>
-                            <div class="repertoire-details">
-                                <div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет и 1 припев</span></div>
-                                <div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:10</span></div>
-                            </div>
-                        </div>
-                        <a href="#" data-modal-trigger="videoModal" data-video-src="P05bTId-92A" class="btn-repertoire">Смотреть пример</a>
-                    </div>
-                </div>
-            </div>
-            <div class="text-center mt-8">
-                <button id="toggleRepertoireBtn" class="btn-secondary text-lg font-semibold py-3 px-8 rounded-lg">Показать весь репертуар</button>
-            </div>
-        </div>
+<div id="repertoire-all-tracks" class="content-panel active">
+            <div class="repertoire-list max-w-4xl mx-auto">
+                {visibleTracks.map(track => (
+                  <div class="repertoire-item">
+                    <div class="repertoire-info">
+                      <strong class="repertoire-title">{track.title}</strong>
+                      <div class="repertoire-details">
+                        <div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>{track.structure}</span></div>
+                        <div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>{track.duration}</span></div>
+                      </div>
+                    </div>
+                    <a href="#" data-modal-trigger="videoModal" data-video-src={track.videoId} class="btn-repertoire">Смотреть пример</a>
+                  </div>
+                ))}
+                
+                <div id="hidden-repertoire-container" class="hidden-repertoire-container">
+                    {hiddenTracks.map(track => (
+                      <div class="repertoire-item">
+                        <div class="repertoire-info">
+                          <strong class="repertoire-title">{track.title}</strong>
+                          <div class="repertoire-details">
+                            <div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>{track.structure}</span></div>
+                            <div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>{track.duration}</span></div>
+                          </div>
+                        </div>
+                        <a href="#" data-modal-trigger="videoModal" data-video-src={track.videoId} class="btn-repertoire">Смотреть пример</a>
+                      </div>
+                    ))}
+                </div>
+            </div>
+            <div class="text-center mt-8">
+                <button id="toggleRepertoireBtn" class="btn-secondary text-lg font-semibold py-3 px-8 rounded-lg">Показать весь репертуар</button>
+            </div>
+        </div>
 
         <div id="repertoire-setlists" class="content-panel">
-            <div class="accordion-container max-w-4xl mx-auto">
-                <div class="accordion-item">
-                    <button class="accordion-header">
-                        <span class="setlist-title"><i class="fas fa-star text-amber-400"></i> Золотые Хиты</span>
-                        <i class="fas fa-chevron-down accordion-icon"></i>
-                    </button>
-                    <div class="accordion-body">
-                        <div class="repertoire-list">
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Lose Yourself</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>от 1 куплета и 1 припева до 3 куплетов и 3 припевов</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>от 1:35 до 4:35</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="-5hTQFPnz54" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Without Me</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>от 1 куплета и 1 припева до 2 куплетов и 2 припевов</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>от 2:05 до 3:05</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="jD5TE5C32oI" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Real Slim Shady</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет и 1 припев</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:50</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="8_5eteU3fMY" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Love The Way You Lie</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>от 1 куплета и 1 припева до 2 куплетов и 2 припевов</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>от 1:40 до 2:55</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="J5f8N7fDgEE" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Monster</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет и 1 припев</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:25</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="IXR_LfjMlT8" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Not Afraid</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>от 1 куплета и 1 припева до 1 бриджа, 2 куплетов и 2 припевов</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>от 1:30 до 3:00</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="j0igfpz9wMk" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Mockingbird</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>от 1 куплета и 1 припева до 2 куплетов и 2 припевов</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>от 2:15 до 4:10</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="2WZBG1n3dTo" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Stan</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>3 припева и 1 куплет</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>2:00</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="2sSMLL0BT6A" class="btn-repertoire">Смотреть пример</a></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <button class="accordion-header">
-                        <span class="setlist-title"><i class="fas fa-rocket text-red-500"></i> Взрыв энергии</span>
-                        <i class="fas fa-chevron-down accordion-icon"></i>
-                    </button>
-                    <div class="accordion-body">
-                        <div class="repertoire-list">
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Till I Collapse</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>интро, 1 куплет, 1 припев и аутро</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>2:25</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="cIdIldktihI" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Rap God</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 припев + быстрая часть</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>0:55</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="1Di6T_CYKUw" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Venom</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет и 1 припев</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:45</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="DVDXrZMlgTM" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Sing For The Moment</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>интро, 1 куплет и 1 припев</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:40</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="D4hAVemuQXY" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">You Don’t Know</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет и 2 припева</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:30</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="q46sR5uXBbw" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Lose Yourself</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>от 1 куплета и 1 припева до 3 куплетов и 3 припевов</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>от 1:35 до 4:35</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="-5hTQFPnz54" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Forever</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет и 2 припева</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:50</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="eDuRoPIOBjE" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Business</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет и 1 припев</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:10</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="P05bTId-92A" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">I Need a Doctor</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>2 припева и 1 куплет</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:45</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="fsoekvs-RmE" class="btn-repertoire">Смотреть пример</a></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <button class="accordion-header">
-                        <span class="setlist-title"><i class="fas fa-fire text-orange-500"></i> Клубные хиты</span>
-                        <i class="fas fa-chevron-down accordion-icon"></i>
-                    </button>
-                    <div class="accordion-body">
-                        <div class="repertoire-list">
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Smack That</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет и 2 припева</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:50</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="TdRnFP2NSZE" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Ass Like That</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет и 2 припева</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:40</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="um4-d7VzZiE" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Shake That Ass</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет, 1 припев и 1 бридж</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:40</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="WrjwGPb0Hvw" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Superman</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет и 1 припев</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:55</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="YWwLk-FBUqk" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Without Me</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>от 1 куплета и 1 припева до 2 куплетов и 2 припевов</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>от 2:05 до 3:05</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="jD5TE5C32oI" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Real Slim Shady</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет и 1 припев</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:50</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="8_5eteU3fMY" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Monster</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет и 1 припев</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:25</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="IXR_LfjMlT8" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Houdini</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет, 1 бридж и 1 припев</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:40</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="22tVWwmTie8" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">We Made You</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет, 1 припев, 1 бридж и аутро</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>2:15</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="RSdKmX2BH7o" class="btn-repertoire">Смотреть пример</a></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <button class="accordion-header">
-                        <span class="setlist-title"><i class="fas fa-heart-broken text-sky-400"></i> Немного грусти</span>
-                        <i class="fas fa-chevron-down accordion-icon"></i>
-                    </button>
-                    <div class="accordion-body">
-                        <div class="repertoire-list">
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Stan</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>3 припева и 1 куплет</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>2:00</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="2sSMLL0BT6A" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Mockingbird</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>от 1 куплета и 1 припева до 2 куплетов и 2 припевов</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>от 2:15 до 4:10</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="2WZBG1n3dTo" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Beautiful</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет, 1 припев</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:55</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="GQAe-jqR4ZA" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Space Bound</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>от 1 куплета и 1 припева до 2 куплетов, 1 бриджа и 2 припевов</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>от 1:40 до 3:10</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="gLwNQTcEF34" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Love The Way You Lie</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>от 1 куплета и 1 припева до 2 куплетов и 2 припевов</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>от 1:40 до 2:55</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="J5f8N7fDgEE" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Airplanes</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет, 1 бридж и 2 припева</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>2:35</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="lvG0kNWR8AE" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">When I’m Gone</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет и 1 припев</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:20</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="7mTsW-rDEIg" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Hailie’s Song</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>2 куплета и 2 припева</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>3:25</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="tD5oQQ-CQ4E" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Cleanin’ Out My Closet</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет и 1 припев</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:20</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="RQ9_TKayu9s" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Marshall Mathers</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет и 3 припева</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>2:30</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="XGSrs0QIUAc" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Like a Toy Soldiers</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет и 2 припева</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>2:20</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="lexLAjh8fPA" class="btn-repertoire">Смотреть пример</a></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <button class="accordion-header">
-                        <span class="setlist-title"><i class="fas fa-sun text-yellow-400"></i> Весёлый вайб</span>
-                        <i class="fas fa-chevron-down accordion-icon"></i>
-                    </button>
-                    <div class="accordion-body">
-                        <div class="repertoire-list">
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">My Name Is</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет и 2 припева</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:30</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="sNPnbI1arSE" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Without Me</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>от 1 куплета и 1 припева до 2 куплетов и 2 припевов</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>от 2:05 до 3:05</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="jD5TE5C32oI" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Real Slim Shady</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет и 1 припев</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:50</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="8_5eteU3fMY" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Houdini</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет, 1 бридж и 1 припев</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:40</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="22tVWwmTie8" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Just Lose It</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет и 1 припев</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:30</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="70PAy7yXjPI" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Shake That Ass</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет, 1 припев и 1 бридж</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:40</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="WrjwGPb0Hvw" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Ass Like That</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет и 2 припева</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:40</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="um4-d7VzZiE" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">We Made You</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет, 1 припев, 1 бридж и аутро</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>2:15</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="RSdKmX2BH7o" class="btn-repertoire">Смотреть пример</a></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <button class="accordion-header">
-                        <span class="setlist-title"><i class="fas fa-gears text-slate-400"></i> Техничный хип-хоп</span>
-                        <i class="fas fa-chevron-down accordion-icon"></i>
-                    </button>
-                    <div class="accordion-body">
-                        <div class="repertoire-list">
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Rap God</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 припев + быстрая часть</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>0:55</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="1Di6T_CYKUw" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Godzilla</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 припев и быстрая часть</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:00</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="P92ByHRwa5k" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">No Love</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет и 1 припев</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>2:30</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="zBkKB1CEQUY" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Fast Lane</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет и 1 припев</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:10</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="mTVSxKNF1Hg" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Forever</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет и 2 припева</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>1:50</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="eDuRoPIOBjE" class="btn-repertoire">Смотреть пример</a></div>
-                            <div class="repertoire-item"><div class="repertoire-info"><strong class="repertoire-title">Despicable</strong><div class="repertoire-details"><div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>1 куплет</span></div><div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>2:15</span></div></div></div><a href="#" data-modal-trigger="videoModal" data-video-src="hPeGwtnB7Sc" class="btn-repertoire">Смотреть пример</a></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+            <div class="accordion-container max-w-4xl mx-auto">
+                {setlists.map(setlist => {
+                  // Для каждого сетлиста находим полные данные о треках
+                  const tracksInSetlist = setlist.trackIds.map(id => 
+                    allTracks.find(track => track.id === id)
+                  ).filter(Boolean); // filter(Boolean) удаляет треки, если они вдруг не нашлись
+
+                  return (
+                    <div class="accordion-item">
+                      <button class="accordion-header">
+                        <span class="setlist-title"><i class={setlist.icon}></i> {setlist.title}</span>
+                        <i class="fas fa-chevron-down accordion-icon"></i>
+                      </button>
+                      <div class="accordion-body">
+                        <div class="repertoire-list">
+                          {/* Вложенный цикл: рисуем треки для этого сетлиста */}
+                          {tracksInSetlist.map(track => (
+                            <div class="repertoire-item">
+                              <div class="repertoire-info">
+                                <strong class="repertoire-title">{track!.title}</strong>
+                                <div class="repertoire-details">
+                                  <div class="repertoire-detail-row"><i class="fas fa-microphone-alt"></i><span>{track!.structure}</span></div>
+                                  <div class="repertoire-detail-row"><i class="fas fa-clock"></i><span>{track!.duration}</span></div>
+                                </div>
+                              </div>
+                              <a href="#" data-modal-trigger="videoModal" data-video-src={track!.videoId} class="btn-repertoire">Смотреть пример</a>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+            </div>
+        </div>
     </div>
 </section>
 
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    // --- ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ ДЛЯ ПЛАВНОГО СКРОЛЛА ---
-    function smoothScrollTo(element: HTMLElement, duration: number = 400) {
+<script is:inline>
+document.addEventListener('DOMContentLoaded', () => {
+    // --- ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ ДЛЯ ПЛАВНОГО СКРОЛЛА ---
+    function smoothScrollTo(element, duration = 400) {
+      const targetPosition = element.getBoundingClientRect().top + window.scrollY - (window.innerHeight / 2) + (element.clientHeight / 2);
+      const startPosition = window.scrollY;
+      const distance = targetPosition - startPosition;
+      let startTime = null;
 
-      const targetPosition = element.getBoundingClientRect().top + window.scrollY - (window.innerHeight / 2) + (element.clientHeight / 2);
-      const startPosition = window.scrollY;
-      const distance = targetPosition - startPosition;
-      let startTime: number | null = null;
+      function animation(currentTime) {
+        if (startTime === null) {
+          startTime = currentTime;
+        }
+        const timeElapsed = currentTime - startTime;
+        const run = ease(timeElapsed, startPosition, distance, duration);
+        window.scrollTo(0, run);
 
-      function animation(currentTime: number) {
-        if (startTime === null) {
-          startTime = currentTime;
-        }
-        const timeElapsed = currentTime - startTime;
-        const run = ease(timeElapsed, startPosition, distance, duration);
-        window.scrollTo(0, run);
-        
-        if (timeElapsed < 50 || timeElapsed > duration - 50) {
-        }
+        if (timeElapsed < duration) {
+          requestAnimationFrame(animation);
+        }
+      }
 
-        if (timeElapsed < duration) {
-          requestAnimationFrame(animation);
-        } else {
-        }
-      }
+      function ease(t, b, c, d) {
+        t /= d / 2;
+        if (t < 1) return c / 2 * t * t + b;
+        t--;
+        return -c / 2 * (t * (t - 2) - 1) + b;
+      }
 
-      function ease(t: number, b: number, c: number, d: number): number {
-        t /= d / 2;
-        if (t < 1) return c / 2 * t * t + b;
-        t--;
-        return -c / 2 * (t * (t - 2) - 1) + b;
-      }
+      requestAnimationFrame(animation);
+    }
+    // --- ЛОГИКА ДЛЯ ТАБОВ И ГЛАЙДЕРА ---
+    const tabsContainer = document.getElementById('repertoire-toggle');
+    const allTracksPanel = document.getElementById('repertoire-all-tracks');
+    const setlistsPanel = document.getElementById('repertoire-setlists');
 
-      requestAnimationFrame(animation);
-    }
-    // --- ЛОГИКА ДЛЯ ТАБОВ И ГЛАЙДЕРА (АДАПТИРОВАНА ПОД ВАШ HTML) ---
-    const tabsContainer = document.getElementById('repertoire-toggle') as HTMLDivElement;
-    // Вот здесь были главные изменения:
-    const allTracksPanel = document.getElementById('repertoire-all-tracks');
-    const setlistsPanel  = document.getElementById('repertoire-setlists');
+    if (!tabsContainer || !allTracksPanel || !setlistsPanel) {
+      console.error('Repertoire tabs elements not found!');
+    } else {
+      const glider = tabsContainer.querySelector('.glider');
+      const tabButtons = Array.from(tabsContainer.querySelectorAll('.tab-btn'));
+      const panels = [allTracksPanel, setlistsPanel];
 
-    // Проверяем наличие именно этих, правильных элементов
-    if (!tabsContainer || !allTracksPanel || !setlistsPanel) {
-      console.error('Repertoire tabs elements not found! Check IDs: repertoire-toggle, repertoire-all-tracks, repertoire-setlists');
-    } else {
-      const glider = tabsContainer.querySelector('.glider') as HTMLElement | null;
-      const tabButtons = Array.from(tabsContainer.querySelectorAll<HTMLButtonElement>('.tab-btn'));
-      // Собираем в массив тоже правильные панели
-      const panels: HTMLElement[] = [allTracksPanel, setlistsPanel];
+      const updateGlider = () => {
+        if (!glider) return;
+        const active = tabsContainer.querySelector('.tab-btn.active');
+        if (!active) return;
 
-      const updateGlider = () => {
-        if (!glider) return;
-        const active = tabsContainer.querySelector<HTMLButtonElement>('.tab-btn.active');
-        if (!active) return;
+        const isMobile = window.innerWidth <= 640;
+        if (isMobile) {
+          glider.style.width = 'calc(100% - 10px)';
+          glider.style.left = '5px';
+          glider.style.height = active.offsetHeight + 'px';
+          glider.style.top = active.offsetTop + 'px';
+        } else {
+          glider.style.height = 'calc(100% - 10px)';
+          glider.style.top = '5px';
+          glider.style.width = active.offsetWidth + 'px';
+          glider.style.left = active.offsetLeft + 'px';
+        }
+      };
 
-        const isMobile = window.innerWidth <= 640;
-        if (isMobile) {
-          glider.style.width  = 'calc(100% - 10px)';
-          glider.style.left   = '5px';
-          glider.style.height = active.offsetHeight + 'px';
-          glider.style.top    = active.offsetTop + 'px';
-        } else {
-          glider.style.height = 'calc(100% - 10px)';
-          glider.style.top    = '5px';
-          glider.style.width  = active.offsetWidth + 'px';
-          glider.style.left   = active.offsetLeft + 'px';
-        }
-      };
+      const showPanel = (id) => {
+        panels.forEach((p) => {
+          if (p.id === id) {
+            p.classList.remove('active');
+            void p.offsetWidth;
+            p.classList.add('active');
+          } else {
+            p.classList.remove('active');
+          }
+        });
+      };
 
-      const showPanel = (id: string) => {
-        panels.forEach((p) => {
-          if (p.id === id) {
-            p.classList.remove('active');
-            void p.offsetWidth;
-            p.classList.add('active');
-          } else {
-            p.classList.remove('active');
-          }
-        });
-      };
+      tabButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          tabButtons.forEach((b) => b.classList.remove('active'));
+          btn.classList.add('active');
+          const target = btn.getAttribute('data-target');
+          if (target) showPanel(target);
+          updateGlider();
+        });
+      });
 
-      tabButtons.forEach((btn) => {
-        btn.addEventListener('click', () => {
-          tabButtons.forEach((b) => b.classList.remove('active'));
-          btn.classList.add('active');
+      updateGlider();
+      window.addEventListener('resize', updateGlider);
+      setTimeout(updateGlider, 0);
+    }
 
-          const target = btn.getAttribute('data-target');
-          if (target) showPanel(target);
+    // --- ЛОГИКА ДЛЯ КНОПКИ "ПОКАЗАТЬ ВСЁ" ---
+    const toggleBtn = document.getElementById('toggleRepertoireBtn');
+    const hiddenContainer = document.getElementById('hidden-repertoire-container');
 
-          updateGlider();
-        });
-      });
+    if (toggleBtn && hiddenContainer) {
+      toggleBtn.addEventListener('click', () => {
+        const isExpanded = hiddenContainer.classList.contains('is-expanded');
+        if (isExpanded) {
+          hiddenContainer.style.maxHeight = '0';
+          hiddenContainer.classList.remove('is-expanded');
+          toggleBtn.textContent = 'Показать весь репертуар';
+          setTimeout(() => {
+            smoothScrollTo(toggleBtn, 100);
+          }, 700);
+        } else {
+          hiddenContainer.style.maxHeight = hiddenContainer.scrollHeight + 'px';
+          hiddenContainer.classList.add('is-expanded');
+          toggleBtn.textContent = 'Скрыть';
+        }
+      });
+    }
 
-      updateGlider();
-      window.addEventListener('resize', updateGlider);
-      setTimeout(updateGlider, 0);
-    }
-
-// --- ЛОГИКА ДЛЯ КНОПКИ "ПОКАЗАТЬ ВСЁ" ---
-const toggleBtn = document.getElementById('toggleRepertoireBtn');
-const hiddenContainer = document.getElementById('hidden-repertoire-container');
-
-if (toggleBtn && hiddenContainer) {
-  toggleBtn.addEventListener('click', () => {
-    const isExpanded = hiddenContainer.classList.contains('is-expanded');
-    
-    if (isExpanded) {
-      // --- СВОРАЧИВАНИЕ ---
-      
-      // 1. Запускаем CSS-анимацию сворачивания
-      hiddenContainer.style.maxHeight = '0';
-      hiddenContainer.classList.remove('is-expanded');
-      toggleBtn.textContent = 'Показать весь репертуар';
-
-      // 2. ЖДЕМ 700мс, пока CSS-анимация ЗАВЕРШИТСЯ
-      setTimeout(() => {
-        // 3. И только теперь, когда кнопка уже "уехала" вверх,
-        // вызываем нашу функцию скролла
-        smoothScrollTo(toggleBtn, 100);
-      }, 700); // Это время должно совпадать с transition-duration в CSS
-
-    } else {
-      // --- РАСКРЫТИЕ ---
-      hiddenContainer.style.maxHeight = hiddenContainer.scrollHeight + 'px';
-      hiddenContainer.classList.add('is-expanded');
-      toggleBtn.textContent = 'Скрыть';
-    }
-  });
-}
-
-    // --- ЛОГИКА ДЛЯ АККОРДЕОНА --- (ПЕРЕМЕСТИЛИ ВНУТРЬ) ---
-    const accordionHeaders = document.querySelectorAll('.accordion-header');
-
-    accordionHeaders.forEach(header => {
-      header.addEventListener('click', () => {
-        const accordionBody = header.nextElementSibling as HTMLElement;
-        if (accordionBody) {
-          header.classList.toggle('active');
-          if (header.classList.contains('active')) {
-            accordionBody.style.maxHeight = accordionBody.scrollHeight + 'px';
-          } else {
-            accordionBody.style.maxHeight = '0';
-          }
-        }
-      });
-    });
-    
-  }); // <-- Вот здесь теперь правильно заканчивается весь код
+    // --- ЛОГИКА ДЛЯ АККОРДЕОНА ---
+    const accordionHeaders = document.querySelectorAll('.accordion-header');
+    accordionHeaders.forEach(header => {
+      header.addEventListener('click', () => {
+        const accordionBody = header.nextElementSibling;
+        if (accordionBody) {
+          header.classList.toggle('active');
+          if (header.classList.contains('active')) {
+            accordionBody.style.maxHeight = accordionBody.scrollHeight + 'px';
+          } else {
+            accordionBody.style.maxHeight = '0';
+          }
+        }
+      });
+    });
+  });
 </script>
 
 <style>

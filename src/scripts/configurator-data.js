@@ -86,5 +86,7 @@ export const TRACK_LIST = [
   { id: 'we-made-you', name: 'We Made You', structure: '1 куплет, 1 припев, 1 бридж и аутро', duration: '2:15', minDurationSeconds: 135, maxDurationSeconds: 135, url: 'https://www.youtube.com/watch?v=RSdKmX2BH7o' },
   { id: 'marshall-mathers', name: 'Marshall Mathers', structure: '1 куплет и 3 припева', duration: '2:30', minDurationSeconds: 150, maxDurationSeconds: 150, url: 'https://www.youtube.com/watch?v=XGSrs0QIUAc' },
   { id: 'toy-soldiers', name: 'Like a Toy Soldiers', structure: '1 куплет и 2 припева', duration: '2:20', minDurationSeconds: 140, maxDurationSeconds: 140, url: 'https://www.youtube.com/watch?v=lexLAjh8fPA' },
-  { id: 'business', name: 'Business', structure: '1 куплет и 1 припев', duration: '1:10', minDurationSeconds: 70, maxDurationSeconds: 70, url: 'https://www.youtube.com/watch?v=P05bTId-92A' }
+  { id: 'business', name: 'Business', structure: '1 куплет и 1 припев', duration: '1:10', minDurationSeconds: 70, maxDurationSeconds: 70, url: 'https://www.youtube.com/watch?v=P05bTId-92A' },
+  { id: 'all_she_wrote', name: 'All She Wrote', structure: '1 куплет и 2 припева', duration: '1:45', minDurationSeconds: 105, maxDurationSeconds: 105, url: 'https://youtu.be/OItsfklZC-Y?si=zF22Jp2tRcVFjThn' },
+  { id: 'forgot_about_dre', name: 'Forgot About Dre', structure: '1 куплет и 2 припева', duration: '1:45', minDurationSeconds: 105, maxDurationSeconds: 105, url: 'https://youtu.be/QFcv5Ma8u8k?si=0-yxnN9vzTRk3Btw' },
 ];
