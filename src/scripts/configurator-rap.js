@@ -41,10 +41,18 @@ function initializeRapCalculator() {
         });
     }
 
-    function populateStaticTrackList() {
+function populateStaticTrackList() {
         if (!DOMElements.trackListContainer) return;
         let tracksHTML = '';
         TRACK_LIST.forEach(track => {
+            // --- НАЧАЛО ИЗМЕНЕНИЯ ---
+            // Меняем ссылку на кнопку, которая открывает модальное окно с видео
+            const exampleButtonHTML = `
+            <button class="btn-youtube text-xs" data-modal-trigger="videoModal" data-video-src="${track.url.split('v=')[1]}">
+                <i class="fab fa-youtube mr-1"></i> Пример
+            </button>`;
+            // --- КОНЕЦ ИЗМЕНЕНИЯ ---
+
             tracksHTML += `
             <div class="track-card rounded-lg p-3" data-track-id="${track.id}">
                 <div class="flex items-center justify-between">
@@ -55,9 +63,7 @@ function initializeRapCalculator() {
                             <p class="text-xs text-gray-400">Длительность: ${track.duration}</p>
                         </div>
                     </div>
-                    <a href="${track.url}" target="_blank" class="btn-youtube text-xs" onclick="event.stopPropagation()">
-                        <i class="fab fa-youtube mr-1"></i> Пример
-                    </a>
+                    ${exampleButtonHTML} 
                 </div>
             </div>`;
         });
@@ -65,14 +71,22 @@ function initializeRapCalculator() {
     }
 
 
-    function setupEventListeners() {
+function setupEventListeners() {
         DOMElements.locationSelect.addEventListener('change', (e) => {
             selection.location = e.target.value;
             updateRapSummary();
         });
         
         DOMElements.trackCards.forEach(card => {
-            card.addEventListener('click', () => {
+            // --- НАЧАЛО ИЗМЕНЕНИЯ ---
+            // Добавляем (e), чтобы отследить, куда именно кликнули
+            card.addEventListener('click', (e) => {
+                // Если клик был по кнопке "Пример", ничего не делаем и выходим
+                if (e.target.closest('[data-modal-trigger="videoModal"]')) {
+                    return;
+                }
+            // --- КОНЕЦ ИЗМЕНЕНИЯ ---
+
                 const trackId = card.dataset.trackId;
                 if (selection.selectedTracks[trackId]) {
                     delete selection.selectedTracks[trackId];

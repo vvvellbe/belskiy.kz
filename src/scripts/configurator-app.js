@@ -365,14 +365,30 @@ function initializeHostCalculator() {
             if (e.target.id === 'reset-ai-selection') { selection.creative.ai_games = {}; updateAIGamesModalUI(); reRenderUI(); }
             if (e.target.id === 'add-projector-from-modal') { selection.projectorNeeded = true; enforceDjForProjector(); reRenderUI(); renderAIGamesModal(); }
         }
-        function handleEminemModalClicks(e) {
-            const trackCard = e.target.closest('[data-track-id]');
-            const selectedCount = Object.keys(selection.creative.eminem_tracks || {}).length;
-            if (trackCard && !trackCard.classList.contains('disabled')) { const id = trackCard.dataset.trackId; if (selection.creative.eminem_tracks[id]) { delete selection.creative.eminem_tracks[id]; } else if (selectedCount < 5) { selection.creative.eminem_tracks[id] = true; } }
-            if (e.target.id === 'reset-eminem-selection') { selection.creative.eminem_tracks = {}; }
-            updateEminemModalUI();
-            reRenderUI();
-        }
+function handleEminemModalClicks(e) {
+          // --- НАЧАЛО ИСПРАВЛЕНИЯ ---
+          // Эта проверка не даст клику по кнопке "Пример" выбрать саму карточку.
+          if (e.target.closest('[data-modal-trigger="videoModal"]')) {
+              return; // Просто выходим из функции и ничего не делаем
+          }
+          // --- КОНЕЦ ИСПРАВЛЕНИЯ ---
+
+          const trackCard = e.target.closest('[data-track-id]');
+          const selectedCount = Object.keys(selection.creative.eminem_tracks || {}).length;
+          if (trackCard && !trackCard.classList.contains('disabled')) { 
+              const id = trackCard.dataset.trackId; 
+              if (selection.creative.eminem_tracks[id]) { 
+                  delete selection.creative.eminem_tracks[id]; 
+              } else if (selectedCount < 5) { 
+                  selection.creative.eminem_tracks[id] = true; 
+              } 
+          }
+          if (e.target.id === 'reset-eminem-selection') { 
+              selection.creative.eminem_tracks = {}; 
+          }
+          updateEminemModalUI();
+          reRenderUI();
+      }
         function updateAIGamesModalUI() {
             if (!aiGamesModal) return;
             const screenAvailable = selection.venueScreen === 'yes' || selection.projectorNeeded;
@@ -446,14 +462,55 @@ function initializeHostCalculator() {
             const projectorWarningHTML = !screenAvailable ? `<div class="text-center mb-4"><p class="text-amber-400 font-medium text-sm">⚠️ Некоторым играм требуется экран.</p>${canAddProjector ? '<p class="text-xs text-gray-400 mt-1">Для управления проектором будет автоматически добавлен DJ.</p>' : ''}${!canAddProjector && selection.venueScreen === 'no' ? `<p class="text-red-400 text-xs mt-1">Проектор не может быть добавлен для ${selection.guestCount === '81-150' ? '>80 гостей' : 'данных условий'}.</p>` : ''}</div>` : '';
             modalContent.innerHTML = `<div class="modal-header"><div class="modal-title-group"><div><h3 class="modal-title">AI-ШОУ</h3><p class="modal-subtitle">Выберите уникальные интерактивы для ваших гостей</p></div></div><button class="modal-close-btn js-modal-close">&times;</button></div><div class="modal-body"><div class="grid grid-cols-1 md:grid-cols-2 gap-4">${gamesHTML}</div></div><div class="modal-footer flex-col">${projectorWarningHTML}<div class="footer-actions">${addProjectorButtonHTML}<button id="reset-ai-selection" class="btn-reset py-3 px-6 rounded-lg">Сбросить</button><button class="btn-primary font-bold py-3 px-8 rounded-lg js-modal-close">Готово</button></div></div>`;
         }
-        function renderEminemModal() {
-            if (!eminemModal) return;
-            const modalContent = eminemModal.querySelector('.modal-content');
-            const selectedTracks = selection.creative.eminem_tracks || {}; const selectedCount = Object.keys(selectedTracks).length; const limitReached = selectedCount >= 5;
-            let tracksHTML = '';
-            TRACK_LIST.forEach(track => { const isSelected = selectedTracks[track.id]; const isDisabled = limitReached && !isSelected; tracksHTML += `<div class="creative-card ${isSelected ? 'selected' : ''} ${isDisabled ? 'disabled' : ''}" data-track-id="${track.id}"><div class="track-card-header"><h4 class="card-title">${track.name}</h4><a href="${track.url}" target="_blank" class="btn-youtube" onclick="event.stopPropagation()"><i class="fab fa-youtube mr-2"></i>Пример</a></div><div class="track-meta"><span><i class="fas fa-microphone-alt"></i> ${track.structure}</span><span><i class="fas fa-clock"></i> ${track.duration}</span></div></div>`; });
-            modalContent.innerHTML = `<div class="modal-header"><div class="modal-title-group"><div><h3 class="modal-title">Eminem Tribute Show</h3><p class="modal-subtitle">Соберите свой идеальный сет-лист для зажигательного выступления</p></div></div><button class="modal-close-btn js-modal-close">&times;</button></div><div class="modal-body"><div class="grid grid-cols-1 md:grid-cols-2 gap-4">${tracksHTML}</div></div><div class="modal-footer"><div class="footer-info"><p>Выбрано <span class="count">${selectedCount}/5</span> треков</p><p class="limit-reached text-amber-400 font-semibold mt-1 ${limitReached ? '' : 'hidden'}">Достигнут максимум</p></div><div class="footer-buttons"><button id="reset-eminem-selection" class="btn-reset py-3 px-6 rounded-lg">Сбросить</button><button class="btn-primary font-bold py-3 px-8 rounded-lg js-modal-close">Готово</button></div></div>`;
-        }
+function renderEminemModal() {
+          if (!eminemModal) return;
+          const modalContent = eminemModal.querySelector('.modal-content');
+          const selectedTracks = selection.creative.eminem_tracks || {}; 
+          const selectedCount = Object.keys(selectedTracks).length; 
+          const limitReached = selectedCount >= 5;
+          let tracksHTML = '';
+          TRACK_LIST.forEach(track => { 
+              const isSelected = selectedTracks[track.id]; 
+              const isDisabled = limitReached && !isSelected; 
+              // --- ИЗМЕНЕННАЯ СТРОКА НИЖЕ ---
+              const exampleButtonHTML = `<button class="btn-youtube" data-modal-trigger="videoModal" data-video-src="${track.url.split('v=')[1]}"><i class="fab fa-youtube mr-2"></i>Пример</button>`;
+              
+              tracksHTML += `
+              <div class="creative-card ${isSelected ? 'selected' : ''} ${isDisabled ? 'disabled' : ''}" data-track-id="${track.id}">
+                  <div class="track-card-header">
+                      <h4 class="card-title">${track.name}</h4>
+                      ${exampleButtonHTML}
+                  </div>
+                  <div class="track-meta">
+                      <span><i class="fas fa-microphone-alt"></i> ${track.structure}</span>
+                      <span><i class="fas fa-clock"></i> ${track.duration}</span>
+                  </div>
+              </div>`; 
+          });
+          modalContent.innerHTML = `
+          <div class="modal-header">
+              <div class="modal-title-group">
+                  <div>
+                      <h3 class="modal-title">Eminem Tribute Show</h3>
+                      <p class="modal-subtitle">Соберите свой идеальный сет-лист для зажигательного выступления</p>
+                  </div>
+              </div>
+              <button class="modal-close-btn js-modal-close">&times;</button>
+          </div>
+          <div class="modal-body">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">${tracksHTML}</div>
+          </div>
+          <div class="modal-footer">
+              <div class="footer-info">
+                  <p>Выбрано <span class="count">${selectedCount}/5</span> треков</p>
+                  <p class="limit-reached text-amber-400 font-semibold mt-1 ${limitReached ? '' : 'hidden'}">Достигнут максимум</p>
+              </div>
+              <div class="footer-buttons">
+                  <button id="reset-eminem-selection" class="btn-reset py-3 px-6 rounded-lg">Сбросить</button>
+                  <button class="btn-primary font-bold py-3 px-8 rounded-lg js-modal-close">Готово</button>
+              </div>
+          </div>`;
+      }
         function readParameters() {
             const oldVenueGear = selection.venueGear;
             selection.venueType = DOMElements.parameterSelects[0].value;
