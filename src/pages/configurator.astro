@@ -15,6 +15,9 @@ import SummaryModal from '../components/configurator/SummaryModal.astro';
 import AiGamesModal from '../components/configurator/AiGamesModal.astro';
 import EminemModal from '../components/configurator/EminemModal.astro';
 import RiderModal from '../components/configurator/RiderModal.astro';
+// --- НАЧАЛО: НОВАЯ СТРОКА ---
+import TermsModal from '../components/configurator/TermsModal.astro'; // 1. Импортируем новое окно
+// --- КОНЕЦ: НОВАЯ СТРОКА ---
 import ToastNotification from '../components/configurator/ToastNotification.astro';
 
 // 3. ИМПОРТИРУЕМ СКРИПТЫ И ДАННЫЕ ПРАВИЛЬНО
@@ -56,8 +59,8 @@ const pageOgImage = "/assets/images/configurator-og.jpg"; // Путь от ко�
   <AiGamesModal />
   <EminemModal />
   <RiderModal />
-
-  <ToastNotification />
+  
+  <TermsModal /> <ToastNotification />
   
   <Footer />
 
@@ -68,9 +71,7 @@ const pageOgImage = "/assets/images/configurator-og.jpg"; // Путь от ко�
   window.TRACK_LIST = TRACK_LIST;
 </script>
 
-    <!-- Astro обработает эти пути и подставит правильные в итоговую сборку -->
-  <script src="../scripts/configurator-app.js"></script>
+    <script src="../scripts/configurator-app.js"></script>
   <script src="../scripts/configurator-rap.js"></script>
 
 </BaseLayout>
-

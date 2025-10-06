@@ -1,5 +1,25 @@
 <div id="host-calculator-content" class="content-panel active">
-    <div class="flex flex-col lg:flex-row gap-8">
+
+<style>
+.btn-ghost {
+  width: 100%;
+  padding: 0.65rem 1rem;
+  font-weight: 600;
+  color: #00ffff; /* Основной бирюзовый цвет */
+  background-color: transparent;
+  border: 1px solid #00ffff; /* Тонкая рамка в цвет текста */
+  border-radius: 0.5rem; /* Скругление углов, как у основной кнопки */
+  cursor: pointer;
+  transition: all 0.2s ease-in-out; /* Плавный переход для наведения */
+}
+
+.btn-ghost:hover {
+  background-color: #00ffff; /* Фон становится бирюзовым */
+  color: #111827; /* Текст становится темным */
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.4); /* Легкая тень для эффекта */
+}
+</style>
+<div class="flex flex-col lg:flex-row gap-8">
         <div class="w-full lg:w-2/3 flex flex-col gap-8">
             <div class="config-card rounded-xl p-6 sm:p-8">
                 <h2 class="text-2xl font-semibold text-white mb-6">Параметры вашего мероприятия</h2>
@@ -206,7 +226,11 @@
                         <p class="text-gray-400 text-sm">Итоговая стоимость:</p>
                         <p id="total-price" class="text-3xl font-bold text-white">0 ₸</p>
                     </div>
-                    <button id="copy-quote-btn" class="btn-primary w-full text-white font-bold py-3 mt-6 rounded-lg flex items-center justify-center gap-2">
+
+                    <button id="open-terms-modal-desktop" class="btn-ghost mt-4" type="button">
+                        Условия сотрудничества
+                    </button>
+                    <button id="copy-quote-btn" class="btn-primary w-full text-white font-bold py-3 mt-4 rounded-lg flex items-center justify-center gap-2">
                         <i class="fas fa-copy"></i>
                         <span>Скопировать заявку</span>
                     </button>
