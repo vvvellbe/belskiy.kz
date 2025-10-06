@@ -417,10 +417,11 @@ function handleEminemModalClicks(e) {
             if (!aiGamesModal) return;
 
             const videoExamples = {
-                RZHAKAPELLA: '207MMfO-PCQ',
+                RZHAKAPELLA: 'B_HlDb04LLg',
                 II_POSLOVITSY: 'XKWj6H1m3KM',
                 NEURO_FILTERS: '3dmlrrxFnLU',
-                CHTO_BYLO_DALSHE: '1j_P1ekuKsI'
+                CHTO_BYLO_DALSHE: 'GWK6OLf6jTM',
+                AI_STAR_GREETING: 'Yogsp5Xa_Do'
             };
 
             const modalContent = aiGamesModal.querySelector('.modal-content');
