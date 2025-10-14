@@ -1,6 +1,13 @@
 .tabs {
-  display: flex; position: relative; background-color: rgba(26,26,46,.7);
-  border-radius: 99px; padding: 5px; border: 1px solid rgba(0,255,255,.2); width: fit-content;
+ display: flex;
+ position: relative;
+ background: rgba(17, 24, 39, 0.6);
+ backdrop-filter: blur(12px);
+ -webkit-backdrop-filter: blur(12px);
+ border: 1px solid rgba(107, 114, 128, 0.2);
+ border-radius: 99px;
+ padding: 5px;
+ width: fit-content;
 }
 .tab-btn {
   display: flex; align-items: center; justify-content: center; gap: .5rem;

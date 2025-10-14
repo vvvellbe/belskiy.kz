@@ -9,7 +9,7 @@ const { title, videoSrc } = Astro.props as Props;
 <div class="portfolio-item rounded-lg overflow-hidden shadow-xl group">
   <a
     href="#"
-    class="portfolio-video-link block relative aspect-video bg-gray-900 overflow-hidden"
+    class="portfolio-video-link block relative aspect-video overflow-hidden"
     data-modal-trigger="videoModal"
     data-video-src={videoSrc}
   >
@@ -26,19 +26,22 @@ const { title, videoSrc } = Astro.props as Props;
 </div>
 
 <style>
-  .portfolio-item {
-    background-color: rgba(26, 26, 46, 0.7);
-    border: 1px solid rgba(0, 255, 255, 0.2);
-    transition: box-shadow 0.4s ease;
-  }
-  .portfolio-item:hover {
-    box-shadow: 0 15px 40px rgba(0, 255, 255, 0.2);
-  }
-
-  .portfolio-video-link .play-icon {
+ .portfolio-item {
+    background: rgba(17, 24, 39, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(107, 114, 128, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+    transition: box-shadow 0.4s ease, border-color 0.4s ease;
+ }
+ .portfolio-item:hover {
+    border-color: rgba(0, 255, 255, 0.3);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+ }
+ .portfolio-video-link .play-icon {
     transition: transform 0.3s ease;
-  }
-  .portfolio-video-link:hover .play-icon {
+ }
+ .portfolio-video-link:hover .play-icon {
     transform: scale(1.2);
-  }
+ }
 </style>

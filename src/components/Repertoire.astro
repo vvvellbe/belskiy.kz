@@ -27,13 +27,12 @@ const visibleTracks = TRACK_LIST.slice(0, 10);
 const hiddenTracks = TRACK_LIST.slice(10);
 ---
 
-<section id="repertoire" class="py-16 md:py-24 bg-opacity-50 bg-gray-950">
+<section id="repertoire" class="py-16 md:py-24">
     <div class="container mx-auto px-6 reveal">
         <div class="text-center md:text-left">
             <h2 class="section-title text-3xl md:text-4xl mb-4 gradient-text">Репертуар</h2>
         </div>
         <p class="text-center text-lg text-gray-400 mb-8">Кавер-выступления на треки Eminem. Выберите готовый сет-лист или соберите свой из полного списка.</p>
-        
         <div class="flex justify-center mb-12">
             <div class="tabs" id="repertoire-toggle">
                 <span class="glider"></span>
@@ -247,202 +246,196 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <style>
 .repertoire-list {
-    counter-reset: track-counter;
+   counter-reset: track-counter;
 }
 .repertoire-item {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    gap: 1rem;
-    align-items: center; 
-    padding: 1.25rem 1rem;
-    border-bottom: 1px solid rgba(0, 255, 255, 0.1);
-    transition: background-color 0.3s ease;
+   display: grid;
+   grid-template-columns: auto 1fr auto;
+   gap: 1rem;
+   align-items: center; 
+   padding: 1.25rem 1rem;
+   border-bottom: 1px solid rgba(107, 114, 128, 0.1);
+   transition: background-color 0.3s ease;
 }
 .repertoire-item:hover {
-    background-color: rgba(0, 255, 255, 0.05);
+   background-color: rgba(17, 24, 39, 0.4);
 }
 .repertoire-list .repertoire-item:last-child {
-    border-bottom: none;
+   border-bottom: none;
 }
 .repertoire-item::before {
-    counter-increment: track-counter;
-    content: counter(track-counter);
-    font-weight: 700;
-    font-size: 1.5rem;
-    background: linear-gradient(90deg, #00ffff, #ff00ff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-fill-color: transparent;
-    min-width: 2rem;
-    text-align: center; 
+   counter-increment: track-counter;
+   content: counter(track-counter);
+   font-weight: 700;
+   font-size: 1.5rem;
+   background: linear-gradient(90deg, #00ffff, #ff00ff);
+   -webkit-background-clip: text;
+   -webkit-text-fill-color: transparent;
+   background-clip: text;
+   text-fill-color: transparent;
+   min-width: 2rem;
+   text-align: center; 
 }
 .repertoire-info {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+   display: flex;
+   flex-direction: column;
+   align-items: flex-start;
 }
 .repertoire-title {
-    font-size: 1.25rem;
-    line-height: 1.75rem;
-    font-weight: 600;
-    color: #e5e7eb;
+   font-size: 1.25rem;
+   line-height: 1.75rem;
+   font-weight: 600;
+   color: #e5e7eb;
 }
 .repertoire-details {
-    margin-top: 0.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
+   margin-top: 0.5rem;
+   display: flex;
+   flex-direction: column;
+   gap: 0.25rem;
 }
 .repertoire-detail-row {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.5rem;
-    font-size: 0.875rem;
-    line-height: 1.25rem;
-    color: #9ca3af;
+   display: flex;
+   align-items: flex-start;
+   gap: 0.5rem;
+   font-size: 0.875rem;
+   line-height: 1.25rem;
+   color: #9ca3af;
 }
 .repertoire-detail-row i {
-    color: #00ffff;
-    width: 1rem;
-    text-align: center;
-    flex-shrink: 0;
-    margin-top: 0.2rem;
+   color: #00ffff;
+   width: 1rem;
+   text-align: center;
+   flex-shrink: 0;
+   margin-top: 0.2rem;
 }
 .btn-repertoire {
-    background-color: #3b82f6;
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 0.375rem;
-    text-decoration: none;
-    transition: background-color 0.3s ease;
-    font-size: 0.875rem;
-    line-height: 1.25rem;
-    white-space: nowrap;
+   background-color: #3b82f6;
+   color: white;
+   padding: 0.5rem 1rem;
+   border-radius: 0.375rem;
+   text-decoration: none;
+   transition: background-color 0.3s ease;
+   font-size: 0.875rem;
+   line-height: 1.25rem;
+   white-space: nowrap;
 }
 .btn-repertoire:hover {
-    background-color: #2563eb;
+   background-color: #2563eb;
 }
-/* --- ЗАМЕНИТЬ СТАРЫЙ БЛОК НА ЭТОТ --- */
-/* Новая логика аккордеона репертуара на CSS Grid */
-
 .hidden-repertoire-container {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+   max-height: 0;
+   overflow: hidden;
+   transition: max-height 0.7s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
-/* Внутренняя обертка нужна, чтобы скрыть контент во время анимации */
-.repertoire-inner-wrapper {
-  overflow: hidden;
-}
-/* --- КОНЕЦ НОВОГО БЛОКА --- */
-
 .accordion-container {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+   display: flex;
+   flex-direction: column;
+   gap: 1rem;
 }
 .accordion-item {
-    border: 1px solid rgba(0, 255, 255, 0.2);
-    border-radius: 0.5rem;
-    overflow: hidden;
-    transition: background-color 0.3s ease;
+   background: rgba(17, 24, 39, 0.6);
+   backdrop-filter: blur(12px);
+   -webkit-backdrop-filter: blur(12px);
+   border: 1px solid rgba(107, 114, 128, 0.2);
+   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+   border-radius: 0.5rem;
+   overflow: hidden;
+   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 .accordion-item:hover {
-    background-color: rgba(26, 26, 46, 0.4);
+   border-color: rgba(0, 255, 255, 0.3);
+   background-color: rgba(17, 24, 39, 0.8);
 }
 .accordion-header {
-    width: 100%;
-    background-color: transparent;
-    padding: 1rem 1.5rem;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    text-align: left;
+   width: 100%;
+   background-color: transparent;
+   padding: 1rem 1.5rem;
+   border: none;
+   cursor: pointer;
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   text-align: left;
 }
 .accordion-header .setlist-title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: #e0e0e0;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
+   font-size: 1.25rem;
+   font-weight: 700;
+   color: #e0e0e0;
+   display: flex;
+   align-items: center;
+   gap: 0.75rem;
 }
 .accordion-icon {
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    color: #00ffff;
+   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+   color: #00ffff;
 }
 .accordion-header.active .accordion-icon {
-    transform: rotate(180deg);
+   transform: rotate(180deg);
 }
 .accordion-body {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    background-color: rgba(10, 10, 10, 0.5);
+   max-height: 0;
+   overflow: hidden;
+   transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+   background-color: transparent;
 }
 .accordion-body .repertoire-list {
-    padding: 0.5rem 0;
-    counter-reset: track-counter;
+   padding: 0.5rem 0;
+   counter-reset: track-counter;
 }
 .accordion-body .repertoire-item {
-    grid-template-columns: auto 1fr auto;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-    align-items: center;
+   grid-template-columns: auto 1fr auto;
+   padding-left: 1.5rem;
+   padding-right: 1.5rem;
+   align-items: center;
 }
 .accordion-body .repertoire-item::before {
-    counter-increment: track-counter;
-    content: counter(track-counter);
-    display: block;
+   counter-increment: track-counter;
+   content: counter(track-counter);
+   display: block;
 }
 
-
 @media (max-width: 640px) {
-    .repertoire-item {
-        grid-template-columns: auto 1fr;
-        grid-template-rows: auto auto;
-        column-gap: 1rem; 
-        row-gap: 1rem;
-        padding: 1rem 0.5rem;
-        align-items: start;
-    }
-    .repertoire-item::before {
-        grid-row: 1 / 2;
-        grid-column: 1 / 2;
-        align-self: center; 
-        justify-self: center;
-        font-size: 1.25rem;
-        line-height: 1.125rem;
-        padding-top: 0.1rem;
-        text-align: center; 
-    }
-    .repertoire-info {
-        grid-row: 1 / 2;
-        grid-column: 2 / 3;
-    }
-    .repertoire-title {
-        font-size: 1.125rem;
-        line-height: 1.5rem;
-    }
-    .btn-repertoire {
-        grid-row: 2 / 3;
-        grid-column: 2 / 3;
-        justify-self: start;
-    }
-    .accordion-header .setlist-title {
-        font-size: 1.125rem;
-    }
-    .accordion-body .repertoire-item {
-        grid-template-columns: auto 1fr;
-        grid-template-rows: auto auto;
-        align-items: start;
-        padding-left: 1rem;
-        padding-right: 1rem;
-        row-gap: 1rem;
-    }
+   .repertoire-item {
+      grid-template-columns: auto 1fr;
+      grid-template-rows: auto auto;
+      column-gap: 1rem; 
+      row-gap: 1rem;
+      padding: 1rem 0.5rem;
+      align-items: start;
+   }
+   .repertoire-item::before {
+      grid-row: 1 / 2;
+      grid-column: 1 / 2;
+      align-self: center; 
+      justify-self: center;
+      font-size: 1.25rem;
+      line-height: 1.125rem;
+      padding-top: 0.1rem;
+      text-align: center; 
+   }
+   .repertoire-info {
+      grid-row: 1 / 2;
+      grid-column: 2 / 3;
+   }
+   .repertoire-title {
+      font-size: 1.125rem;
+      line-height: 1.5rem;
+   }
+   .btn-repertoire {
+      grid-row: 2 / 3;
+      grid-column: 2 / 3;
+      justify-self: start;
+   }
+   .accordion-header .setlist-title {
+      font-size: 1.125rem;
+   }
+   .accordion-body .repertoire-item {
+      grid-template-columns: auto 1fr;
+      grid-template-rows: auto auto;
+      align-items: start;
+      padding-left: 1rem;
+      padding-right: 1rem;
+      row-gap: 1rem;
+   }
 }
 </style>

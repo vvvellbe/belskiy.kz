@@ -106,3 +106,117 @@ nav.menu-opened {
   height: 100vh;
   transition: background-color 0.3s ease, backdrop-filter 0.3s ease;
 }
+/* --- НАЧАЛО: СТИЛИ ДЛЯ АНИМИРОВАННОГО ФОНА (v2 - Хаотичное движение) --- */
+
+/* Контейнер остался без изменений */
+.background-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+/* Общий стиль для всех "огоньков" */
+.blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px); /* ИЗМЕНЕНИЕ: Сделали размытие чуть сильнее для мягкости */
+    opacity: 0.45; /* ИЗМЕНЕНИЕ: Чуть-чуть увеличили видимость */
+}
+
+/* Стили для первого огонька */
+.color-1 {
+    width: 450px;
+    height: 450px;
+    background: #009d9dfc;
+    top: 5%;
+    left: 5%;
+    /* ИЗМЕНЕНИЕ: Подключаем свою анимацию, делаем ее медленнее */
+    animation: move1 15s infinite alternate;
+}
+
+/* Стили для второго огонька */
+.color-2 {
+    width: 350px;
+    height: 350px;
+    background: #9b009b;
+    bottom: 10%;
+    right: 10%;
+    /* ИЗМЕНЕНИЕ: Своя анимация, другая скорость */
+    animation: move2 10s infinite alternate;
+    animation-delay: -5s; /* Начнет анимацию не с самого начала, для разнообразия */
+}
+
+/* Стили для третьего огонька */
+.color-3 {
+    width: 250px;
+    height: 250px;
+    background: #0070a4;
+    bottom: 30%;
+    left: 40%;
+    /* ИЗМЕНЕНИЕ: Своя анимация, третья скорость */
+    animation: move3 20s infinite alternate;
+}
+
+/* ИЗМЕНЕНИЕ: Теперь у нас ТРИ разных сценария движения */
+
+/* Анимация для первого огонька */
+@keyframes move1 {
+    from {
+        transform: translate(-80px, 30px) rotate(-90deg) scale(1.2);
+    }
+    to {
+        transform: translate(120px, -60px) rotate(90deg) scale(0.9);
+    }
+}
+
+/* Анимация для второго огонька */
+@keyframes move2 {
+    from {
+        transform: translate(50px, -100px) rotate(45deg) scale(0.8);
+    }
+    to {
+        transform: translate(-50px, 100px) rotate(180deg) scale(1.1);
+    }
+}
+
+/* Анимация для третьего огонька */
+@keyframes move3 {
+    from {
+        transform: translate(100px, 100px) rotate(120deg) scale(1);
+    }
+    to {
+        transform: translate(-150px, -100px) rotate(0deg) scale(1.3);
+    }
+}
+/* --- КОНЕЦ: СТИЛИ ДЛЯ АНИМИРОВАННОГО ФОНА --- */
+
+.video-container {
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  /* Это свойство критически важно! Оно обрезает всё, что выходит за рамки контейнера. 
+     У вас оно уже добавлено через Tailwind класс 'overflow-hidden', но для ясности вот оно. */
+  overflow: hidden;
+}
+
+.youtube-video {
+  width: 100%;
+  height: 100%;
+  /* --- ВОТ ОНО, РЕШЕНИЕ --- */
+  /* Мы немного (на 10%) увеличиваем масштаб самого iframe. */
+  /* Черные полосы теперь существуют, но за пределами видимой области. */
+  transform: scale(1.02);
+}
+
+
+/* Стили для "стеклянной" панели остаются без изменений */
+.glass-panel {
+  background: rgba(17, 24, 39, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(107, 114, 128, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}

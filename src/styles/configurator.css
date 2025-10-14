@@ -1,6 +1,5 @@
 body {
     font-family: 'Inter', sans-serif;
-    background-color: #111827; /* gray-900 */
     color: #E5E7EB; /* gray-200 */
     scroll-behavior: smooth;
 }
@@ -35,27 +34,29 @@ section .relative {
 
 /* --- КОНЕЦ ЗАМЕНЫ --- */
 
-.config-card, .summary-card, .program-card {
-    background-color: #1F2937; /* gray-800 */
-    border: 1px solid #374151; /* gray-700 */
+.config-card, .summary-card, .program-card, .modal-content, .toast, .floating-summary-bar {
+    background: rgba(17, 24, 39, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(107, 114, 128, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
 }
 /* === НАЧАЛО ИСПРАВЛЕННОГО БЛОКА: Плавные переходы для карточек === */
 
 /* --- Карточки опций (Часы, Техника) --- */
 .option-card {
-    background-color: #374151; /* gray-700 */
-    border: 1px solid #4B5563; /* gray-600 */
+    background: rgba(107, 114, 128, 0.15);
+    border: 1px solid rgba(107, 114, 128, 0.2);
     cursor: pointer;
     position: relative;
     padding: 1rem;
     border-radius: 0.5rem;
-    /* Анимация для всех изменяемых свойств */
     transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
 }
 .option-card.selected {
     border-color: #3B82F6; /* blue-500 */
     box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
-    background-color: #1F2937; /* gray-800 */
+    background: rgba(59, 130, 246, 0.15);
 }
 .option-card:hover:not(.selected):not(.disabled) {
     border-color: #6B7280; /* gray-500 */
@@ -70,8 +71,8 @@ section .relative {
 
 /* --- Карточки креативов (AI, Eminem) в модальных окнах --- */
 .creative-card {
-    background-color: #1F2937;
-    border: 1px solid #4B5563;
+    background: rgba(107, 114, 128, 0.15);
+    border: 1px solid rgba(107, 114, 128, 0.2);
     border-radius: 0.75rem;
     padding: 1.25rem;
     cursor: pointer;
@@ -108,8 +109,8 @@ section .relative {
 
 /* --- Карточки треков (Рэп-калькулятор) --- */
 .track-card {
-    background-color: #374151;
-    border: 1px solid #4B5563;
+    background: rgba(107, 114, 128, 0.15);
+    border: 1px solid rgba(107, 114, 128, 0.2);
     cursor: pointer;
     /* Анимация для фона и рамки */
     transition: background-color 0.3s ease, border-color 0.3s ease;
@@ -120,7 +121,7 @@ section .relative {
 }
 .track-card.selected {
     border-color: #10B981; /* emerald-500 */
-    background-color: #1F2937;
+    background-color: rgba(16, 185, 129, 0.1);
 }
 .track-card.disabled {
     opacity: 0.5;
@@ -293,8 +294,7 @@ section .relative {
 .modal-footer {
     padding: 1.5rem 2rem;
     border-top: 1px solid #374151;
-    background-color: rgba(31, 41, 55, 0.5);
-    backdrop-filter: blur(5px);
+    background-color: transparent;
     flex-shrink: 0;
     display: flex;
     justify-content: space-between;
@@ -881,18 +881,18 @@ section .relative {
 
 /* Стили для инпута ретуши (+/-) */
 .retouch-control-btn {
-    background-color: #374151; /* gray-700 */
+    background-color: rgba(107, 114, 128, 0.2);
     color: #E5E7EB; /* gray-200 */
-    border: 1px solid #4B5563; /* gray-600 */
+    border: 1px solid rgba(107, 114, 128, 0.3);
     transition: background-color 0.2s ease;
 }
 .retouch-control-btn:hover {
-    background-color: #4B5563; /* gray-600 */
+    background-color: rgba(107, 114, 128, 0.4);
 }
 .retouch-input-field {
-    background-color: #1F2937; /* gray-800 */
-    border-top: 1px solid #4B5563;
-    border-bottom: 1px solid #4B5563;
+    background-color: transparent;
+    border-top: 1px solid rgba(107, 114, 128, 0.3);
+    border-bottom: 1px solid rgba(107, 114, 128, 0.3);
     color: #F9FAFB; /* gray-50 */
     font-weight: 600;
 }
@@ -1067,3 +1067,12 @@ section .relative {
   text-align: left; /* Выравнивание текста уведомления */
   font-size: 0.8rem;
 }
+/* --- НАЧАЛО: НОВЫЙ СТИЛЬ ДЛЯ СТЕКЛЯННЫХ ПОЛЕЙ ВВОДА --- */
+.glass-input {
+    background: rgba(17, 24, 39, 0.6) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(107, 114, 128, 0.3) !important;
+    color: #E5E7EB !important;
+}
+/* --- КОНЕЦ: НОВЫЙ СТИЛЬ ДЛЯ СТЕКЛЯННЫХ ПОЛЕЙ ВВОДА --- */

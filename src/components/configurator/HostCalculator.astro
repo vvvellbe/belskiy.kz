@@ -28,11 +28,11 @@
                     
                     <div>
                         <label class="block text-sm font-medium text-gray-300 mb-2">1. Дата мероприятия?</label>
-                        <input type="date" id="event-date" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-2.5 text-white focus:ring-blue-500 focus:border-blue-500">
+                        <input type="date" id="event-date" class="glass-input w-full rounded-lg p-2.5 text-white focus:ring-blue-500 focus:border-blue-500">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-300 mb-2">2. Тип площадки?</label>
-                        <select id="venue-type" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-2.5 text-white focus:ring-blue-500 focus:border-blue-500">
+                        <select id="venue-type"class="glass-input w-full rounded-lg p-2.5 text-white focus:ring-blue-500 focus:border-blue-500">
                             <option value="chamber">Камерная (VIP-кабина / школьный класс)</option>
                             <option value="standard" selected>Стандартная (небольшое кафе / малый-средний зал)</option>
                             <option value="large">Открытая / Большая (терраса / большой зал ресторана)</option>
@@ -40,7 +40,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-300 mb-2">3. Количество гостей?</label>
-                        <select id="guest-count" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-2.5 text-white focus:ring-blue-500 focus:border-blue-500">
+                        <select id="guest-count" class="glass-input w-full rounded-lg p-2.5 text-white focus:ring-blue-500 focus:border-blue-500">
                             <option value="1-40">до 40</option>
                             <option value="41-80">41 - 80</option>
                             <option value="81-150">81 - 150</option>
@@ -48,7 +48,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-300 mb-2">4. Есть ли оборудование у площадки?</label>
-                        <select id="venue-gear" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-2.5 text-white focus:ring-blue-500 focus:border-blue-500">
+                        <select id="venue-gear" class="glass-input w-full rounded-lg p-2.5 text-white focus:ring-blue-500 focus:border-blue-500">
                             <option value="none">Ничего нет</option>
                             <option value="sound_only">Есть только звук (без DJ)</option>
                             <option value="full_dj_set">Есть всё (звук и DJ)</option>
@@ -56,7 +56,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-300 mb-2">5. Есть ли в заведении экран?</label>
-                        <div class="flex items-center space-x-3 bg-gray-700 border border-gray-600 rounded-lg p-1 w-min">
+                        <div class="glass-input flex items-center space-x-3 rounded-lg p-1 w-min">
                             <button data-value="no" class="screen-toggle-btn active px-4 py-1.5 rounded-md text-sm font-semibold transition-colors">Нет</button>
                             <button data-value="yes" class="screen-toggle-btn px-4 py-1.5 rounded-md text-sm font-semibold transition-colors">Да</button>
                         </div>
@@ -65,7 +65,7 @@
                         <label class="block text-sm font-medium text-gray-300 mb-2">
                         <i class="text-cyan-400"></i>6. Нужен ли фотограф?
                         </label>
-                        <div class="flex items-center space-x-3 bg-gray-700 border border-gray-600 rounded-lg p-1 w-min">
+                        <div class="glass-input flex items-center space-x-3 rounded-lg p-1 w-min">
                             <button data-value="no" class="photographer-toggle-btn active px-4 py-1.5 rounded-md text-sm font-semibold transition-colors">Нет</button>
                             <button data-value="yes" class="photographer-toggle-btn px-4 py-1.5 rounded-md text-sm font-semibold transition-colors">Да</button>
                         </div>
@@ -165,7 +165,7 @@
                         </div>
                         <div>
                             <p class="text-base font-semibold text-gray-200 mb-2">Ретушь фотографий</p>
-                            <div class="bg-gray-700/60 p-3 rounded-lg flex items-center justify-between mb-4">
+                            <div class="glass-input p-3 rounded-lg flex items-center justify-between mb-4">
                                 <div class="relative flex items-center gap-x-2" id="retouch-info-container">
                                     <i class="fas fa-info-circle text-cyan-400 cursor-pointer text-lg"></i>
                                     <p class="text-sm text-gray-300">
