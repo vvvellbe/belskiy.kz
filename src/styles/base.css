@@ -1,12 +1,18 @@
 /* html { scroll-behavior: smooth; } */ /* Мы убрали это правило, чтобы избежать конфликтов */
 html, body { width: 100%; }
 body {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Roboto', sans-serif;
   background-color: #0a0a0a;
   color: #e0e0e0;
   overflow-x: hidden;
   box-sizing: border-box; 
 }
+
+/* --- НАЧАЛО: НОВЫЕ ШРИФТЫ --- */
+h1, h2, h3, h4, h5, h6, .section-title, .gradient-text {
+  font-family: 'Jost', sans-serif;
+}
+/* --- КОНЕЦ: НОВЫЕ ШРИФТЫ --- */
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 8px; }
