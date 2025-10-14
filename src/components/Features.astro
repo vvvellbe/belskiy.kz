@@ -1,27 +1,38 @@
 ---
-import Card from '../components/Card.astro';
+import VideoThumbnail from '../components/VideoThumbnail.astro';
 ---
 <section id="features" class="py-16 md:py-24">
   <div class="container mx-auto px-6 reveal">
-    <div class="text-center md:text-left">
-      <h2 class="section-title text-3xl md:text-4xl mb-12 gradient-text">Мои Фишки</h2>
-    </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      <Card align="left">
-        <h3 slot="title" class="text-4xl text-purple-400 mb-3 break-words">AI-Персонализация</h3>
-        Создаю уникальный контент (шутки, интерактивы, поздравления) с помощью AI, адаптированный под ваше мероприятие и гостей.
-      </Card>
+    <div class="glass-panel rounded-xl p-6 md:p-12">
+      
+      <div class="text-center md:text-left">
+        <h2 class="section-title text-3xl md:text-4xl mb-12 gradient-text">Мои Фишки</h2>
+      </div>
 
-      <Card align="left">
-        <h3 slot="title" class="text-4xl text-amber-400 mb-3 break-words">Эксклюзивные рэп-каверы</h3>
-        Зажгу ваше мероприятие фирменными рэп-выступлениями с песнями Эминема.
-      </Card>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+        
+        {/* 👇 ИЗМЕНЕНИЕ ЗДЕСЬ: убрали центрирование, добавили выравнивание по левому краю */}
+        <div class="flex flex-col text-left">
+          <VideoThumbnail videoUrl="https://www.youtube.com/watch?v=GWK6OLf6jTM" />
+          
+          <h3 class="text-3xl font-bold mt-6 mb-3">AI-интерактивы</h3>
+          <p class="text-gray-300">
+            Создаю уникальный контент с использованием искуственного интелекта, адаптированный под ваше мероприятие и гостей.
+          </p>
+        </div>
 
-      <Card align="left">
-        <h3 slot="title" class="text-4xl text-pink-400 mb-3 break-words">Интерактивные Шоу-Программы</h3>
-        Вовлекаю каждого гостя в процесс с помощью современных интерактивов и технологичных решений.
-      </Card>
+        {/* 👇 ИЗМЕНЕНИЕ ЗДЕСЬ: убрали центрирование, добавили выравнивание по левому краю */}
+        <div class="flex flex-col text-left">
+          <VideoThumbnail videoUrl="https://www.youtube.com/watch?v=8Y8Nw49FCaA" />
+          
+          <h3 class="text-3xl font-bold mt-6 mb-3">Эксклюзивные рэп-каверы</h3>
+          <p class="text-gray-300">
+            Зажгу ваше мероприятие фирменными рэп-выступлениями с песнями Эминема.
+          </p>
+        </div>
+
+      </div>
     </div>
   </div>
 </section>
