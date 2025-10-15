@@ -602,38 +602,83 @@ function renderEminemModal() {
             DOMElements.totalPriceEl.textContent = `${Math.round(total).toLocaleString('ru-RU')} ₸`; selection.totalPrice = Math.round(total);
             updateFloatingBarUI(total, getItemsCount());
         }
-        function generatePlainTextQuote() {
-            // --- ИЗМЕНЕНИЕ: Добавляем дату и тариф в заявку ---
-            let messageParts = ["Здравствуйте, Валерий!", "Сформировал(а) смету на belskiy.kz:\n"];
-            if (selection.eventDate) {
-                const [year, month, day] = selection.eventDate.split('-');
-                messageParts.push(`*ДАТА МЕРОПРИЯТИЯ: ${day}.${month}.${year}*`);
-            }
-            if (selection.isNewYearMode) {
-                messageParts.push(`*ТАРИФ: Новогодний*`);
-            }
-            messageParts.push(`\n*УСЛУГА: Ведущий мероприятий*`, `\n*ПАРАМЕТРЫ МЕРОПРИЯТИЯ:*`);
-            const paramText = { venueType: { 'chamber': 'Камерная', 'standard': 'Стандартная', 'large': 'Открытая/Большая' }, venueGear: { 'none': 'Ничего нет', 'sound_only': 'Только звук', 'full_dj_set': 'Есть всё' }, venueScreen: { 'no': 'Нет', 'yes': 'Да' } };
-            messageParts.push(`- Тип площадки: ${paramText.venueType[selection.venueType]}`); messageParts.push(`- Количество гостей: ${selection.guestCount}`); messageParts.push(`- Оборудование: ${paramText.venueGear[selection.venueGear]}`); messageParts.push(`- Экран: ${paramText.venueScreen[selection.venueScreen]}`);
-            let baseServices = [], techServices = [], creativeServices = [], photoServices = []; 
-            const isNY = selection.isNewYearMode;
-            const hostPriceSource = isNY ? PRICES.NEW_YEAR.HOST : PRICES.HOST;
-            if (hostPriceSource[selection.hostHours]) { 
-                baseServices.push(`- Ведущий (до ${selection.hostHours} ч): ${hostPriceSource[selection.hostHours].toLocaleString('ru-RU')} ₸`); 
-            }
-            if (selection.venueGear !== 'full_dj_set' && selection.techOption && PRICES.TECH[selection.techOption]) {
-                const techPrice = (isNY && PRICES.NEW_YEAR.TECH[selection.techOption])
-                                ? PRICES.NEW_YEAR.TECH[selection.techOption].price
-                                : PRICES.TECH[selection.techOption].price;
-                techServices.push(`- ${PRICES.TECH[selection.techOption].name}: ${techPrice.toLocaleString('ru-RU')} ₸`); 
-            }
-            if (selection.projectorNeeded) { techServices.push(`- ${PRICES.PROJECTOR.name}: ${PRICES.PROJECTOR.price.toLocaleString('ru-RU')} ₸`); }
-            if (selection.photographerNeeded === 'yes') { const photoHourPrice = selection.photographerHours * PRICES.PHOTOGRAPHER.baseHourRate; photoServices.push(`- Работа фотографа (${selection.photographerHours} ч): ${photoHourPrice.toLocaleString('ru-RU')} ₸`); if (selection.additionalRetouch > 0) { const additionalRetouchCost = selection.additionalRetouch * PRICES.PHOTOGRAPHER.additionalRetouchPrice; photoServices.push(`- Доп. ретушь (${selection.additionalRetouch} фото): ${additionalRetouchCost.toLocaleString('ru-RU')} ₸`); } }
-            Object.keys(selection.creative.ai_games || {}).filter(key => selection.creative.ai_games[key]).forEach(key => creativeServices.push(`- ${PRICES.CREATIVE.AI_GAMES[key].name}: ${PRICES.CREATIVE.AI_GAMES[key].price.toLocaleString('ru-RU')} ₸`));
-            const selectedTracks = Object.keys(selection.creative.eminem_tracks || {}); if (selectedTracks.length > 0) { messageParts.push('\n*СЕТ-ЛИСТ EMINEM TRIBUTE SHOW:*'); selectedTracks.forEach(id => messageParts.push(`- ${TRACK_LIST.find(t => t.id === id)?.name || ''}`)); messageParts.push(`- Стоимость блока: ${PRICES.CREATIVE.EMINEM.basePrice.toLocaleString('ru-RU')} ₸`); }
-            messageParts.push(`\n*ИТОГОВАЯ СТОИМОСТЬ: ${selection.totalPrice.toLocaleString('ru-RU')} ₸*`);
-            return messageParts.join('\n');
-        }
+function generatePlainTextQuote() {
+            let messageParts = ["Здравствуйте, Валерий!", "Сформировал(а) смету на belskiy.kz:\n"];
+            if (selection.eventDate) {
+                const [year, month, day] = selection.eventDate.split('-');
+                messageParts.push(`*ДАТА МЕРОПРИЯТИЯ: ${day}.${month}.${year}*`);
+            }
+            if (selection.isNewYearMode) {
+                messageParts.push(`*ТАРИФ: Новогодний*`);
+            }
+            messageParts.push(`\n*УСЛУГА: Ведущий мероприятий*`, `\n*ПАРАМЕТРЫ МЕРОПРИЯТИЯ:*`);
+            const paramText = { venueType: { 'chamber': 'Камерная', 'standard': 'Стандартная', 'large': 'Открытая/Большая' }, venueGear: { 'none': 'Ничего нет', 'sound_only': 'Только звук', 'full_dj_set': 'Есть всё' }, venueScreen: { 'no': 'Нет', 'yes': 'Да' } };
+            messageParts.push(`- Тип площадки: ${paramText.venueType[selection.venueType]}`);
+            messageParts.push(`- Количество гостей: ${selection.guestCount}`);
+            messageParts.push(`- Оборудование и DJ от заведения: ${paramText.venueGear[selection.venueGear]}`);
+            messageParts.push(`- Экран в заведении: ${paramText.venueScreen[selection.venueScreen]}`);
+            // --- ВОТ НОВАЯ СТРОКА ---
+            messageParts.push(`- Фотограф: ${selection.photographerNeeded === 'yes' ? 'Нужен' : 'Не нужен'}`);
+            
+            let baseServices = [], techServices = [], creativeServices = [], photoServices = []; 
+            const isNY = selection.isNewYearMode;
+            const hostPriceSource = isNY ? PRICES.NEW_YEAR.HOST : PRICES.HOST;
+            
+            if (hostPriceSource[selection.hostHours]) { 
+                baseServices.push(`- Ведущий (до ${selection.hostHours} ч): ${hostPriceSource[selection.hostHours].toLocaleString('ru-RU')} ₸`); 
+            }
+            
+            if (selection.venueGear !== 'full_dj_set' && selection.techOption && PRICES.TECH[selection.techOption]) {
+                const techPrice = (isNY && PRICES.NEW_YEAR.TECH[selection.techOption])
+                                ? PRICES.NEW_YEAR.TECH[selection.techOption].price
+                                : PRICES.TECH[selection.techOption].price;
+                techServices.push(`- ${PRICES.TECH[selection.techOption].name}: ${techPrice.toLocaleString('ru-RU')} ₸`); 
+            }
+            
+            if (selection.projectorNeeded) { 
+                techServices.push(`- ${PRICES.PROJECTOR.name}: ${PRICES.PROJECTOR.price.toLocaleString('ru-RU')} ₸`); 
+            }
+            
+            if (selection.photographerNeeded === 'yes') { 
+                const photoHourPrice = selection.photographerHours * PRICES.PHOTOGRAPHER.baseHourRate; 
+                photoServices.push(`- Работа фотографа (${selection.photographerHours} ч): ${photoHourPrice.toLocaleString('ru-RU')} ₸`); 
+                if (selection.additionalRetouch > 0) { 
+                    const additionalRetouchCost = selection.additionalRetouch * PRICES.PHOTOGRAPHER.additionalRetouchPrice; 
+                    photoServices.push(`- Доп. ретушь (${selection.additionalRetouch} фото): ${additionalRetouchCost.toLocaleString('ru-RU')} ₸`); 
+                } 
+            }
+            
+            Object.keys(selection.creative.ai_games || {}).filter(key => selection.creative.ai_games[key]).forEach(key => {
+                creativeServices.push(`- ${PRICES.CREATIVE.AI_GAMES[key].name}: ${PRICES.CREATIVE.AI_GAMES[key].price.toLocaleString('ru-RU')} ₸`);
+            });
+
+            if (baseServices.length > 0) {
+                messageParts.push('\n*ПРОГРАММА ВЕДУЩЕГО:*');
+                messageParts.push(...baseServices);
+            }
+            if (techServices.length > 0) {
+                messageParts.push('\n*ТЕХНИЧЕСКОЕ ОСНАЩЕНИЕ:*');
+                messageParts.push(...techServices);
+            }
+            if (photoServices.length > 0) {
+                messageParts.push('\n*УСЛУГИ ФОТОГРАФА:*');
+                messageParts.push(...photoServices);
+            }
+            if (creativeServices.length > 0) {
+                messageParts.push('\n*КРЕАТИВНЫЕ ФИШКИ:*');
+                messageParts.push(...creativeServices);
+            }
+            
+            const selectedTracks = Object.keys(selection.creative.eminem_tracks || {}); 
+            if (selectedTracks.length > 0) { 
+                messageParts.push('\n*СЕТ-ЛИСТ EMINEM TRIBUTE SHOW:*'); 
+                selectedTracks.forEach(id => messageParts.push(`- ${TRACK_LIST.find(t => t.id === id)?.name || ''}`)); 
+                messageParts.push(`- Стоимость блока: ${PRICES.CREATIVE.EMINEM.basePrice.toLocaleString('ru-RU')} ₸`); 
+            }
+            
+            messageParts.push(`\n*ИТОГОВАЯ СТОИМОСТЬ: ${selection.totalPrice.toLocaleString('ru-RU')} ₸*`);
+            return messageParts.join('\n');
+        }
         function setupFloatingBar() {
             const bar = document.getElementById('host-floating-summary-bar'); const modal = document.getElementById('host-summary-modal'); const openBtn = document.getElementById('host-floating-open-modal'); const modalCopyBtn = document.getElementById('host-modal-copy-btn'); if (!bar || !modal || !openBtn || !modalCopyBtn) return;
             const openModal = () => { modal.classList.add('open'); document.body.classList.add('modal-open'); }; const closeModalFn = () => { modal.classList.remove('open'); document.body.classList.remove('modal-open'); };
