@@ -97,13 +97,13 @@
   z-index: 2;
 }
 
-/* 👇 ВОТ ЗДЕСЬ ИЗМЕНЕНИЯ ДЛЯ МОБИЛЬНЫХ ЭКРАНОВ 👇 */
+/* ИСПРАВЛЕННЫЙ КОД */
 @media (max-width: 768px) {
   .hero-text h1 {
-    font-size: 3.5rem; /* Раньше было 2.25rem */
+    font-size: 1rem;   /* <-- УМЕНЬШАЕМ размер для подзаголовка */
   }
   .hero-text p {
-    font-size: 1rem;
+    font-size: 3.5rem; /* <-- УВЕЛИЧИВАЕМ размер для вашего имени */
   }
   .typing-effect {
     white-space: normal;
