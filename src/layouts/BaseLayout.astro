@@ -13,7 +13,7 @@ import schemaImage from '../assets/valeriy-belskiy.jpg';
 import BottomNavBar from '../components/BottomNavBar.astro';
 // --- КОНЕЦ: НОВОЕ ИЗМЕНЕНИЕ ---
 
-const { title } = Astro.props;
+const { title, description } = Astro.props;
 
 // --- JSON-LD Схемы для SEO ---
 // Мы создаем объекты здесь, чтобы безопасно вставить их в HTML ниже
@@ -64,7 +64,7 @@ const serviceSchema = {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
-    <meta name="description" content="Валерий Бельский – современный ведущий мероприятий в Алматы с AI-персонализацией и яркими рэп-выступлениями. Организация незабываемых свадеб, юбилеев, корпоративов. Закажите ваше идеальное событие!" />
+    <meta name="description" content={description} />
 
     <meta property="og:title" content="Валерий Бельский - ведущий мероприятий Алматы" />
     <meta property="og:description" content="Современный ведущий мероприятий в Алматы с AI-персонализацией и яркими рэп-выступлениями. Закажите ваше идеальное событие!" />
