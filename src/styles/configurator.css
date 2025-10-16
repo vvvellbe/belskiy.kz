@@ -1,5 +1,4 @@
 body {
-    font-family: 'Inter', sans-serif;
     color: #E5E7EB; /* gray-200 */
     scroll-behavior: smooth;
 }
@@ -138,7 +137,6 @@ section .relative {
 }
 
 #summary-list, #host-modal-summary-content, #rap-modal-summary-content, #rap-summary-list {
-    font-family: 'Inter', sans-serif;
 }
 .summary-category {
     margin-bottom: 0.75rem;
