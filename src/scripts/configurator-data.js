@@ -1,6 +1,13 @@
-// src\scripts\configurator-data.js
+// src/scripts/configurator-data.js
+
 export const PRICES = {
     HOST: { '2': 80000, '4': 160000, '6': 240000 },
+    
+    HOST_LOCATION: {
+        'kz': { price: 300000, name: 'Выезд по РК' },
+        'intl': { price: 700, name: 'Международный выезд', currency: '$' }
+    },
+
     TECH: {
         COMPACT: { price: 20000, name: 'Комплект "Компакт"', desc: 'Аудиосистема JBL (без DJ)' },
         STANDARD: { price: 200000, name: 'Комплект "Стандарт"', desc: 'Профессиональный DJ + Звук' },
@@ -8,13 +15,26 @@ export const PRICES = {
         DJ_WORK_ONLY: { price: 130000, name: 'Работа DJ (на вашем звуке)'}
     },
     
+    // Выездной DJ по Казахстану (Тенге)
+    DJ_OUT: { price: 200000, name: 'Выездной DJ (KZ)', desc: 'Работа DJ на оборудовании заказчика' },
+    
+    // --- НОВОЕ: Выездной DJ Заграница (Доллары) ---
+    DJ_INTL: { price: 500, name: 'Выездной DJ (Intl)', desc: 'Работа DJ (International)', currency: '$' },
+    
     NEW_YEAR: {
         HOST: { '2': 280000, '4': 380000, '6': 480000 },
+        HOST_LOCATION: {
+            'kz': { price: 500000, name: 'Выезд по РК (NY)' },
+            'intl': { price: 1000, name: 'Международный выезд (NY)', currency: '$' }
+        },
         TECH: {
             STANDARD: { price: 250000 }, 
             MAXI: { price: 300000 },
             DJ_WORK_ONLY: { price: 200000 }
-        }
+        },
+        DJ_OUT: { price: 250000 },
+        // --- НОВОЕ: Новогодняя цена DJ (Доллары) ---
+        DJ_INTL: { price: 700 }
     },
 
     CREATIVE: {
@@ -29,10 +49,8 @@ export const PRICES = {
         },
         EMINEM: { name: 'Eminem Tribute Show', basePrice: 20000 }
     },
-    // Внутри объекта PRICES, после ключа PROJECTOR
     PROJECTOR: { price: 30000, name: 'Аренда проектора и экрана' },
 
-    // --- НАЧАЛО ВСТАВКИ ---
     PHOTOGRAPHER: {
         baseHourRate: 40000,
         additionalRetouchPrice: 2000
@@ -52,7 +70,6 @@ export const PRICES_RAP = {
     },
     LOCATION: {
         'kz': { name: 'Выступление по РК', fixedPrice: 160000, newYearPrice: 200000 },
-        // ДОБАВИЛИ newYearPrice: 700
         'intl': { name: 'Международное выступление', fixedPrice: 350, newYearPrice: 700, currency: '$' }
     }
 };
