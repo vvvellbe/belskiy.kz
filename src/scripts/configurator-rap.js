@@ -1,4 +1,3 @@
-/* === НАЧАЛО ИСПРАВЛЕННОГО ФАЙЛА configurator-rap.js === */
 function initializeRapCalculator() {
     const rapCalculatorContent = document.getElementById('rap-calculator-content');
     if (!rapCalculatorContent) return;
@@ -8,6 +7,7 @@ function initializeRapCalculator() {
 
     function initializeRapApp() {
         DOMElements = {
+            dateInput: document.getElementById('rap-event-date'), // НОВЫЙ ЭЛЕМЕНТ
             locationSelect: document.getElementById('rap-location'),
             trackListContainer: document.getElementById('track-list-container'),
             trackCards: document.querySelectorAll('#track-list-container .track-card'),
@@ -25,6 +25,8 @@ function initializeRapCalculator() {
             mode: 'rap',
             location: 'almaty',
             selectedTracks: {},
+            eventDate: null,       // НОВОЕ ПОЛЕ
+            isNewYearMode: false   // НОВЫЙ ФЛАГ
         };
 
         if (DOMElements.trackListContainer.childElementCount === 0) {
@@ -41,17 +43,14 @@ function initializeRapCalculator() {
         });
     }
 
-function populateStaticTrackList() {
+    function populateStaticTrackList() {
         if (!DOMElements.trackListContainer) return;
         let tracksHTML = '';
         TRACK_LIST.forEach(track => {
-            // --- НАЧАЛО ИЗМЕНЕНИЯ ---
-            // Меняем ссылку на кнопку, которая открывает модальное окно с видео
             const exampleButtonHTML = `
             <button class="btn-youtube text-xs" data-modal-trigger="videoModal" data-video-src="${track.url.split('v=')[1]}">
                 <i class="fab fa-youtube mr-1"></i> Пример
             </button>`;
-            // --- КОНЕЦ ИЗМЕНЕНИЯ ---
 
             tracksHTML += `
             <div class="track-card rounded-lg p-3" data-track-id="${track.id}">
@@ -71,21 +70,34 @@ function populateStaticTrackList() {
     }
 
 
-function setupEventListeners() {
+    function setupEventListeners() {
+        // --- НОВЫЙ СЛУШАТЕЛЬ ДАТЫ ---
+        if (DOMElements.dateInput) {
+            DOMElements.dateInput.addEventListener('change', (e) => {
+                const dateValue = e.target.value;
+                selection.eventDate = dateValue;
+                
+                if (dateValue) {
+                    // Месяцы с 0 (январь) по 11 (декабрь)
+                    const month = new Date(dateValue).getMonth();
+                    selection.isNewYearMode = (month === 11);
+                } else {
+                    selection.isNewYearMode = false;
+                }
+                updateRapSummary();
+            });
+        }
+
         DOMElements.locationSelect.addEventListener('change', (e) => {
             selection.location = e.target.value;
             updateRapSummary();
         });
         
         DOMElements.trackCards.forEach(card => {
-            // --- НАЧАЛО ИЗМЕНЕНИЯ ---
-            // Добавляем (e), чтобы отследить, куда именно кликнули
             card.addEventListener('click', (e) => {
-                // Если клик был по кнопке "Пример", ничего не делаем и выходим
                 if (e.target.closest('[data-modal-trigger="videoModal"]')) {
                     return;
                 }
-            // --- КОНЕЦ ИЗМЕНЕНИЯ ---
 
                 const trackId = card.dataset.trackId;
                 if (selection.selectedTracks[trackId]) {
@@ -115,27 +127,39 @@ function setupEventListeners() {
         });
     }
 
-    function updateRapSummary() {
+function updateRapSummary() {
         const trackCount = Object.keys(selection.selectedTracks).length;
         let currentTier, totalPrice, currency = '₸', travelInfo = null;
         const needsRider = ['kz', 'intl'].includes(selection.location);
+        
+        const activePrices = selection.isNewYearMode ? PRICES_RAP.NEW_YEAR : PRICES_RAP.TIERS;
 
         if (trackCount === 0) {
             currentTier = { name: 'Выберите треки', desc: 'Начните добавлять треки, чтобы сформировать пакет.' };
             totalPrice = 0;
-        } else if (trackCount <= PRICES_RAP.TIERS.START.tracks) {
-            currentTier = PRICES_RAP.TIERS.START;
-        } else if (trackCount <= PRICES_RAP.TIERS.DRIVE.tracks) {
-            currentTier = PRICES_RAP.TIERS.DRIVE;
+        } else if (trackCount <= activePrices.START.tracks) {
+            currentTier = activePrices.START;
+        } else if (trackCount <= activePrices.DRIVE.tracks) {
+            currentTier = activePrices.DRIVE;
         } else {
-            currentTier = PRICES_RAP.TIERS.PREMIUM;
+            currentTier = activePrices.PREMIUM;
         }
 
         if (selection.location === 'kz') {
-            totalPrice = PRICES_RAP.LOCATION.kz.fixedPrice;
+            if (selection.isNewYearMode && PRICES_RAP.LOCATION.kz.newYearPrice) {
+                 totalPrice = PRICES_RAP.LOCATION.kz.newYearPrice;
+            } else {
+                 totalPrice = PRICES_RAP.LOCATION.kz.fixedPrice;
+            }
             travelInfo = 'Стоимость для выездного мероприятия в другой город Казахстана фиксированная.';
         } else if (selection.location === 'intl') {
-            totalPrice = PRICES_RAP.LOCATION.intl.fixedPrice;
+            // --- ОБНОВЛЕННЫЙ БЛОК ДЛЯ МЕЖДУНАРОДНЫХ ВЫСТУПЛЕНИЙ ---
+            if (selection.isNewYearMode && PRICES_RAP.LOCATION.intl.newYearPrice) {
+                totalPrice = PRICES_RAP.LOCATION.intl.newYearPrice;
+            } else {
+                totalPrice = PRICES_RAP.LOCATION.intl.fixedPrice;
+            }
+            // ------------------------------------------------------
             currency = PRICES_RAP.LOCATION.intl.currency;
             travelInfo = 'Стоимость для выездного мероприятия в страну за пределами Казахстана фиксированная.';
         } else {
@@ -195,8 +219,11 @@ function setupEventListeners() {
         let summaryHtml = '';
         if (trackCount > 0 || ['kz', 'intl'].includes(selection.location)) {
             let activeTier = tier;
+            // Логика отображения названия пакета для выездных (всегда Премиум)
             if (selection.location === 'kz' || selection.location === 'intl') {
-                activeTier = PRICES_RAP.TIERS.PREMIUM;
+                 // Определяем, какой "Премиум" брать (обычный или новогодний) для названия
+                 const activePrices = selection.isNewYearMode ? PRICES_RAP.NEW_YEAR : PRICES_RAP.TIERS;
+                 activeTier = activePrices.PREMIUM;
             }
             summaryHtml += createSummaryCategory('Пакет выступления', 'fa-microphone-alt', [{ name: activeTier.name }]);
         }
@@ -218,7 +245,7 @@ function setupEventListeners() {
         }
     }
 
-function formatDuration(minSeconds, maxSeconds) {
+    function formatDuration(minSeconds, maxSeconds) {
         if (minSeconds === 0) return '0 мин. 00 сек.';
         
         const format = (s) => {
@@ -230,7 +257,6 @@ function formatDuration(minSeconds, maxSeconds) {
             const mDisplay = `${m} мин. `;
             const sDisplay = `${secs.toString().padStart(2, '0')} сек.`;
 
-            // Собираем строку, убирая лишние пробелы в начале, если часов нет
             return `${hDisplay}${mDisplay}${sDisplay}`.trim();
         };
 
@@ -251,15 +277,36 @@ function formatDuration(minSeconds, maxSeconds) {
 
     function generateRapPlainTextQuote() {
         let parts = ["Здравствуйте, Валерий!", "Сформировал(а) заявку на рэп-выступление на belskiy.kz:\n"];
-        parts.push(`*УСЛУГА: Рэп-исполнитель*`);
+        
+        // --- ДОБАВЛЕНИЕ ДАТЫ В ЗАЯВКУ ---
+        if (selection.eventDate) {
+            const [year, month, day] = selection.eventDate.split('-');
+            parts.push(`*ДАТА ВЫСТУПЛЕНИЯ: ${day}.${month}.${year}*`);
+        }
+        if (selection.isNewYearMode) {
+            parts.push(`*ТАРИФ: Новогодний*`);
+        }
+        
+        parts.push(`\n*УСЛУГА: Рэп-исполнитель*`);
         const locationMap = { almaty: 'В пределах г. Алматы', almaty_region: 'Алматинская область / Районы', kz: 'Другой город Казахстана', intl: 'Другая страна' };
         parts.push(`- Местоположение: ${locationMap[selection.location]}`);
+        
         const trackCount = Object.keys(selection.selectedTracks).length;
         const selectedTrackNames = Object.keys(selection.selectedTracks).map(id => TRACK_LIST.find(t => t.id === id)?.name).filter(Boolean);
-        if (selectedTrackNames.length > 0) { parts.push(`\n*ВЫБРАННЫЙ СЕТ-ЛИСТ (${trackCount} треков):*`); selectedTrackNames.forEach(name => parts.push(`- ${name}`)); } 
-        else if (selection.location === 'kz' || selection.location === 'intl') { parts.push(`- Пакет: Премиум (Полная программа)`); }
+        
+        if (selectedTrackNames.length > 0) { 
+            parts.push(`\n*ВЫБРАННЫЙ СЕТ-ЛИСТ (${trackCount} треков):*`); 
+            selectedTrackNames.forEach(name => parts.push(`- ${name}`)); 
+        } 
+        else if (selection.location === 'kz' || selection.location === 'intl') { 
+            parts.push(`- Пакет: Премиум (Полная программа)`); 
+        }
+        
         parts.push(`\n*ИТОГОВАЯ СТОИМОСТЬ: ${DOMElements.totalPrice.textContent}*`);
-        if (selection.location !== 'almaty') { parts.push("\n*Дополнительно оплачиваются расходы на логистику (проезд, проживание), согласно райдеру.*"); }
+        
+        if (selection.location !== 'almaty') { 
+            parts.push("\n*Дополнительно оплачиваются расходы на логистику (проезд, проживание), согласно райдеру.*"); 
+        }
         return parts.join('\n');
     }
 
@@ -280,10 +327,10 @@ function formatDuration(minSeconds, maxSeconds) {
         if (DOMElements.summaryCard) { summaryCardObserver.observe(DOMElements.summaryCard); }
     }
 
-    // --- ФИНАЛЬНОЕ ИСПРАВЛЕНИЕ ДЛЯ ПЛАВАЮЩЕЙ ПАНЕЛИ ---
     function updateFloatingBarUI(total, itemsCount, currency = '₸') {
         const bar = document.getElementById('rap-floating-summary-bar');
         if (!bar) return;
+        // Показываем бар, если есть треки ИЛИ если это выезд (где треки не влияют на цену, но заказ сформирован)
         const hasSelections = itemsCount > 0 || ['kz', 'intl'].includes(selection.location);
         const shouldBeVisible = hasSelections && rapCalculatorContent.classList.contains('active');
         
@@ -312,40 +359,27 @@ function formatDuration(minSeconds, maxSeconds) {
     function copyToClipboard(text) {
         navigator.clipboard.writeText(text).then(showToast, err => console.error('Не удалось скопировать', err));
     }
-    // --- ИЗМЕНЕНО: Обновленная функция для показа нотификатора с кнопкой WhatsApp ---
-function showToast() {
-  const toast = document.getElementById('toast-notification');
-  const whatsappBtn = document.getElementById('whatsapp-send-btn');
+    
+    function showToast() {
+      const toast = document.getElementById('toast-notification');
+      const whatsappBtn = document.getElementById('whatsapp-send-btn');
 
-  if (toast && whatsappBtn) {
-    // Параметры для WhatsApp
-    const phoneNumber = '77079292980'; // Номер в международном формате без +, скобок и дефисов
-    const invitationText = 'Вставьте скопированную заявку сюда.';
-    
-    // Кодируем текст для URL
-    const encodedText = encodeURIComponent(invitationText);
-    
-    // Формируем ссылку
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedText}`;
-    
-    // Устанавливаем ссылку на кнопку
-    whatsappBtn.href = whatsappUrl;
-    
-    // Показываем нотификатор
-    toast.classList.add('show');
-    
-    // Скрываем нотификатор через 6 секунд
-    setTimeout(() => {
-      toast.classList.remove('show');
-    }, 6000);
-  }
-}
-// --- КОНЕЦ ИЗМЕНЕНИЙ ---
+      if (toast && whatsappBtn) {
+        const phoneNumber = '77079292980'; 
+        const invitationText = 'Вставьте скопированную заявку сюда.';
+        const encodedText = encodeURIComponent(invitationText);
+        const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedText}`;
+        whatsappBtn.href = whatsappUrl;
+        toast.classList.add('show');
+        setTimeout(() => {
+          toast.classList.remove('show');
+        }, 6000);
+      }
+    }
 
     initializeRapApp();
 }
 
 document.addEventListener('astro:page-load', initializeRapCalculator);
 
-// Вызываем функцию и при первой загрузке
 initializeRapCalculator();

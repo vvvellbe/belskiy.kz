@@ -1032,7 +1032,8 @@ section .relative {
 /* * Этот блок нацелен на браузеры на движке WebKit (Chrome, Safari, Edge).
  * Он "находит" иконку календаря внутри поля ввода...
 */
-#event-date::-webkit-calendar-picker-indicator {
+#event-date::-webkit-calendar-picker-indicator,
+#rap-event-date::-webkit-calendar-picker-indicator {
   /* ... и применяет к ней фильтр, который инвертирует цвета. 
      Так чёрный цвет иконки становится белым. */
   filter: invert(1);

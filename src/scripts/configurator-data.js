@@ -45,9 +45,15 @@ export const PRICES_RAP = {
         'DRIVE': { name: 'Пакет "Драйв"', price: 100000, tracks: 14, desc: 'Оптимальный набор для полноценного шоу (6-14 треков).' },
         'PREMIUM': { name: 'Пакет "Премиум"', price: 160000, tracks: 38, desc: 'Максимальный заряд энергии на весь вечер (15-38 треков).' }
     },
+    NEW_YEAR: {
+        'START': { name: 'Пакет "Старт" (New Year)', price: 80000, tracks: 5, desc: 'Новогодний тариф: Яркое начало праздника.' },
+        'DRIVE': { name: 'Пакет "Драйв" (New Year)', price: 150000, tracks: 14, desc: 'Новогодний тариф: Оптимальное шоу.' },
+        'PREMIUM': { name: 'Пакет "Премиум" (New Year)', price: 200000, tracks: 38, desc: 'Новогодний тариф: Максимальный разнос.' }
+    },
     LOCATION: {
-        'kz': { name: 'Выступление по РК', fixedPrice: 160000 },
-        'intl': { name: 'Международное выступление', fixedPrice: 350, currency: '$' }
+        'kz': { name: 'Выступление по РК', fixedPrice: 160000, newYearPrice: 200000 },
+        // ДОБАВИЛИ newYearPrice: 700
+        'intl': { name: 'Международное выступление', fixedPrice: 350, newYearPrice: 700, currency: '$' }
     }
 };
 
