@@ -1,0 +1,99 @@
+---
+interface Props {
+  title?: string;
+  icon?: string;
+  href?: string;
+  align?: 'left' | 'center';
+  padding?: string;
+  rounded?: string;
+  as?: string;
+  class?: string;
+}
+const {
+  title,
+  icon,
+  href,
+  align = 'left',
+  padding = 'p-6',
+  rounded = 'rounded-xl',
+  as = 'article',
+  class: className,
+  ...attrs
+} = Astro.props as Props;
+
+const alignClass = align === 'center' ? 'text-center' : 'text-left';
+// кастим к any чтобы TS не жаловался при динамическом рендере
+const Tag: any = as;
+---
+
+{href ? (
+  <a href={href} class={`block ${className || ''}`}>
+    <Tag class={`card ${alignClass} ${padding} ${rounded}`} {...attrs}>
+      <slot name="icon">
+        {icon && <div class="icon-wrapper"><i class={icon}></i></div>}
+      </slot>
+
+      <slot name="title">
+        {title && <h3 class="card-title">{title}</h3>}
+      </slot>
+
+      <div class="card-content">
+        <slot />
+      </div>
+
+      <slot name="cta" />
+    </Tag>
+  </a>
+) : (
+  <Tag class={`card ${alignClass} ${padding} ${rounded} ${className || ''}`} {...attrs}>
+    <slot name="icon">
+      {icon && <div class="icon-wrapper"><i class={icon}></i></div>}
+    </slot>
+
+    <slot name="title">
+      {title && <h3 class="card-title">{title}</h3>}
+    </slot>
+
+    <div class="card-content">
+      <slot />
+    </div>
+
+    <slot name="cta" />
+  </Tag>
+)}
+
+<style>
+ .card {
+    /* Это наш новый 'стеклянный' стиль */
+    background: rgba(17, 24, 39, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(107, 114, 128, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.4s ease;
+    height: 100%; /* Чтобы все карточки в ряду были одной высоты */
+ }
+
+ .card:hover {
+    transform: translateY(-12px) perspective(1200px) rotateX(2deg) rotateY(2deg) scale(1.03);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+    border-color: rgba(0, 255, 255, 0.3);
+ }
+
+ .icon-wrapper {
+    font-size: 3rem;
+    line-height: 1;
+    color: #22d3ee;
+    margin-bottom: 1rem;
+ }
+
+ .card-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+ }
+
+ .card-content {
+    color: #e5e7eb;
+ }
+</style>

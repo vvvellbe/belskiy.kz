@@ -1,0 +1,39 @@
+---
+// 1. Импортируем наш новый компонент для превью видео
+import VideoThumbnail from '../components/VideoThumbnail.astro';
+---
+<section id="about" class="py-16 md:py-24">
+  <div class="container mx-auto px-6 reveal">
+
+    <div class="glass-panel rounded-xl p-6 md:p-12">
+
+      <div class="text-center md:text-left">
+        <h2 class="section-title text-3xl md:text-4xl mb-12 gradient-text">Кто Я?</h2>
+      </div>
+      
+      <div class="flex flex-col md:flex-row items-center gap-8 md:gap-12">
+        
+        <div class="w-full md:w-1/2">
+          {/* 2. Заменяем старый <iframe> на наш новый компонент.
+            Мы просто передаем ему ссылку на нужное видео.
+          */}
+          <VideoThumbnail videoUrl="https://www.youtube.com/watch?v=GM-hmjY3Ra0" />
+        </div>
+
+        <div class="w-full md:w-1/2">
+          <h3 class="text-2xl md:text-3xl font-bold mb-4">Меня зовут Валерий!</h3>
+          <p class="mb-4 text-lg">
+            Я превращу ваше мероприятие в праздник, о котором будут говорить еще долго!
+          </p>
+          <p class="mb-4 text-lg">
+            Забудьте о неловких конкурсах и пошлых шутках - вместо этого современный юмор, зажигательные треки Эминема в моем исполнении и крутые интерактивы с нейросетями, где каждый гость станет звездой вечера.
+          </p>
+          <p class="text-lg">
+            Давайте вместе создадим событие, где комфорт и веселье главные правила!
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

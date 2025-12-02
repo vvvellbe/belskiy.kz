@@ -1,0 +1,114 @@
+<section id="hero" class="min-h-screen flex items-center justify-center text-center p-6 pt-20 md:pt-6 relative overflow-hidden">
+    <div id="hero-video-background" class="absolute top-0 left-0 w-full h-full z-0">
+        <video id="hero-video-1" class="hero-video active" loop playsinline muted preload="auto" autoplay>
+            <source src="/assets/videos/hero-video-1.mp4" type="video/mp4">
+            Ваш браузер не поддерживает видео HTML5.
+        </video>
+        <div class="video-overlay absolute top-0 left-0 w-full h-full"></div>
+    </div>
+
+    <div class="hero-text relative z-10">
+        <p class="text-7xl sm:text-8xl md:text-9xl lg:text-[10rem] font-extrabold mb-4">
+            <span class="gradient-text">Валерий Бельский</span>
+        </p>
+
+        <h1 class="text-xl sm:text-2xl md:text-3xl mb-2">Ведущий и рэп-исполнитель из Алматы</h1>
+
+        <div id="typing-subtitle-container" class="text-lg sm:text-xl md:text-2xl mb-8 min-h-14 md:min-h-8 flex items-center justify-center">
+            <span id="typing-subtitle" class="font-semibold text-cyan-400 typing-effect"></span>
+        </div>
+
+        <a href="https://wa.me/77079292980?text=Здравствуйте%2C%20Валерий!%20Хотел%20бы%20обсудить%20организацию%20мероприятия." target="_blank" rel="noopener noreferrer" id="heroCtaButton" class="btn-primary text-xl md:text-2xl font-semibold py-4 md:py-5 px-10 md:px-12 rounded-lg inline-block transition-all duration-300 ease-out">Заказать Мероприятие</a>
+    </div>
+</section>
+
+<script>
+  // Скрипт остается без изменений, его можно не трогать
+  document.addEventListener('DOMContentLoaded', () => {
+    const subtitleElement = document.getElementById('typing-subtitle')!;
+    if (!subtitleElement) {
+      return; 
+    }
+    const subtitles = [
+      'Интерактивы с AI',
+      'Каверы на Eminem',
+      'Персонализированные сценарии'
+    ];
+    let subtitleIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+    function type() {
+      const currentSubtitle = subtitles[subtitleIndex];
+      if (isDeleting) {
+        subtitleElement.textContent = currentSubtitle.substring(0, charIndex - 1);
+        charIndex--;
+      } else {
+        subtitleElement.textContent = currentSubtitle.substring(0, charIndex + 1);
+        charIndex++;
+      }
+      if (!isDeleting && charIndex === currentSubtitle.length) {
+        isDeleting = true;
+        setTimeout(type, 2000);
+      } else if (isDeleting && charIndex === 0) {
+        isDeleting = false;
+        subtitleIndex = (subtitleIndex + 1) % subtitles.length;
+        setTimeout(type, 500);
+      } else {
+        setTimeout(type, isDeleting ? 75 : 150);
+      }
+    }
+    type();
+  });
+</script>
+
+<style>
+  #hero-video-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+}
+.hero-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  transform: translateX(-50%) translateY(-50%);
+  object-fit: cover;
+  opacity: 1;
+}
+.video-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+.hero-text {
+  position: relative;
+  z-index: 2;
+}
+
+/* ИСПРАВЛЕННЫЙ КОД */
+@media (max-width: 768px) {
+  .hero-text h1 {
+    font-size: 1rem;
+  }
+  .hero-text p {
+    font-size: 4rem;
+  }
+  .typing-effect {
+    white-space: normal;
+    border-right: none;
+    animation: none;
+  }
+}
+</style>

@@ -1,0 +1,47 @@
+---
+interface Props {
+  title: string;
+  videoSrc: string; // YouTube ID или полный Instagram embed
+}
+const { title, videoSrc } = Astro.props as Props;
+---
+
+<div class="portfolio-item rounded-lg overflow-hidden shadow-xl group">
+  <a
+    href="#"
+    class="portfolio-video-link block relative aspect-video overflow-hidden"
+    data-modal-trigger="videoModal"
+    data-video-src={videoSrc}
+  >
+    <div class="relative z-10 w-full h-full flex items-center justify-center p-3 sm:p-4 transition-transform duration-300 ease-in-out group-hover:scale-105">
+      <span class="block text-3xl sm:text-4xl font-bold text-cyan-400 text-center leading-tight">
+        {title}
+      </span>
+    </div>
+
+    <div class="absolute inset-0 z-20 bg-opacity-0 group-hover:bg-opacity-60 flex items-center justify-center transition-all duration-300 ease-in-out">
+      <i class="fas fa-play text-white text-4xl opacity-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300 ease-in-out play-icon"></i>
+    </div>
+  </a>
+</div>
+
+<style>
+ .portfolio-item {
+    background: rgba(17, 24, 39, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(107, 114, 128, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+    transition: box-shadow 0.4s ease, border-color 0.4s ease;
+ }
+ .portfolio-item:hover {
+    border-color: rgba(0, 255, 255, 0.3);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+ }
+ .portfolio-video-link .play-icon {
+    transition: transform 0.3s ease;
+ }
+ .portfolio-video-link:hover .play-icon {
+    transform: scale(1.2);
+ }
+</style>

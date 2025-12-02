@@ -1,0 +1,200 @@
+---
+// Подключаем стили
+import '../styles/global.css';
+import '../styles/base.css';
+import '../styles/modal.css';
+
+// Импортируем изображения для их оптимизации Astro
+import ogImage from '../assets/valeriy-belskiy-og.jpg';
+import schemaImage from '../assets/valeriy-belskiy.jpg';
+
+// --- НАЧАЛО: НОВОЕ ИЗМЕНЕНИЕ ---
+// 1. Импортируем наш новый компонент
+import BottomNavBar from '../components/BottomNavBar.astro';
+// --- КОНЕЦ: НОВОЕ ИЗМЕНЕНИЕ ---
+
+const { title, description } = Astro.props;
+
+// --- JSON-LD Схемы для SEO ---
+// Мы создаем объекты здесь, чтобы безопасно вставить их в HTML ниже
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Валерий Бельский",
+  "jobTitle": "Ведущий мероприятий",
+  "description": "Современный ведущий мероприятий в Алматы с AI-персонализацией и яркими рэп-выступлениями. Алматинский Эминем.",
+  "image": new URL(schemaImage.src, Astro.site).href, // Astro создаст полную ссылку на оптимизированное изображение
+  "url": "https://belskiy.kz",
+  "sameAs": ["https://www.instagram.com/vvvellbe", "https://t.me/VVVELLBE", "https://www.tiktok.com/@vvvellbe", "https://wa.me/77079292980", "https://www.youtube.com/@VVVELLBE"],
+  "knowsAbout": ["Ведение мероприятий", "Организация праздников", "AI персонализация контента", "Рэп выступления", "Свадьбы", "Юбилеи", "Корпоративы", "Выпускные", "Годики (1 жас)"],
+  "nationality": { "@type": "Country", "name": "Kazakhstan" },
+  "birthDate": "1998-10-15",
+  "gender": "https://schema.org/Male",
+  "address": { "@type": "PostalAddress", "addressLocality": "Алматы", "addressCountry": "KZ" }
+};
+
+const serviceSchema = {
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "name": "Валерий Бельский - Ведущий Мероприятий в Алматы",
+  "alternateName": "Алматинский Эминем",
+  "image": new URL(schemaImage.src, Astro.site).href, // Astro создаст полную ссылку на оптимизированное изображение
+  "url": "https://belskiy.kz",
+  "telephone": "+77079292980",
+  "email": "vvvellbe@gmail.com",
+  "address": { "@type": "PostalAddress", "addressLocality": "Алматы", "addressCountry": "KZ" },
+  "areaServed": { "@type": "City", "name": "Алматы" },
+  "description": "Профессиональный ведущий мероприятий в Алматы. Уникальные шоу-программы с AI-персонализацией и рэп-выступлениями для свадеб, юбилеев, корпоративов и других событий.",
+  "priceRange": "от 120 000 ₸",
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Услуги ведущего мероприятий",
+    "itemListElement": [
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Ведение Свадеб" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Ведение Юбилеев" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Ведение Корпоративов" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Ведение Выпускных" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Ведение Годиков (1 жас)" } }
+    ]
+  },
+  "potentialAction": { "@type": "OrderAction", "target": "https://wa.me/77079292980?text=Здравствуйте%2C%20Валерий!%20Хотел%20бы%20обсудить%20организацию%20мероприятия." }
+};
+---
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <meta property="og:title" content="Валерий Бельский - ведущий мероприятий Алматы" />
+    <meta property="og:description" content="Современный ведущий мероприятий в Алматы с AI-персонализацией и яркими рэп-выступлениями. Закажите ваше идеальное событие!" />
+    <meta property="og:image" content={new URL(ogImage.src, Astro.site).href} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Фото Валерия Бельского - ведущего мероприятий в Алматы" />
+    <meta property="og:url" content="https://belskiy.kz" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:site_name" content="Валерий Бельский - Ведущий Мероприятий" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@vvvellbe" />
+    <meta name="twitter:title" content="Валерий Бельский - ведущий мероприятий Алматы" />
+    <meta name="twitter:description" content="Современный ведущий мероприятий в Алматы с AI-персонализацией и яркими рэп-выступлениями." />
+    <meta name="twitter:image" content={new URL(ogImage.src, Astro.site).href} />
+    <meta name="yandex-verification" content="f6e98278c5ac3409" />
+
+    <script is:inline>
+        (function (w, d, s, l, i) {
+            w[l] = w[l] || [];
+            w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+            var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s),
+                dl = l != 'dataLayer' ? '&l=' + l : '';
+            j.async = true;
+            j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+            f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-KBVB6P68');
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;700;900&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="icon" href="/favicon.png" type="image/png" />
+
+    <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+</head>
+
+<body class="body-preloading">
+    
+    <div class="background-container">
+        <div class="blob color-1"></div>
+        <div class="blob color-2"></div>
+        <div class="blob color-3"></div>
+    </div>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KBVB6P68" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KBVB6P68" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    
+    <div id="preloader">
+      <div class="loader-container">
+        <div class="loader"></div>
+        <div id="progress-bar-container">
+          <div id="progress-bar"></div>
+        </div>
+        <div id="progress-text">0%</div>
+        <p class="loading-text">Загрузка сайта...</p>
+      </div>
+    </div>
+
+    <slot />
+
+    <div id="videoModal" class="modal-overlay">
+      <div class="modal-content bg-slate-900/95 p-1 sm:p-2 rounded-lg shadow-2xl w-full max-w-5xl relative border border-cyan-700/30">
+        <button class="modal-close-btn">×</button>
+        <div class="video-iframe-container rounded-md overflow-hidden">
+          <iframe id="videoIframe" class="w-full h-full" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+
+    <div id="riderModal" class="modal-overlay">
+      <div class="modal-content bg-slate-900/95 p-6 sm:p-8 rounded-lg shadow-2xl w-full max-w-3xl relative border border-purple-700/30">
+        <button class="modal-close-btn">×</button>
+        <h2 class="text-3xl font-bold mb-6 text-center gradient-text">Райдер для организаторов</h2>
+        <div class="rider-content-container max-h-[70vh] overflow-y-auto pr-4 text-gray-300">
+          <div class="mb-4">
+            <h4 class="text-xl font-semibold text-purple-400 mb-2">1. Техническое обеспечение:</h4>
+            <ul class="list-disc list-inside space-y-1">
+              <li><strong>Оборудование:</strong> Звуковая система, соответствующая площадке; высококачественный вокальный микрофон; система сценического мониторинга (приёмник+наушники); сцена необходимого размера; базовое сценическое освещение.</li>
+              <li><strong>Обсуждение альтернатив:</strong> При невозможности выполнить какой-либо пункт райдера, обсудить и согласовать приемлемые альтернативы.</li>
+              <li><strong>Саундчек:</strong> Выделить и гарантировать достаточное время для проведения полноценного саундчека по прибытии на площадку.</li>
+            </ul>
+          </div>
+          <div class="mb-4">
+            <h4 class="text-xl font-semibold text-purple-400 mb-2">2. Логистика:</h4>
+            <ul class="list-disc list-inside space-y-1">
+              <li><strong>Проезд:</strong> Организовать и оплатить проезд и багаж (авиа или ж/д) в обе стороны для двух человек (исполнитель и контент-мейкер). Предоставить билеты заблаговременно.</li>
+              <li><strong>Проживание:</strong> Забронировать и оплатить проживание в отеле (не ниже 3 звезд) на весь период поездки для двух человек в одном номере.</li>
+              <li><strong>Местный транспорт:</strong> Организовать и оплатить все необходимые передвижения по городу (трансферы аэропорт/вокзал → отель, отель → площадка и обратно).</li>
+              <li><strong>Питание / Суточные:</strong> Обеспечить питание или выплатить суточные в размере, согласованном в договоре, на весь период поездки для двух человек.</li>
+            </ul>
+          </div>
+          <div class="mb-4">
+            <h4 class="text-xl font-semibold text-purple-400 mb-2">3. Разрешение на создание контента:</h4>
+            <ul class="list-disc list-inside space-y-1">
+              <li><strong>Разрешения:</strong> Предоставить разрешение контент-мейкеру на видеосъемку во время выступления, саундчека и за кулисами, а также разрешение на публикацию материала.</li>
+            </ul>
+          </div>
+          <div class="mb-4">
+            <h4 class="text-xl font-semibold text-purple-400 mb-2">4. Финансовые условия:</h4>
+            <ul class="list-disc list-inside space-y-1">
+              <li><strong>Гонорар:</strong> 350$</li>
+              <li><strong>Предоплата:</strong> 100% при подписании договора, не позднее чем за 14 календарных дней до мероприятия.</li>
+            </ul>
+          </div>
+          <div class="mb-4">
+            <h4 class="text-xl font-semibold text-purple-400 mb-2">5. Коммуникация и планирование:</h4>
+            <ul class="list-disc list-inside space-y-1">
+              <li><strong>Информация о площадке/аудитории:</strong> Предоставить информацию о месте проведения и ожидаемой аудитории.</li>
+              <li><strong>Обсуждение сет-листа:</strong> Обсудить предварительный сет-лист и высказать пожелания.</li>
+              <li><strong>Контактное лицо:</strong> Предоставить контакты ответственного лица на месте.</li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="text-xl font-semibold text-purple-400 mb-2">6. Формальное соглашение:</h4>
+            <ul class="list-disc list-inside space-y-1">
+              <li><strong>Письменный договор:</strong> Подготовить и подписать всеобъемлющий письменный договор, включающий все согласованные пункты.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="../scripts/main.js"></script>
+
+    <BottomNavBar />
+    </body>
+</html>

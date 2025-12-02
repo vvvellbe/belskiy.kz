@@ -1,0 +1,228 @@
+/* html { scroll-behavior: smooth; } */ /* Мы убрали это правило, чтобы избежать конфликтов */
+html, body { width: 100%; }
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #0a0a0a;
+  color: #e0e0e0;
+  overflow-x: hidden;
+  box-sizing: border-box; 
+}
+
+/* --- НАЧАЛО: НОВЫЕ ШРИФТЫ --- */
+h1, h2, h3, h4, h5, h6, .section-title, .gradient-text {
+  font-family: 'Jost', sans-serif;
+}
+/* --- КОНЕЦ: НОВЫЕ ШРИФТЫ --- */
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #1a1a1a; }
+::-webkit-scrollbar-thumb { background: #00ffff; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #00e0e0; }
+
+/* Заголовки/градиенты */
+.section-title {
+  font-weight: 700; text-transform: uppercase; letter-spacing: .1em;
+  position: relative; display: inline-block; padding-bottom: .5rem;
+}
+.section-title::after {
+  content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+  bottom: 0; width: 60px; height: 3px;
+  background: linear-gradient(90deg, #00ffff, #ff00ff);
+  transition: width .3s ease;
+}
+.section-title:hover::after { width: 90px; }
+
+.gradient-text {
+  background: linear-gradient(90deg, #00ffff, #ff00ff);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; text-fill-color: transparent;
+}
+
+/* Появление */
+.reveal { opacity: 0; transform: translateY(50px); transition: opacity .8s ease-out, transform .8s ease-out; }
+.reveal.active { opacity: 1; transform: translateY(0); }
+
+/* Бренд-кнопки */
+.btn-primary {
+  background: linear-gradient(90deg, #008ecf, #00529b);
+  color: #fff; transition: all .35s cubic-bezier(.175,.885,.32,1.275);
+  box-shadow: 0 4px 15px rgba(0,100,160,.4);
+}
+.btn-primary:hover {
+  background: linear-gradient(90deg, #0072b3, #004280);
+  transform: translateY(-3px) scale(1.08);
+  box-shadow: 0 10px 30px rgba(0,100,160,.7);
+}
+.btn-secondary {
+  border: 2px solid #00ffff; color: #00ffff;
+  transition: all .35s cubic-bezier(.175,.885,.32,1.275);
+}
+.btn-secondary:hover {
+  background-color: #00ffff; color: #0a0a0a;
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 5px 15px rgba(0,255,255,.2);
+}
+body.body-preloading {
+  overflow: hidden !important;
+  height: 100vh !important;
+}
+
+#preloader {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background-color: #0a0a0a; z-index: 9999;
+  display: flex; justify-content: center; align-items: center;
+  transition: opacity .8s cubic-bezier(.65,0,.35,1), visibility .8s cubic-bezier(.65,0,.35,1) 0s;
+  opacity: 1; visibility: visible;
+}
+#preloader.hidden {
+  opacity: 0; visibility: hidden; transition: opacity .8s cubic-bezier(.65,0,.35,1), visibility 0s linear .8s;
+  pointer-events: none;
+}
+.loader-container { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 20px; }
+.loader {
+  border: 10px solid rgba(0,255,255,.15); border-top: 10px solid #00ffff; border-radius: 50%;
+  width: 90px; height: 90px; animation: spin 1s cubic-bezier(.55,.055,.675,.19) infinite; margin-bottom: 25px;
+  box-shadow: 0 0 15px rgba(0,255,255,.3), 0 0 30px rgba(0,255,255,.2);
+}
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+#progress-bar-container {
+  width: 220px; height: 10px; background-color: rgba(0,255,255,.1); border-radius: 5px;
+  margin-bottom: 20px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,.2);
+}
+#progress-bar {
+  width: 0%; height: 100%; background: linear-gradient(90deg, #00c6ff, #0072ff); border-radius: 5px;
+  transition: width .3s cubic-bezier(.4,0,.2,1); box-shadow: 0 0 10px rgba(0,198,255,.5);
+}
+#progress-text { font-size: 1.6em; color: #00ffff; font-weight: 700; margin-bottom: 12px; text-shadow: 0 0 8px rgba(0,255,255,.5); }
+.loading-text { font-size: 1em; color: #c0c0c0; letter-spacing: .5px; min-height: 1.2em; transition: opacity .3s ease-in-out; }
+
+.body-no-scroll {
+  overflow: hidden;
+}
+
+/* НОВОЕ ПРАВИЛО ДЛЯ НАВИГАЦИИ, КОГДА МЕНЮ ОТКРЫТО */
+nav.menu-opened {
+  /* Придаем всей шапке вид матового стекла */
+  background-color: rgba(10, 10, 10, 0.75);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  /* Растягиваем шапку на весь экран */
+  height: 100vh;
+  transition: background-color 0.3s ease, backdrop-filter 0.3s ease;
+}
+/* --- НАЧАЛО: СТИЛИ ДЛЯ АНИМИРОВАННОГО ФОНА (v2 - Хаотичное движение) --- */
+
+/* Контейнер остался без изменений */
+.background-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+/* Общий стиль для всех "огоньков" */
+.blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px); /* ИЗМЕНЕНИЕ: Сделали размытие чуть сильнее для мягкости */
+    opacity: 0.45; /* ИЗМЕНЕНИЕ: Чуть-чуть увеличили видимость */
+}
+
+/* Стили для первого огонька */
+.color-1 {
+    width: 450px;
+    height: 450px;
+    background: #009d9dfc;
+    top: 5%;
+    left: 5%;
+    /* ИЗМЕНЕНИЕ: Подключаем свою анимацию, делаем ее медленнее */
+    animation: move1 15s infinite alternate;
+}
+
+/* Стили для второго огонька */
+.color-2 {
+    width: 350px;
+    height: 350px;
+    background: #9b009b;
+    bottom: 10%;
+    right: 10%;
+    /* ИЗМЕНЕНИЕ: Своя анимация, другая скорость */
+    animation: move2 10s infinite alternate;
+    animation-delay: -5s; /* Начнет анимацию не с самого начала, для разнообразия */
+}
+
+/* Стили для третьего огонька */
+.color-3 {
+    width: 250px;
+    height: 250px;
+    background: #0070a4;
+    bottom: 30%;
+    left: 40%;
+    /* ИЗМЕНЕНИЕ: Своя анимация, третья скорость */
+    animation: move3 20s infinite alternate;
+}
+
+/* ИЗМЕНЕНИЕ: Теперь у нас ТРИ разных сценария движения */
+
+/* Анимация для первого огонька */
+@keyframes move1 {
+    from {
+        transform: translate(-80px, 30px) rotate(-90deg) scale(1.2);
+    }
+    to {
+        transform: translate(120px, -60px) rotate(90deg) scale(0.9);
+    }
+}
+
+/* Анимация для второго огонька */
+@keyframes move2 {
+    from {
+        transform: translate(50px, -100px) rotate(45deg) scale(0.8);
+    }
+    to {
+        transform: translate(-50px, 100px) rotate(180deg) scale(1.1);
+    }
+}
+
+/* Анимация для третьего огонька */
+@keyframes move3 {
+    from {
+        transform: translate(100px, 100px) rotate(120deg) scale(1);
+    }
+    to {
+        transform: translate(-150px, -100px) rotate(0deg) scale(1.3);
+    }
+}
+/* --- КОНЕЦ: СТИЛИ ДЛЯ АНИМИРОВАННОГО ФОНА --- */
+
+.video-container {
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  /* Это свойство критически важно! Оно обрезает всё, что выходит за рамки контейнера. 
+     У вас оно уже добавлено через Tailwind класс 'overflow-hidden', но для ясности вот оно. */
+  overflow: hidden;
+}
+
+.youtube-video {
+  width: 100%;
+  height: 100%;
+  /* --- ВОТ ОНО, РЕШЕНИЕ --- */
+  /* Мы немного (на 10%) увеличиваем масштаб самого iframe. */
+  /* Черные полосы теперь существуют, но за пределами видимой области. */
+  transform: scale(1.02);
+}
+
+
+/* Стили для "стеклянной" панели остаются без изменений */
+.glass-panel {
+  background: rgba(17, 24, 39, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(107, 114, 128, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}

@@ -1,0 +1,81 @@
+---
+// Мы не используем props в этом файле, так как разметка для обоих модальных окон
+// прописана статически ниже. Оставляем эту секцию пустой.
+---
+
+<style>
+.btn-ghost {
+  width: 100%;
+  padding: 0.65rem 1rem;
+  font-weight: 600;
+  color: #00ffff; /* Основной бирюзовый цвет */
+  background-color: transparent;
+  border: 1px solid #00ffff; /* Тонкая рамка в цвет текста */
+  border-radius: 0.5rem; /* Скругление углов, как у основной кнопки */
+  cursor: pointer;
+  transition: all 0.2s ease-in-out; /* Плавный переход для наведения */
+}
+
+.btn-ghost:hover {
+  background-color: #00ffff; /* Фон становится бирюзовым */
+  color: #111827; /* Текст становится темным */
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.4); /* Легкая тень для эффекта */
+}
+</style>
+<div id="host-summary-modal" class="modal-overlay">
+  <div class="modal-content rounded-xl max-w-lg w-full">
+    <div class="modal-header">
+      <div class="modal-title-group">
+        <div>
+          <h3 class="modal-title">Смета: Ведущий</h3>
+          <p class="modal-subtitle">Детализация выбранных услуг</p>
+        </div>
+      </div>
+      <button class="modal-close-btn text-2xl leading-none">&times;</button>
+    </div>
+    <div id="host-modal-summary-content" class="modal-body"></div>
+    <div class="modal-footer flex-col gap-4">
+      <div class="w-full">
+        <p class="text-gray-400 text-sm">Итоговая стоимость:</p>
+        <p id="host-modal-total-price" class="text-3xl font-bold text-white">0 ₸</p>
+      </div>
+
+      <button id="open-terms-modal" class="btn-ghost" type="button">
+        Условия сотрудничества
+      </button>
+
+      <button id="host-modal-copy-btn" class="btn-primary w-full text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2 flex-1">
+        <i class="fas fa-copy"></i>
+        <span>Скопировать заявку</span>
+      </button>
+      <p class="text-xs text-gray-400 text-center px-4">Нажмите, чтобы скопировать детали заказа, а затем отправьте их ведущему в WhatsApp или любой другой мессенджер.</p>
+    </div>
+  </div>
+</div>
+
+
+<div id="rap-summary-modal" class="modal-overlay">
+  <div class="modal-content rounded-xl max-w-lg w-full">
+    <div class="modal-header">
+      <div class="modal-title-group">
+        <div>
+          <h3 class="modal-title">Смета: Рэп-Выступление</h3>
+          <p class="modal-subtitle">Детализация выбранных треков</p>
+        </div>
+      </div>
+      <button class="modal-close-btn text-2xl leading-none">&times;</button>
+    </div>
+    <div id="rap-modal-summary-content" class="modal-body"></div>
+    <div class="modal-footer flex-col gap-4">
+      <div class="w-full">
+        <p class="text-gray-400 text-sm">Итоговая стоимость:</p>
+        <p id="rap-modal-total-price" class="text-3xl font-bold text-white">0 ₸</p>
+      </div>
+      <button id="rap-modal-copy-btn" class="btn-primary w-full text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2 flex-1">
+        <i class="fas fa-copy"></i>
+        <span>Скопировать заявку</span>
+      </button>
+      <p class="text-xs text-gray-400 text-center px-4">Нажмите, чтобы скопировать детали заказа, а затем отправьте их ведущему в WhatsApp или любой другой мессенджер.</p>
+    </div>
+  </div>
+</div>

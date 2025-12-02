@@ -1,0 +1,39 @@
+---
+// 1. Получаем 'type' из props. 'type' будет либо "host", либо "rap".
+const { type } = Astro.props;
+
+// 2. Создаем переменные, которые будут меняться в зависимости от 'type'.
+let barId = '';
+let totalId = '';
+let countId = '';
+let openModalId = '';
+
+if (type === 'host') {
+  barId = 'host-floating-summary-bar';
+  totalId = 'host-floating-total';
+  countId = 'host-floating-count';
+  openModalId = 'host-floating-open-modal';
+} else if (type === 'rap') {
+  barId = 'rap-floating-summary-bar';
+  totalId = 'rap-floating-total';
+  countId = 'rap-floating-count';
+  openModalId = 'rap-floating-open-modal';
+}
+---
+<div id="host-floating-summary-bar" class="floating-summary-bar">
+<div class="bar-content">
+<div id="host-floating-total" class="total-price">Итого: 0 ₸</div>
+<button id="host-floating-open-modal" class="btn-show-summary">
+Показать смету (<span id="host-floating-count">0</span>)
+</button>
+</div>
+</div>
+
+<div id="rap-floating-summary-bar" class="floating-summary-bar">
+<div class="bar-content">
+<div id="rap-floating-total" class="total-price">Итого: 0 ₸</div>
+<button id="rap-floating-open-modal" class="btn-show-summary">
+Показать смету (<span id="rap-floating-count">0</span>)
+</button>
+</div>
+</div>

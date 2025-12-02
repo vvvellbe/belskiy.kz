@@ -1,0 +1,58 @@
+---
+// Здесь пока ничего нет
+---
+
+<nav class="fixed bottom-0 left-0 right-0 z-30 bg-slate-900/90 backdrop-blur-lg border-t border-cyan-700/30 md:hidden shadow-lg">
+  <div class="container mx-auto h-16 flex items-center justify-around px-2">
+    <a href="/#portfolio" class="nav-item" data-nav-item="portfolio">
+      <i class="fas fa-images"></i>
+      <span class="nav-text">Портфолио</span>
+    </a>
+    <a href="/#repertoire" class="nav-item" data-nav-item="repertoire">
+      <i class="fas fa-music"></i>
+      <span class="nav-text">Репертуар</span>
+    </a>
+
+    <a href="https://wa.me/77079292980?text=Здравствуйте%2C%20Валерий!%20Хотел%20бы%20обсудить%20организацию%20мероприятия." target="_blank" class="main-cta-btn flex flex-col items-center justify-center -translate-y-4 shadow-xl">
+      <i class="fas fa-calendar-alt text-2xl mb-1"></i>
+      <span class="font-semibold">Заявка</span>
+    </a>
+
+    <a href="/configurator" class="nav-item" data-nav-item="pricing">
+      <i class="fas fa-dollar-sign"></i>
+      <span class="nav-text">Прайс</span>
+    </a>
+    <a href="/#contact" class="nav-item" data-nav-item="contact">
+      <i class="fas fa-envelope"></i>
+      <span class="nav-text">Контакты</span>
+    </a>
+  </div>
+</nav>
+
+<style lang="postcss">
+  /* Стили для ссылок навигации */
+  .nav-item {
+    @apply flex flex-col items-center justify-center p-2 text-gray-400 text-xs font-medium transition-colors duration-200 ease-in-out relative;
+  }
+  /* Стиль для активной ссылки */
+  .nav-item.active {
+    @apply text-cyan-400;
+  }
+  .nav-item i {
+    @apply text-lg mb-1;
+  }
+  .nav-item.active i {
+    @apply text-cyan-400;
+  }
+
+  /* Стиль для центральной кнопки */
+  .main-cta-btn {
+    @apply w-16 h-16 rounded-full bg-gradient-to-br from-cyan-500 to-fuchsia-600 text-white flex items-center justify-center;
+    @apply transition-all duration-300 ease-in-out transform hover:scale-110;
+  }
+
+  .main-cta-btn span {
+    font-size: 11px; /* Делаем шрифт чуть меньше стандартного */
+    line-height: 1;  /* Убираем лишнюю высоту строки для компактности */
+  }
+</style>

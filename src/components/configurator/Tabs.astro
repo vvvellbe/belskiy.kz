@@ -1,0 +1,135 @@
+---
+// В этой секции (frontmatter) пока ничего не нужно, но она должна быть
+---
+<div class="flex justify-center mb-12">
+    <div class="tabs" id="calculator-mode-toggle">
+        <span class="glider"></span>
+        <button class="tab-btn active" data-target="host-calculator-content">
+            <i class="fas fa-glass-cheers mr-2"></i>Ведущий
+        </button>
+        <button class="tab-btn" data-target="rap-calculator-content">
+            <i class="fas fa-microphone-alt mr-2"></i>Рэп-исполнитель
+        </button>
+    </div>
+</div>
+
+<style>
+.tabs {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: rgba(17, 24, 39, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(107, 114, 128, 0.2);
+    border-radius: 28px;
+    padding: 6px;
+}
+
+    .tab-btn {
+        position: relative;
+        z-index: 2; /* Кнопки должны быть над глайдером */
+        padding: 10px 24px;
+        border-radius: 99px;
+        font-weight: 600;
+        color: #9CA3AF; /* gray-400 */
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        transition: color 0.3s ease-in-out;
+        white-space: nowrap; /* Чтобы текст не переносился */
+    }
+
+    .tab-btn.active {
+        color: #FFFFFF;
+    }
+
+    .glider {
+        position: absolute;
+        z-index: 1; /* Глайдер под кнопками */
+        height: 100%;
+        top: 0;
+        left: 0; /* Начальное положение будет установлено JS */
+        background-color: #3B82F6; /* blue-500 */
+        border-radius: 99px;
+        box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+        /* Плавная анимация движения и изменения размера */
+        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    }
+</style>
+
+<script is:inline>
+    // Ждем, пока вся страница загрузится, чтобы все элементы были доступны
+    document.addEventListener('DOMContentLoaded', () => {
+        const tabsContainer = document.getElementById('calculator-mode-toggle');
+        // Если на странице нет табов, ничего не делаем
+        if (!tabsContainer) return;
+
+        const tabs = tabsContainer.querySelectorAll('.tab-btn');
+        const glider = tabsContainer.querySelector('.glider');
+        // Находим ВСЕ контентные панели на странице
+        const contentPanels = document.querySelectorAll('.content-panel');
+
+        // --- Функция для перемещения глайдера ---
+function moveGlider(targetTab) {
+    if (!targetTab) return;
+
+    // Твоя логика для горизонтального смещения была верной,
+    // но использование offset'ов здесь будет даже проще и консистентнее.
+    // Давай перепишем через них.
+    
+    // Устанавливаем ширину и положение глайдера
+    glider.style.width = `${targetTab.offsetWidth}px`;
+    glider.style.left = `${targetTab.offsetLeft}px`;
+    
+    // ✨ ДОБАВЛЕНО: Устанавливаем высоту и вертикальное положение глайдера
+    glider.style.height = `${targetTab.offsetHeight}px`;
+    glider.style.top = `${targetTab.offsetTop}px`;
+}
+
+        // --- Функция для переключения табов ---
+        function switchTab(targetTab) {
+            const targetId = targetTab.dataset.target;
+
+            // 1. Убираем класс 'active' со всех кнопок и панелей
+            tabs.forEach(tab => tab.classList.remove('active'));
+            contentPanels.forEach(panel => panel.classList.remove('active'));
+
+            // 2. Добавляем класс 'active' нужной кнопке
+            targetTab.classList.add('active');
+
+            // 3. Находим и показываем нужную контентную панель
+            const targetPanel = document.getElementById(targetId);
+            if (targetPanel) {
+                targetPanel.classList.add('active');
+            }
+
+            // 4. Перемещаем глайдер на активную кнопку
+            moveGlider(targetTab);
+            
+            // 5. [ВАЖНО] Создаем кастомное событие, чтобы твои скрипты
+            // configurator-app.js и configurator-rap.js знали, что режим изменился
+            // и могли обновить UI (например, плавающую панель).
+            document.dispatchEvent(new CustomEvent('calculatorModeChanged'));
+        }
+
+        // --- Инициализация при загрузке страницы ---
+        // Находим изначально активную кнопку
+        const initialActiveTab = tabsContainer.querySelector('.tab-btn.active');
+        // Устанавливаем глайдер в начальное положение
+        if (initialActiveTab) {
+            // Небольшая задержка, чтобы все стили успели примениться
+            setTimeout(() => moveGlider(initialActiveTab), 50);
+        }
+
+        // --- Вешаем обработчик кликов на контейнер табов (делегирование событий) ---
+        tabsContainer.addEventListener('click', (event) => {
+            const clickedTab = event.target.closest('.tab-btn');
+            // Если кликнули не по кнопке или она уже активна - ничего не делаем
+            if (!clickedTab || clickedTab.classList.contains('active')) {
+                return;
+            }
+            switchTab(clickedTab);
+        });
+    });
+</script>
