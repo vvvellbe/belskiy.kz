@@ -18,11 +18,12 @@
             box-shadow: 0 0 15px rgba(0, 255, 255, 0.4); /* Легкая тень для эффекта */
         }
     </style>
+
     <div class="flex flex-col lg:flex-row gap-8">
         <div class="w-full lg:w-2/3 flex flex-col gap-8">
             <div class="config-card rounded-xl p-6 sm:p-8">
                 <h2 class="text-2xl font-semibold text-white mb-6">
-                    1. Параметры вашего мероприятия
+                    Параметры вашего мероприятия
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
@@ -161,478 +162,407 @@
 
             <div class="program-card rounded-xl p-6 sm:p-8">
                 <h2 class="text-2xl font-semibold text-white mb-6">
-                    Соберите вашу программу
+                    Ваш Ведущий (Основа)
                 </h2>
 
-                <div class="mb-8">
-                    <h3 class="text-xl font-semibold text-white">
-                        2. Ваш Ведущий (Основа)
-                    </h3>
+                <div id="host-hours-block">
+                    <p class="text-sm text-gray-400 mb-4">
+                        Включает классические интерактивы, конкурсы и полную
+                        координацию вечера. Выберите длительность программы:
+                    </p>
 
-                    <div id="host-hours-block">
-                        <p class="text-sm text-gray-400 mb-4">
-                            Включает классические интерактивы, конкурсы и полную
-                            координацию вечера. Выберите длительность программы:
-                        </p>
-
+                    <div
+                        class="bg-gray-900/50 p-6 rounded-lg border border-gray-700"
+                    >
                         <div
-                            class="bg-gray-900/50 p-6 rounded-lg border border-gray-700"
+                            class="flex flex-col md:flex-row md:justify-between md:items-center mb-4"
                         >
-                            <div
-                                class="flex flex-col md:flex-row md:justify-between md:items-center mb-4"
+                            <label
+                                for="host-hours-slider"
+                                class="font-semibold text-gray-200 mb-1 md:mb-0"
+                                >Время работы:</label
                             >
-                                <label
-                                    for="host-hours-slider"
-                                    class="font-semibold text-gray-200 mb-1 md:mb-0"
-                                    >Время работы:</label
+                            <div class="flex items-baseline gap-3">
+                                <span
+                                    id="host-hours-output"
+                                    class="font-bold text-lg text-cyan-400"
+                                    >2 часа</span
                                 >
-                                <div class="flex items-baseline gap-3">
-                                    <span
-                                        id="host-hours-output"
-                                        class="font-bold text-lg text-cyan-400"
-                                        >2 часа</span
-                                    >
-                                    <span
-                                        id="host-cost-output"
-                                        class="text-gray-400 font-semibold"
-                                    ></span>
-                                </div>
+                                <span
+                                    id="host-cost-output"
+                                    class="text-gray-400 font-semibold"></span>
                             </div>
-
-                            <input
-                                type="range"
-                                id="host-hours-slider"
-                                min="2"
-                                max="8"
-                                value="2"
-                                step="1"
-                                class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer range-lg photographer-slider"
-                            />
-
-                            <p class="text-sm text-gray-400 mt-3">
-                                <i class="fas fa-clock mr-2"></i>Сдвигайте
-                                ползунок, чтобы выбрать время (от 2 до 8 часов).
-                            </p>
                         </div>
+                        <input
+                            type="range"
+                            id="host-hours-slider"
+                            min="2"
+                            max="8"
+                            value="2"
+                            step="1"
+                            class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer range-lg photographer-slider"
+                        />
+                        <p class="text-sm text-gray-400 mt-3">
+                            <i class="fas fa-clock mr-2"></i>Сдвигайте ползунок,
+                            чтобы выбрать время (от 2 до 8 часов).
+                        </p>
                     </div>
 
-                    <div id="host-fixed-block" class="hidden mt-4">
+                    <h4 class="font-semibold text-gray-200 mt-8 mb-4">
+                        В стоимость программы включено:
+                    </h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div
-                            class="option-card selected rounded-lg p-4 cursor-default"
+                            class="p-4 rounded-lg border border-gray-700 bg-gray-800/40 flex flex-col justify-center"
                         >
-                            <h4
-                                id="host-fixed-title"
-                                class="font-semibold text-white text-lg"
-                            >
-                                Выезд ведущего
-                            </h4>
-                            <p
-                                id="host-fixed-desc"
-                                class="text-sm text-gray-400 mt-1"
-                            >
-                                Фиксированная стоимость гонорара за мероприятие.
+                            <h5 class="text-sm font-bold text-white mb-1">
+                                Легкий звук (JBL)
+                            </h5>
+                            <p class="text-xs text-gray-400 leading-relaxed">
+                                Включено: для камерных залов / VIP-кабин (строго
+                                до 40 гостей).
                             </p>
-                            <p
-                                id="host-fixed-price"
-                                class="font-bold text-xl text-cyan-400 mt-2"
-                            >
-                                300 000 ₸
+                        </div>
+                        <div
+                            class="p-4 rounded-lg border border-gray-700 bg-gray-800/40 flex flex-col justify-center"
+                        >
+                            <h5 class="text-sm font-bold text-white mb-1">
+                                Интерактивы с AI
+                            </h5>
+                            <p class="text-xs text-gray-400 leading-relaxed">
+                                Современные развлечения включены в программу.
+                            </p>
+                        </div>
+                        <div
+                            class="p-4 rounded-lg border border-gray-700 bg-gray-800/40 flex flex-col justify-center"
+                        >
+                            <h5 class="text-sm font-bold text-white mb-1">
+                                Сценарий и Тайминг
+                            </h5>
+                            <p class="text-xs text-gray-400 leading-relaxed">
+                                Полная персонализация вечера.
+                            </p>
+                        </div>
+                        <div
+                            class="p-4 rounded-lg border border-gray-700 bg-gray-800/40 flex flex-col justify-center"
+                        >
+                            <h5 class="text-sm font-bold text-white mb-1">
+                                Координация
+                            </h5>
+                            <p class="text-xs text-gray-400 leading-relaxed">
+                                Администрирование хода события.
+                            </p>
+                        </div>
+                        <div
+                            class="p-4 rounded-lg border border-gray-700 bg-gradient-to-r from-gray-800/60 to-gray-900/60 flex flex-col justify-center col-span-1 sm:col-span-2"
+                        >
+                            <div>
+                                <h5 class="text-sm font-bold text-white mb-0.5">
+                                    Eminem Tribute Show
+                                </h5>
+                                <p
+                                    class="text-xs text-gray-400 leading-relaxed"
+                                >
+                                    Эксклюзивный сет каверов уже входит в
+                                    программу.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="host-fixed-block" class="hidden mt-6">
+                    <div
+                        class="option-card selected rounded-lg p-4 cursor-default"
+                    >
+                        <h4
+                            id="host-fixed-title"
+                            class="font-semibold text-white text-lg"
+                        >
+                            Выезд ведущего
+                        </h4>
+                        <p
+                            id="host-fixed-desc"
+                            class="text-sm text-gray-400 mt-1"
+                        >
+                            Фиксированная стоимость гонорара за мероприятие.
+                        </p>
+                        <p
+                            id="host-fixed-price"
+                            class="font-bold text-xl text-cyan-400 mt-2"
+                        >
+                            300 000 ₸
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tech-section" class="program-card rounded-xl p-6 sm:p-8">
+                <h3 class="text-xl font-semibold text-white mb-6">
+                    Техническое Оснащение
+                </h3>
+                <p class="text-sm text-gray-400 mb-4">
+                    Подберем оптимальный комплект оборудования для вашего
+                    мероприятия:
+                </p>
+
+                <div id="tech-container-full-dj" class="hidden">
+                    <div class="option-card selected rounded-lg p-4">
+                        <h4 class="font-semibold text-green-400">
+                            ✅ Площадка полностью укомплектована
+                        </h4>
+                        <p class="text-sm text-gray-400">
+                            Используется оборудование и DJ вашего заведения.
+                        </p>
+                    </div>
+                </div>
+
+                <div id="tech-container-sound-only" class="hidden">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div
+                            class="option-card"
+                            data-group="tech"
+                            data-value="DJ_WORK_ONLY"
+                        >
+                            <div>
+                                <h4 class="font-semibold text-white">
+                                    Работа DJ
+                                </h4><p class="text-sm text-gray-400 mt-1">
+                                    Наш DJ будет работать на вашем звуке
+                                </p>
+                            </div>
+                            <p class="font-semibold text-lg text-white mt-3">
+                                + 130 000 ₸
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <div id="tech-section" class="mb-8">
-                    <h3 class="text-xl font-semibold text-white">
-                        3. Техническое Оснащение
-                    </h3>
-                    <p class="text-sm text-gray-400 mb-4">
-                        Подберем оптимальный комплект оборудования для вашего
-                        мероприятия:
-                    </p>
-
-                    <div id="tech-container-full-dj" class="hidden">
-                        <div class="option-card selected rounded-lg p-4">
-                            <h4 class="font-semibold text-green-400">
-                                ✅ Площадка полностью укомплектована
-                            </h4>
-                            <p class="text-sm text-gray-400">
-                                Используется оборудование и DJ вашего заведения.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div id="tech-container-sound-only" class="hidden">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div
-                                class="option-card"
-                                data-group="tech"
-                                data-value="DJ_WORK_ONLY"
-                            >
-                                <div>
-                                    <h4 class="font-semibold text-white">
-                                        Работа DJ
-                                    </h4><p class="text-sm text-gray-400 mt-1">
-                                        Наш DJ будет работать на вашем звуке
-                                    </p>
-                                </div>
-                                <p
-                                    class="font-semibold text-lg text-white mt-3"
-                                >
-                                    + 130 000 ₸
-                                </p>
-                            </div>
-                            <div
-                                class="option-card"
-                                data-group="tech"
-                                data-value="COMPACT"
-                            >
-                                <div>
-                                    <h4 class="font-semibold text-white">
-                                        Комплект «Компакт»
-                                    </h4><p class="text-sm text-gray-400 mt-1">
-                                        Аудиосистема JBL (без DJ), вместо
-                                        оборудования заведения.
-                                    </p>
-                                </div>
-                                <p
-                                    class="font-semibold text-lg text-white mt-3"
-                                >
-                                    + 20 000 ₸
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="tech-container-no-gear" class="hidden">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div
-                                class="option-card"
-                                data-group="tech"
-                                data-value="COMPACT"
-                            >
-                                <div>
-                                    <h4 class="font-semibold text-white">
-                                        Комплект «Компакт»
-                                    </h4><p class="text-sm text-gray-400 mt-1">
-                                        Звук от ведущего (JBL) для камерных
-                                        событий до 40 человек. Без DJ.
-                                    </p>
-                                </div>
-                                <p
-                                    class="font-semibold text-lg text-white mt-3"
-                                >
-                                    + 20 000 ₸
-                                </p>
-                            </div>
-                            <div
-                                class="option-card"
-                                data-group="tech"
-                                data-value="STANDARD"
-                            >
-                                <div>
-                                    <h4 class="font-semibold text-white">
-                                        Комплект «Стандарт»
-                                    </h4><p class="text-sm text-gray-400 mt-1">
-                                        DJ со своим оборудованием для
-                                        стандартных залов до 80 человек.
-                                    </p>
-                                </div>
-                                <p
-                                    class="font-semibold text-lg text-white mt-3"
-                                >
-                                    + 200 000 ₸
-                                </p>
-                            </div>
-                            <div
-                                class="option-card"
-                                data-group="tech"
-                                data-value="MAXI"
-                            >
-                                <div>
-                                    <h4 class="font-semibold text-white">
-                                        Комплект «Максимум»
-                                    </h4><p class="text-sm text-gray-400 mt-1">
-                                        DJ-комплект для масштабных событий
-                                        (большой зал/улица) до 150 человек.
-                                    </p>
-                                </div>
-                                <p
-                                    class="font-semibold text-lg text-white mt-3"
-                                >
-                                    + 230 000 ₸
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="tech-container-out" class="hidden">
+                <div id="tech-container-no-gear" class="hidden">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div
                             class="option-card"
                             data-group="tech"
-                            data-value="DJ_OUT"
+                            data-value="STANDARD"
                         >
                             <div>
                                 <h4 class="font-semibold text-white">
-                                    Нужен DJ?
+                                    Комплект «Стандарт»
                                 </h4><p class="text-sm text-gray-400 mt-1">
-                                    Работа DJ на оборудовании заказчика.
+                                    DJ со своим оборудованием для стандартных
+                                    залов до 80 человек.
                                 </p>
                             </div>
                             <p class="font-semibold text-lg text-white mt-3">
                                 + 200 000 ₸
                             </p>
                         </div>
-                    </div>
-
-                    <div id="projector-option-container" class="mt-4">
                         <div
-                            class="option-card flex items-start justify-between"
-                            data-group="creative"
-                            data-value="PROJECTOR"
+                            class="option-card"
+                            data-group="tech"
+                            data-value="MAXI"
                         >
                             <div>
                                 <h4 class="font-semibold text-white">
-                                    Проектор с экраном
-                                </h4>
-                                <p class="text-sm text-gray-400 mt-1">
-                                    Используется в темное время/помещении.
-                                </p>
-                                <p class="text-sm warning-text mt-2">
-                                    ⚠️ Требует работы DJ (при выборе, DJ
-                                    добавляется автоматически)
+                                    Комплект «Максимум»
+                                </h4><p class="text-sm text-gray-400 mt-1">
+                                    DJ-комплект для масштабных событий (большой
+                                    зал/улица) до 150 человек.
                                 </p>
                             </div>
-                            <div class="text-right ml-4 flex-shrink-0">
-                                <p class="font-semibold text-white">
-                                    + 30 000 ₸
-                                </p>
-                            </div>
+                            <p class="font-semibold text-lg text-white mt-3">
+                                + 230 000 ₸
+                            </p>
                         </div>
                     </div>
                 </div>
 
-                <div id="photographer-section" class="content-panel mb-8">
-                    <h3 class="text-xl font-semibold text-white">
-                        4. Услуги фотографа
-                    </h3>
-                    <p class="text-sm text-gray-400 mb-4">
-                        Настройте параметры работы фотографа на вашем
-                        мероприятии.
-                    </p>
-                    <div class="space-y-6 bg-gray-900/50 p-6 rounded-lg">
+                <div id="tech-container-out" class="hidden">
+                    <div
+                        class="option-card"
+                        data-group="tech"
+                        data-value="DJ_OUT"
+                    >
                         <div>
-                            <div
-                                class="flex flex-col md:flex-row md:justify-between md:items-center mb-2"
-                            >
-                                <label
-                                    for="photo-hours-slider"
-                                    class="font-semibold text-gray-200 mb-1 md:mb-0"
-                                    >Время работы:</label
-                                >
-                                <div class="flex items-baseline gap-3">
-                                    <span
-                                        id="photo-hours-output"
-                                        class="font-bold text-lg text-cyan-400"
-                                        >1 час</span
-                                    >
-                                    <span
-                                        id="photographer-hours-cost"
-                                        class="photographer-hours-cost"></span>
-                                </div>
-                            </div>
-                            <input
-                                type="range"
-                                id="photo-hours-slider"
-                                min="1"
-                                max="6"
-                                value="1"
-                                step="1"
-                                class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer range-lg photographer-slider"
-                            />
-                            <p
-                                id="photo-count-output"
-                                class="text-sm text-gray-400 mt-3 text-left md:text-center"
-                            >
-                                <i class="fas fa-images mr-2"></i>Вы получите
-                                примерно 30-50 фотографий в базовой обработке.
+                            <h4 class="font-semibold text-white">
+                                Нужен DJ?
+                            </h4><p class="text-sm text-gray-400 mt-1">
+                                Работа DJ на оборудовании заказчика.
                             </p>
                         </div>
-                        <div>
-                            <p
-                                class="text-base font-semibold text-gray-200 mb-2"
-                            >
-                                Ретушь фотографий
-                            </p>
-                            <div
-                                class="glass-input p-3 rounded-lg flex items-center justify-between mb-4"
-                            >
-                                <div
-                                    class="relative flex items-center gap-x-2"
-                                    id="retouch-info-container"
-                                >
-                                    <i
-                                        class="fas fa-info-circle text-cyan-400 cursor-pointer text-lg"
-                                    ></i>
-                                    <p class="text-sm text-gray-300">
-                                        <span class="font-bold text-cyan-400"
-                                            >10 фото в ретуши</span
-                                        > уже включены в стоимость
-                                    </p>
-                                    <div
-                                        class="tooltip-content w-max max-w-xs sm:max-w-sm"
-                                    >
-                                        <p
-                                            class="font-semibold text-white mb-2 text-left"
-                                        >
-                                            Ретушь включает в себя:
-                                        </p>
-                                        <ul
-                                            class="list-disc list-inside text-left space-y-1 text-sm"
-                                        >
-                                            <li>
-                                                Удаление лишних объектов из
-                                                кадра.
-                                            </li>
-                                            <li>
-                                                Сглаживание и улучшение тона
-                                                кожи.
-                                            </li>
-                                            <li>
-                                                Устранение дефектов кожи (прыщи,
-                                                покраснения и т.д.).
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <div>
-                                <label
-                                    for="additional-retouch-input"
-                                    class="block text-sm font-medium text-gray-300 mb-2"
-                                    >Дополнительная ретушь:</label
-                                >
-                                <div
-                                    class="flex flex-col items-start gap-2 md:flex-row md:items-center md:gap-4"
-                                >
-                                    <div
-                                        class="relative flex items-center max-w-[10rem]"
-                                    >
-                                        <button
-                                            type="button"
-                                            id="decrement-retouch"
-                                            class="retouch-control-btn rounded-l-lg p-3 h-11"
-                                            ><i class="fas fa-minus"
-                                            ></i></button
-                                        >
-                                        <input
-                                            type="number"
-                                            id="additional-retouch-input"
-                                            class="retouch-input-field h-11 text-center text-sm block w-full py-2.5"
-                                            value="0"
-                                            min="0"
-                                            required
-                                        />
-                                        <button
-                                            type="button"
-                                            id="increment-retouch"
-                                            class="retouch-control-btn rounded-r-lg p-3 h-11"
-                                            ><i class="fas fa-plus"></i></button
-                                        >
-                                    </div>
-                                    <p
-                                        id="additional-retouch-cost"
-                                        class="text-base font-semibold text-gray-300"
-                                    >
-                                        Стоимость: <span
-                                            class="text-white font-bold"
-                                            >0 ₸</span>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
+                        <p class="font-semibold text-lg text-white mt-3">
+                            + 200 000 ₸
+                        </p>
                     </div>
                 </div>
 
-                <div>
-                    <h3 class="text-xl font-semibold text-white">
-                        5. Наполнение Программы (Креатив)
-                    </h3>
-                    <p class="text-sm text-gray-400 mb-4">
-                        Добавьте эксклюзивные элементы, чтобы сделать вечер
-                        незабываемым:
-                    </p>
-                    <div id="creative-options" class="space-y-4">
+                <div id="projector-option-container" class="mt-4">
+                    <div
+                        class="option-card flex items-start justify-between"
+                        data-group="creative"
+                        data-value="PROJECTOR"
+                    >
+                        <div>
+                            <h4 class="font-semibold text-white">
+                                Проектор с экраном
+                            </h4>
+                            <p class="text-sm text-gray-400 mt-1">
+                                Используется в темное время/помещении.
+                            </p>
+                            <p class="text-sm warning-text mt-2">
+                                ⚠️ Требует работы DJ (при выборе, DJ добавляется
+                                автоматически)
+                            </p>
+                        </div>
+                        <div class="text-right ml-4 flex-shrink-0">
+                            <p class="font-semibold text-white">+ 30 000 ₸</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                id="photographer-section"
+                class="content-panel program-card rounded-xl p-6 sm:p-8"
+            >
+                <h3 class="text-xl font-semibold text-white mb-6">
+                    Услуги фотографа
+                </h3>
+                <p class="text-sm text-gray-400 mb-4">
+                    Настройте параметры работы фотографа на вашем мероприятии.
+                </p>
+                <div
+                    class="space-y-6 bg-gray-900/50 p-6 rounded-lg border border-gray-700"
+                >
+                    <div>
                         <div
-                            class="option-card"
-                            data-modal-trigger="ai-games-modal"
-                            data-creative-type="ai"
+                            class="flex flex-col md:flex-row md:justify-between md:items-center mb-2"
                         >
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <h4 class="font-semibold text-white">
-                                        Интерактивное AI-Шоу
-                                    </h4><p
-                                        class="text-sm text-gray-400"
-                                        data-creative-subtitle
-                                    >
-                                        Персонализация вечера нового уровня
-                                    </p>
-                                </div>
+                            <label
+                                for="photo-hours-slider"
+                                class="font-semibold text-gray-200 mb-1 md:mb-0"
+                                >Время работы:</label
+                            >
+                            <div class="flex items-baseline gap-3">
+                                <span
+                                    id="photo-hours-output"
+                                    class="font-bold text-lg text-cyan-400"
+                                    >1 час</span
+                                >
+                                <span
+                                    id="photographer-hours-cost"
+                                    class="photographer-hours-cost"></span>
+                            </div>
+                        </div>
+                        <input
+                            type="range"
+                            id="photo-hours-slider"
+                            min="1"
+                            max="6"
+                            value="1"
+                            step="1"
+                            class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer range-lg photographer-slider"
+                        />
+                        <p
+                            id="photo-count-output"
+                            class="text-sm text-gray-400 mt-3 text-left md:text-center"
+                        >
+                            <i class="fas fa-images mr-2"></i>Вы получите
+                            примерно 30-50 фотографий в базовой обработке.
+                        </p>
+                    </div>
+                    <div>
+                        <p class="text-base font-semibold text-gray-200 mb-2">
+                            Ретушь фотографий
+                        </p>
+                        <div
+                            class="glass-input p-3 rounded-lg flex items-center justify-between mb-4"
+                        >
+                            <div
+                                class="relative flex items-center gap-x-2"
+                                id="retouch-info-container"
+                            >
+                                <i
+                                    class="fas fa-info-circle text-cyan-400 cursor-pointer text-lg"
+                                ></i>
+                                <p class="text-sm text-gray-300">
+                                    <span class="font-bold text-cyan-400"
+                                        >10 фото в ретуши</span
+                                    > уже включены в стоимость
+                                </p>
                                 <div
-                                    class="text-right ml-2 flex items-center gap-2 md:gap-3 flex-shrink-0"
+                                    class="tooltip-content w-max max-w-xs sm:max-w-sm"
                                 >
                                     <p
-                                        class="font-semibold text-white whitespace-nowrap"
-                                        data-creative-price
+                                        class="font-semibold text-white mb-2 text-left"
                                     >
-                                        от 5 000 ₸
-                                    </p><button
-                                        class="btn-reset py-2 px-3 text-sm rounded-lg hidden"
-                                        data-reset-target="ai">Сбросить</button
-                                    ><button
-                                        class="btn-primary text-white font-bold py-2 px-3 text-sm rounded-lg"
-                                        >Настроить</button>
+                                        Ретушь включает в себя:
+                                    </p>
+                                    <ul
+                                        class="list-disc list-inside text-left space-y-1 text-sm"
+                                    >
+                                        <li>
+                                            Удаление лишних объектов из кадра.
+                                        </li>
+                                        <li>
+                                            Сглаживание и улучшение тона кожи.
+                                        </li>
+                                        <li>
+                                            Устранение дефектов кожи (прыщи,
+                                            покраснения и т.д.).
+                                        </li>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
-                        <div
-                            class="option-card"
-                            data-modal-trigger="eminem-modal"
-                            data-creative-type="eminem"
-                        >
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <h4 class="font-semibold text-white">
-                                        Eminem Tribute Show
-                                    </h4><p
-                                        class="text-sm text-gray-400"
-                                        data-creative-subtitle
-                                    >
-                                        Соберите свой сет-лист (до 5 треков)
-                                    </p>
-                                </div>
+                        <div>
+                            <label
+                                for="additional-retouch-input"
+                                class="block text-sm font-medium text-gray-300 mb-2"
+                                >Дополнительная ретушь:</label
+                            >
+                            <div
+                                class="flex flex-col items-start gap-2 md:flex-row md:items-center md:gap-4"
+                            >
                                 <div
-                                    class="text-right ml-2 flex items-center gap-2 md:gap-3 flex-shrink-0"
+                                    class="relative flex items-center max-w-[10rem]"
                                 >
-                                    <p
-                                        class="font-semibold text-white whitespace-nowrap"
-                                        data-creative-price
+                                    <button
+                                        type="button"
+                                        id="decrement-retouch"
+                                        class="retouch-control-btn rounded-l-lg p-3 h-11"
+                                        ><i class="fas fa-minus"></i></button
                                     >
-                                        + 20 000 ₸
-                                    </p><button
-                                        class="btn-reset py-2 px-3 text-sm rounded-lg hidden"
-                                        data-reset-target="eminem"
-                                        >Сбросить</button
-                                    ><button
-                                        class="btn-primary text-white font-bold py-2 px-3 text-sm rounded-lg"
-                                        >Настроить</button>
+                                    <input
+                                        type="number"
+                                        id="additional-retouch-input"
+                                        class="retouch-input-field h-11 text-center text-sm block w-full py-2.5"
+                                        value="0"
+                                        min="0"
+                                        required
+                                    />
+                                    <button
+                                        type="button"
+                                        id="increment-retouch"
+                                        class="retouch-control-btn rounded-r-lg p-3 h-11"
+                                        ><i class="fas fa-plus"></i></button
+                                    >
                                 </div>
+                                <p
+                                    id="additional-retouch-cost"
+                                    class="text-base font-semibold text-gray-300"
+                                >
+                                    Стоимость: <span
+                                        class="text-white font-bold">0 ₸</span
+                                    >
+                                </p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <div id="creative-options" class="hidden"></div>
         </div>
 
         <div class="w-full lg:w-1/3">

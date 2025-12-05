@@ -291,9 +291,8 @@ function initializeHostCalculator() {
                 const cardValue = card.dataset.value;
                 let isDisabled = false, disabledReason = null, warning = null;
 
-                if (selection.projectorNeeded && cardValue === 'COMPACT') { isDisabled = true; disabledReason = 'Требует работы DJ'; }
-                if (selection.guestCount === '81-150' && cardValue === 'COMPACT') { isDisabled = true; disabledReason = 'Не подходит для 80+ гостей'; }
-                if ((selection.venueType === 'large' || selection.guestCount === '41-80' || selection.venueType === 'standard') && cardValue === 'COMPACT' && !isDisabled) { warning = 'Мощности может не хватить'; }
+                // Убрали проверки для COMPACT, так как его больше нет
+
                 if ((selection.venueType === 'large' || selection.guestCount === '81-150') && cardValue === 'STANDARD') { warning = 'Мощности может не хватить'; }
                 if (selection.venueType === 'chamber' && selection.guestCount === '1-40' && cardValue === 'MAXI') { isDisabled = true; disabledReason = 'Избыточен для данной площадки'; }
 
@@ -357,9 +356,34 @@ function initializeHostCalculator() {
         function updatePhotographerSection() {
             const section = DOMElements.photographer.section;
             if (!section) return;
-            DOMElements.photographer.toggleBtns.forEach(btn => { btn.classList.toggle('active', btn.dataset.value === selection.photographerNeeded); });
+
+            DOMElements.photographer.toggleBtns.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.value === selection.photographerNeeded);
+            });
+
             const isNeeded = selection.photographerNeeded === 'yes';
-            section.classList.toggle('active', isNeeded);
+
+            if (isNeeded) {
+                // 1. Сначала убираем display: none, чтобы элемент появился в DOM
+                section.classList.remove('hidden');
+
+                // 2. Небольшая задержка, чтобы браузер успел отрисовать блок перед запуском анимации
+                requestAnimationFrame(() => {
+                    section.classList.add('active');
+                });
+            } else {
+                // 1. Запускаем анимацию исчезновения
+                section.classList.remove('active');
+
+                // 2. Ждем окончания анимации (400мс), затем ставим display: none
+                // Это уберет "мертвый" отступ (gap)
+                setTimeout(() => {
+                    if (selection.photographerNeeded === 'no') {
+                        section.classList.add('hidden');
+                    }
+                }, 400);
+            }
+
             if (isNeeded) {
                 const hours = selection.photographerHours;
                 DOMElements.photographer.hoursOutput.textContent = `${hours} час${hours > 1 && hours < 5 ? 'а' : hours >= 5 ? 'ов' : ''}`;
@@ -458,7 +482,8 @@ function initializeHostCalculator() {
                 const styleId = 'photographer-fix-styles';
                 if (!document.getElementById(styleId)) {
                     const style = document.createElement('style'); style.id = styleId;
-                    style.textContent = `.photographer-details-block { opacity: 0; max-height: 0; overflow: hidden; visibility: hidden; transition: opacity 0.3s ease-out, max-height 0.4s ease-out, visibility 0.4s, margin-bottom 0.4s ease-out; margin-bottom: 0; } .photographer-details-block.active { opacity: 1; visibility: visible; max-height: 1000px; margin-bottom: 2rem; }`;
+                    // Исправление: margin-bottom: 0 вместо 2rem
+                    style.textContent = `.photographer-details-block { opacity: 0; max-height: 0; overflow: hidden; visibility: hidden; transition: opacity 0.3s ease-out, max-height 0.4s ease-out, visibility 0.4s; margin-bottom: 0; } .photographer-details-block.active { opacity: 1; visibility: visible; max-height: 1000px; margin-bottom: 0; }`;
                     document.head.appendChild(style);
                 }
             }
@@ -646,29 +671,45 @@ function initializeHostCalculator() {
 
         function readParameters() {
             const oldVenueGear = selection.venueGear;
-            selection.venueType = DOMElements.parameterSelects[1].value; // venue-type (индекс 1 после локации)
+            selection.venueType = DOMElements.parameterSelects[1].value;
             selection.guestCount = DOMElements.parameterSelects[2].value;
             selection.venueGear = DOMElements.parameterSelects[3].value;
 
-            // Если изменился venueGear и мы в Алматы, пересчитываем дефолтный тех. пакет
+            // Если изменился venueGear и мы в Алматы
             if (oldVenueGear !== selection.venueGear && ['almaty', 'almaty_region'].includes(selection.location)) {
                 selection.projectorNeeded = false;
+
                 if (selection.venueGear === 'none') {
-                    const venue = selection.venueType, guests = selection.guestCount;
-                    if (venue === 'large' || guests === '81-150') selection.techOption = 'MAXI';
-                    else if (venue === 'standard' || guests === '41-80') selection.techOption = 'STANDARD';
-                    else selection.techOption = 'COMPACT';
+                    const venue = selection.venueType;
+                    const guests = selection.guestCount;
+
+                    if (venue === 'large' || guests === '81-150') {
+                        selection.techOption = 'MAXI';
+                    } else if (venue === 'standard' || guests === '41-80') {
+                        selection.techOption = 'STANDARD';
+                    } else {
+                        // Для камерных свадеб (до 40 чел) доп. техника не нужна (включена в базу)
+                        selection.techOption = null;
+                    }
                 }
-                else if (selection.venueGear === 'sound_only') { selection.techOption = 'DJ_WORK_ONLY'; }
-                else { selection.techOption = null; }
+                else if (selection.venueGear === 'sound_only') {
+                    selection.techOption = 'DJ_WORK_ONLY';
+                }
+                else {
+                    selection.techOption = null;
+                }
             }
         }
 
         function enforceDjForProjector() {
-            if (selection.venueGear === 'sound_only') { selection.techOption = 'DJ_WORK_ONLY'; }
-            else if (selection.venueGear === 'none' && (selection.techOption === 'COMPACT' || !selection.techOption)) { selection.techOption = 'STANDARD'; }
+            if (selection.venueGear === 'sound_only') {
+                selection.techOption = 'DJ_WORK_ONLY';
+            }
+            // Если тех. опция не выбрана (бесплатный звук), но нужен проектор -> ставим СТАНДАРТ (нужен DJ)
+            else if (selection.venueGear === 'none' && !selection.techOption) {
+                selection.techOption = 'STANDARD';
+            }
         }
-
         function updateSummaryAndPrice() {
             let totalKZT = 0;
             let totalUSD = 0;
