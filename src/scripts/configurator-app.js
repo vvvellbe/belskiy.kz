@@ -134,7 +134,6 @@ function initializeHostCalculator() {
                 }
             } else {
                 // Цены для фиксированного выезда
-                // Внимание: используем NEW_YEAR_LOCATION вместо старого NEW_YEAR.HOST_LOCATION
                 const locData = isNY ? PRICES.NEW_YEAR_LOCATION[selection.location] : PRICES.HOST_LOCATION[selection.location];
                 if (locData) {
                     const currency = locData.currency || '₸';
@@ -222,14 +221,29 @@ function initializeHostCalculator() {
             updateDisplayedPrices();
             updateLocationUI();
 
-            // --- УДАЛЕНО: Старый блок, который красил кнопки hostCards ---
-            // DOMElements.hostCards.forEach(card => { ... });
-            // -------------------------------------------------------------
-
             updateVenueScreenToggle();
             updateTechSection();
             updateCreativeCardsUI();
             updatePhotographerSection();
+
+            // --- НОВОЕ: Логика для Эксклюзива (подсветка + алерт) ---
+            if (DOMElements.exclusive && DOMElements.exclusive.card) {
+                DOMElements.exclusive.card.classList.toggle('selected', selection.exclusiveAi);
+
+                // Умный алерт: Показываем, если (НЕТ экрана в заведении) И (НЕ выбран проектор)
+                const hasScreen = selection.venueScreen === 'yes';
+                const hasProjector = selection.projectorNeeded;
+                // Алерт нужен только если выбран сам пакет AI-шоу, но нет экрана
+                // (хотя по задаче ты просил просто показывать предупреждение внутри карточки)
+                // Давай сделаем как просили: если нет условий - показываем текст внутри карточки.
+                const showWarning = !hasScreen && !hasProjector;
+
+                if (DOMElements.exclusive.warning) {
+                    DOMElements.exclusive.warning.classList.toggle('hidden', !showWarning);
+                }
+            }
+            // ---------------------------------------------------------
+
             updateSummaryAndPrice();
         }
 
@@ -291,8 +305,6 @@ function initializeHostCalculator() {
                 const cardValue = card.dataset.value;
                 let isDisabled = false, disabledReason = null, warning = null;
 
-                // Убрали проверки для COMPACT, так как его больше нет
-
                 if ((selection.venueType === 'large' || selection.guestCount === '81-150') && cardValue === 'STANDARD') { warning = 'Мощности может не хватить'; }
                 if (selection.venueType === 'chamber' && selection.guestCount === '1-40' && cardValue === 'MAXI') { isDisabled = true; disabledReason = 'Избыточен для данной площадки'; }
 
@@ -320,13 +332,27 @@ function initializeHostCalculator() {
                 card.parentElement.classList.remove('hidden');
                 let isDisabled = false, disabledReason = null;
 
+                // Условие блокировки (пример из твоего кода)
                 if (selection.guestCount === '81-150') { isDisabled = true; disabledReason = 'Неэффективен для >80 гостей'; }
 
                 card.classList.toggle('disabled', isDisabled);
                 card.classList.toggle('selected', selection.projectorNeeded && !isDisabled);
 
+                // --- 1. ОЧИСТКА: Удаляем старые сообщения перед новой проверкой ---
                 card.querySelector('.disabled-reason')?.remove();
-                if (isDisabled && disabledReason) { card.querySelector('div').insertAdjacentHTML('beforeend', `<p class="text-sm disabled-reason mt-2">🛑 ${disabledReason}</p>`); }
+                card.querySelector('.warning-text')?.remove(); // Обязательно удаляем класс warning-text
+
+                // --- 2. ЛОГИКА ДОБАВЛЕНИЯ СООБЩЕНИЙ ---
+                if (isDisabled && disabledReason) {
+                    card.querySelector('div').insertAdjacentHTML('beforeend', `<p class="text-sm disabled-reason mt-2">🛑 ${disabledReason}</p>`);
+                }
+                // Если карточка доступна (не disabled), проверяем наличие DJ
+                else {
+                    // Если техника (DJ) НЕ выбрана, показываем алерт
+                    if (!selection.techOption) {
+                        card.querySelector('div').insertAdjacentHTML('beforeend', `<p class="text-sm warning-text mt-2 text-amber-400 font-medium">⚠️ Требуется DJ для управления проектором</p>`);
+                    }
+                }
             }
         }
 
@@ -364,19 +390,12 @@ function initializeHostCalculator() {
             const isNeeded = selection.photographerNeeded === 'yes';
 
             if (isNeeded) {
-                // 1. Сначала убираем display: none, чтобы элемент появился в DOM
                 section.classList.remove('hidden');
-
-                // 2. Небольшая задержка, чтобы браузер успел отрисовать блок перед запуском анимации
                 requestAnimationFrame(() => {
                     section.classList.add('active');
                 });
             } else {
-                // 1. Запускаем анимацию исчезновения
                 section.classList.remove('active');
-
-                // 2. Ждем окончания анимации (400мс), затем ставим display: none
-                // Это уберет "мертвый" отступ (gap)
                 setTimeout(() => {
                     if (selection.photographerNeeded === 'no') {
                         section.classList.add('hidden');
@@ -429,11 +448,10 @@ function initializeHostCalculator() {
 
                 hostHoursBlock: document.getElementById('host-hours-block'),
 
-                // --- НОВОЕ: Элементы слайдера ведущего ---
+                // Слайдер ведущего
                 hostSlider: document.getElementById('host-hours-slider'),
                 hostHoursOutput: document.getElementById('host-hours-output'),
                 hostCostOutput: document.getElementById('host-cost-output'),
-                // ------------------------------------------
 
                 hostFixedBlock: {
                     container: document.getElementById('host-fixed-block'),
@@ -441,8 +459,6 @@ function initializeHostCalculator() {
                     desc: document.getElementById('host-fixed-desc'),
                     price: document.getElementById('host-fixed-price')
                 },
-
-                // hostOptions и hostCards УДАЛЕНЫ, они больше не нужны
 
                 venueGearContainer: document.getElementById('venue-gear-container'),
 
@@ -472,9 +488,15 @@ function initializeHostCalculator() {
                     retouchCost: hostCalculator.querySelector('#additional-retouch-cost'),
                     decrementBtn: hostCalculator.querySelector('#decrement-retouch'),
                     incrementBtn: hostCalculator.querySelector('#increment-retouch'),
+                },
+                // --- НОВОЕ: Элементы эксклюзива ---
+                exclusive: {
+                    card: document.getElementById('exclusive-ai-card'),
+                    warning: document.getElementById('ai-show-warning')
                 }
             };
 
+            // Исправление для анимации фотографа (убран margin-bottom)
             const photographerSection = DOMElements.photographer.section;
             if (photographerSection) {
                 if (photographerSection.classList.contains('content-panel')) { photographerSection.classList.remove('content-panel'); }
@@ -482,7 +504,6 @@ function initializeHostCalculator() {
                 const styleId = 'photographer-fix-styles';
                 if (!document.getElementById(styleId)) {
                     const style = document.createElement('style'); style.id = styleId;
-                    // Исправление: margin-bottom: 0 вместо 2rem
                     style.textContent = `.photographer-details-block { opacity: 0; max-height: 0; overflow: hidden; visibility: hidden; transition: opacity 0.3s ease-out, max-height 0.4s ease-out, visibility 0.4s; margin-bottom: 0; } .photographer-details-block.active { opacity: 1; visibility: visible; max-height: 1000px; margin-bottom: 0; }`;
                     document.head.appendChild(style);
                 }
@@ -499,21 +520,21 @@ function initializeHostCalculator() {
                 venueGear: 'none',
                 venueScreen: 'no',
                 photographerNeeded: 'no',
-                photographerHours: 1,
+                photographerHours: 2, // Старт фотографа 2 часа
                 additionalRetouch: 0,
                 eventDate: null,
                 isNewYearMode: false,
-                location: 'almaty'
+                location: 'almaty',
+                exclusiveAi: false // --- НОВОЕ ПОЛЕ ---
             };
 
             setupRetouchTooltip();
             setupTermsModal();
 
-            // --- НОВОЕ: Логика слайдера ведущего ---
+            // Логика слайдера ведущего
             if (DOMElements.hostSlider) {
                 DOMElements.hostSlider.addEventListener('input', (e) => {
                     selection.hostHours = parseInt(e.target.value, 10);
-                    // Обновляем текст "Х часов" сразу при перетаскивании
                     if (DOMElements.hostHoursOutput) {
                         const h = selection.hostHours;
                         DOMElements.hostHoursOutput.textContent = `${h} час${h > 1 && h < 5 ? 'а' : h >= 5 ? 'ов' : ''}`;
@@ -521,7 +542,15 @@ function initializeHostCalculator() {
                     reRenderUI();
                 });
             }
-            // ---------------------------------------
+
+            // --- НОВОЕ: Слушатель клика для Эксклюзива ---
+            if (DOMElements.exclusive.card) {
+                DOMElements.exclusive.card.addEventListener('click', () => {
+                    selection.exclusiveAi = !selection.exclusiveAi;
+                    reRenderUI();
+                });
+            }
+            // ----------------------------------------------
 
             DOMElements.allTechCards.forEach(card => card.addEventListener('click', () => {
                 if (card.dataset.value === 'DJ_OUT' || !card.classList.contains('disabled')) {
@@ -572,6 +601,7 @@ function initializeHostCalculator() {
             count += Object.values(selection.creative.ai_games || {}).filter(Boolean).length;
             if (Object.keys(selection.creative.eminem_tracks || {}).length > 0) count++;
             if (selection.photographerNeeded === 'yes') count++;
+            if (selection.exclusiveAi) count++; // +1 за эксклюзив
             return count;
         }
 
@@ -710,6 +740,7 @@ function initializeHostCalculator() {
                 selection.techOption = 'STANDARD';
             }
         }
+
         function updateSummaryAndPrice() {
             let totalKZT = 0;
             let totalUSD = 0;
@@ -796,6 +827,14 @@ function initializeHostCalculator() {
                 creativeItems.push({ name: `${eminem.name} (${selectedTracks.length} тр.)`, price: eminem.basePrice, tracks: trackNames });
             }
 
+            // --- НОВОЕ: ЭКСКЛЮЗИВ ---
+            if (selection.exclusiveAi) {
+                const aiPrice = PRICES.EXCLUSIVE.AI_SHOW.price;
+                totalKZT += aiPrice;
+                creativeItems.push({ name: PRICES.EXCLUSIVE.AI_SHOW.name, price: aiPrice });
+            }
+            // ------------------------
+
             // 5. ФОТОГРАФ
             if (selection.photographerNeeded === 'yes') {
                 const photoHourPrice = selection.photographerHours * PRICES.PHOTOGRAPHER.baseHourRate;
@@ -824,7 +863,7 @@ function initializeHostCalculator() {
                 buildCategoryHtml('Основа', 'fa-microphone-alt', baseItems),
                 buildCategoryHtml('Тех. Оснащение', 'fa-cogs', techItems),
                 buildCategoryHtml('Услуги фотографа', 'fa-camera-retro', photographerItems),
-                buildCategoryHtml('Креативные фишки', 'fa-star', creativeItems)
+                buildCategoryHtml('Эксклюзивный контент', 'fa-star', creativeItems)
             ].filter(Boolean).join('<hr class="summary-separator">');
 
             // Уведомления
@@ -932,10 +971,16 @@ function initializeHostCalculator() {
             Object.keys(selection.creative.ai_games || {}).filter(key => selection.creative.ai_games[key]).forEach(key => { creativeServices.push(`- ${PRICES.CREATIVE.AI_GAMES[key].name}: ${PRICES.CREATIVE.AI_GAMES[key].price.toLocaleString('ru-RU')} ₸`); });
             if (Object.keys(selection.creative.eminem_tracks || {}).length > 0) { creativeServices.push(`- Eminem Show: ${PRICES.CREATIVE.EMINEM.basePrice.toLocaleString('ru-RU')} ₸`); }
 
+            // --- НОВОЕ: Текст для эксклюзива ---
+            if (selection.exclusiveAi) {
+                creativeServices.push(`- ${PRICES.EXCLUSIVE.AI_SHOW.name}: ${PRICES.EXCLUSIVE.AI_SHOW.price.toLocaleString('ru-RU')} ₸`);
+            }
+            // -----------------------------------
+
             if (baseServices.length) { messageParts.push('\n*ПРОГРАММА ВЕДУЩЕГО:*', ...baseServices); }
             if (techServices.length) { messageParts.push('\n*ТЕХНИЧЕСКОЕ ОСНАЩЕНИЕ:*', ...techServices); }
             if (photoServices.length) { messageParts.push('\n*УСЛУГИ ФОТОГРАФА:*', ...photoServices); }
-            if (creativeServices.length) { messageParts.push('\n*КРЕАТИВНЫЕ ФИШКИ:*', ...creativeServices); }
+            if (creativeServices.length) { messageParts.push('\n*ЭКСКЛЮЗИВНЫЙ КОНТЕНТ:*', ...creativeServices); }
 
             messageParts.push(`\n*ИТОГОВАЯ СТОИМОСТЬ: ${selection.totalPrice}*`);
 

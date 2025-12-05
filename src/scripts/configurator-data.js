@@ -57,10 +57,15 @@ export const PRICES = {
         },
         EMINEM: { name: 'Eminem Tribute Show', basePrice: 20000 }
     },
+
+    EXCLUSIVE: {
+        AI_SHOW: { price: 50000, name: 'Персональное AI-шоу' }
+    },
+
     PROJECTOR: { price: 30000, name: 'Аренда проектора и экрана' },
 
     PHOTOGRAPHER: {
-        baseHourRate: 40000,
+        baseHourRate: 35000,
         additionalRetouchPrice: 2000
     }
 };

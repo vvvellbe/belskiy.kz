@@ -300,7 +300,7 @@
                     Техническое Оснащение
                 </h3>
                 <p class="text-sm text-gray-400 mb-6">
-                    Подберем оптимальный комплект оборудования для вашего
+                    Выберите оптимальный комплект оборудования для вашего
                     мероприятия:
                 </p>
 
@@ -423,10 +423,10 @@
                 id="photographer-section"
                 class="content-panel program-card rounded-xl p-6 sm:p-8"
             >
-                <h3 class="text-xl font-semibold text-white mb-6">
+                <h3 class="text-xl font-semibold text-white mb-2">
                     Услуги фотографа
                 </h3>
-                <p class="text-sm text-gray-400 mb-4">
+                <p class="text-sm text-gray-400 mb-6">
                     Настройте параметры работы фотографа на вашем мероприятии.
                 </p>
                 <div
@@ -455,9 +455,9 @@
                         <input
                             type="range"
                             id="photo-hours-slider"
-                            min="1"
-                            max="6"
-                            value="1"
+                            min="2"
+                            max="8"
+                            value="2"
                             step="1"
                             class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer range-lg photographer-slider"
                         />
@@ -555,6 +555,46 @@
                                     >
                                 </p>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="program-card rounded-xl p-6 sm:p-8">
+                <h3 class="text-xl font-semibold text-white mb-2">
+                    Эксклюзивный контент
+                </h3>
+                <p class="text-sm text-gray-400 mb-6">
+                    Добавьте глубоку персонализацию под ваше мероприятие.
+                </p>
+
+                <div class="option-card" id="exclusive-ai-card">
+                    <div
+                        class="flex flex-col sm:flex-row justify-between items-start gap-4"
+                    >
+                        <div>
+                            <h4 class="font-semibold text-white">
+                                Персональное AI-шоу
+                            </h4>
+                            <p
+                                class="text-sm text-gray-400 mt-1 leading-relaxed"
+                            >
+                                Я заранее собираю различные данные о ваших
+                                гостях и с помощью нейросетей генерирую
+                                уникальный контент. Ваши гости станут главными
+                                героями вечера и интерактивов.
+                            </p>
+                            <p
+                                id="ai-show-warning"
+                                class="text-sm warning-text mt-3 hidden"
+                            >
+                                ⚠️ Для большинства интерактивов требуется
+                                наличие экрана или проектора.
+                            </p>
+                        </div>
+                        <div class="text-right flex-shrink-0 w-full sm:w-auto">
+                            <p class="font-semibold text-white text-lg">
+                                + 50 000 ₸
+                            </p>
                         </div>
                     </div>
                 </div>
