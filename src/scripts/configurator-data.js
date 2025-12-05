@@ -1,39 +1,47 @@
 // src/scripts/configurator-data.js
 
 export const PRICES = {
-    HOST: { '2': 80000, '4': 160000, '6': 240000 },
-    
+    // --- НОВАЯ СТРУКТУРА ДЛЯ ВЕДУЩЕГО ---
+    // Мы убрали статические массивы цен (HOST и NEW_YEAR.HOST).
+    // Теперь здесь параметры для формулы.
+    HOST_PARAMS: {
+        BASE_PRICE: 150000,    // Фикс за выезд
+        HOURLY_RATE: 35000,    // Цена за 1 час
+        NY_MULTIPLIER: 1.3     // Коэффициент на декабрь
+    },
+
     HOST_LOCATION: {
         'kz': { price: 300000, name: 'Выезд по РК' },
         'intl': { price: 700, name: 'Международный выезд', currency: '$' }
     },
 
-    TECH: {
-        COMPACT: { price: 20000, name: 'Комплект "Компакт"', desc: 'Аудиосистема JBL (без DJ)' },
-        STANDARD: { price: 200000, name: 'Комплект "Стандарт"', desc: 'Профессиональный DJ + Звук' },
-        MAXI: { price: 230000, name: 'Комплект "Максимум"', desc: 'DJ + Расширенный комплект звука' },
-        DJ_WORK_ONLY: { price: 130000, name: 'Работа DJ (на вашем звуке)'}
+    // Для Нового года параметры локации
+    NEW_YEAR_LOCATION: {
+        'kz': { price: 500000, name: 'Выезд по РК (NY)' },
+        'intl': { price: 1000, name: 'Международный выезд (NY)', currency: '$' }
     },
-    
+
+    TECH: {
+        COMPACT: { price: 20000, name: 'Комплект «Компакт»', desc: 'Аудиосистема JBL (без DJ)' },
+        STANDARD: { price: 200000, name: 'Комплект «Стандарт»', desc: 'Профессиональный DJ + Звук' },
+        MAXI: { price: 230000, name: 'Комплект «Максимум»', desc: 'DJ + Расширенный комплект звука' },
+        DJ_WORK_ONLY: { price: 130000, name: 'Работа DJ (на вашем звуке)' }
+    },
+
     // Выездной DJ по Казахстану (Тенге)
     DJ_OUT: { price: 200000, name: 'Выездной DJ (KZ)', desc: 'Работа DJ на оборудовании заказчика' },
-    
-    // --- НОВОЕ: Выездной DJ Заграница (Доллары) ---
+
+    // Выездной DJ Заграница (Доллары)
     DJ_INTL: { price: 500, name: 'Выездной DJ (Intl)', desc: 'Работа DJ (International)', currency: '$' },
-    
+
     NEW_YEAR: {
-        HOST: { '2': 280000, '4': 380000, '6': 480000 },
-        HOST_LOCATION: {
-            'kz': { price: 500000, name: 'Выезд по РК (NY)' },
-            'intl': { price: 1000, name: 'Международный выезд (NY)', currency: '$' }
-        },
+        // Здесь мы оставили только наценки на технику и DJ, так как ведущий теперь считается по формуле
         TECH: {
-            STANDARD: { price: 250000 }, 
+            STANDARD: { price: 250000 },
             MAXI: { price: 300000 },
             DJ_WORK_ONLY: { price: 200000 }
         },
         DJ_OUT: { price: 250000 },
-        // --- НОВОЕ: Новогодняя цена DJ (Доллары) ---
         DJ_INTL: { price: 700 }
     },
 

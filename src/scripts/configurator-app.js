@@ -1,4 +1,5 @@
 // src/scripts/configurator-app.js
+import { PRICES, TRACK_LIST } from './configurator-data.js';
 
 function initializeHostCalculator() {
 
@@ -41,7 +42,7 @@ function initializeHostCalculator() {
             document.body.classList.add('modal-open');
         }
     });
-    
+
     // ========================================================================
     // --- HOST CALCULATOR LOGIC ---
     // ========================================================================
@@ -65,14 +66,14 @@ function initializeHostCalculator() {
             });
         });
 
-        if(riderModal) {
-             riderModal.addEventListener('click', (e) => {
+        if (riderModal) {
+            riderModal.addEventListener('click', (e) => {
                 if (e.target === riderModal || e.target.closest('.modal-close-btn')) {
                     closeModal(riderModal);
                 }
             });
         }
-        
+
         document.addEventListener('renderModalContent', (e) => {
             const { modalId } = e.detail;
             if (modalId === 'ai-games-modal') renderAIGamesModal();
@@ -83,7 +84,7 @@ function initializeHostCalculator() {
             const termsModal = document.getElementById('terms-modal');
             const openBtn = document.getElementById('open-terms-modal');
             const openBtnDesktop = document.getElementById('open-terms-modal-desktop');
-            
+
             if (!termsModal) return;
 
             const openModal = () => {
@@ -97,7 +98,7 @@ function initializeHostCalculator() {
                     document.body.classList.remove('modal-open');
                 }
             };
-            
+
             if (openBtn) openBtn.addEventListener('click', openModal);
             if (openBtnDesktop) openBtnDesktop.addEventListener('click', openModal);
 
@@ -114,17 +115,27 @@ function initializeHostCalculator() {
             const isNY = selection.isNewYearMode;
             const isOutbound = ['kz', 'intl'].includes(selection.location);
 
-            // 1. Цены на часы ведущего (только для Алматы/Области)
+            // 1. Цены ведущего (слайдер) - Только для Алматы
             if (!isOutbound) {
-                DOMElements.hostCards.forEach(card => {
-                    const hours = card.dataset.value;
-                    const price = isNY ? PRICES.NEW_YEAR.HOST[hours] : PRICES.HOST[hours];
-                    const priceEl = card.querySelector('.font-semibold.text-lg');
-                    if (priceEl) priceEl.textContent = `${price.toLocaleString('ru-RU')} ₸`;
-                });
+                const hours = selection.hostHours;
+
+                // --- ФОРМУЛА РАСЧЕТА ---
+                let price = PRICES.HOST_PARAMS.BASE_PRICE + (hours * PRICES.HOST_PARAMS.HOURLY_RATE);
+
+                if (isNY) {
+                    price = price * PRICES.HOST_PARAMS.NY_MULTIPLIER;
+                    // Округление до ближайших 5000
+                    price = Math.round(price / 5000) * 5000;
+                }
+                // -----------------------
+
+                if (DOMElements.hostCostOutput) {
+                    DOMElements.hostCostOutput.textContent = `(${price.toLocaleString('ru-RU')} ₸)`;
+                }
             } else {
                 // Цены для фиксированного выезда
-                const locData = isNY ? PRICES.NEW_YEAR.HOST_LOCATION[selection.location] : PRICES.HOST_LOCATION[selection.location];
+                // Внимание: используем NEW_YEAR_LOCATION вместо старого NEW_YEAR.HOST_LOCATION
+                const locData = isNY ? PRICES.NEW_YEAR_LOCATION[selection.location] : PRICES.HOST_LOCATION[selection.location];
                 if (locData) {
                     const currency = locData.currency || '₸';
                     DOMElements.hostFixedBlock.price.textContent = `${locData.price.toLocaleString('ru-RU')} ${currency}`;
@@ -136,8 +147,8 @@ function initializeHostCalculator() {
             DOMElements.allTechCards.forEach(card => {
                 const techKey = card.dataset.value;
                 const priceEl = card.querySelector('.font-semibold.text-lg');
-                
-                if (techKey === 'DJ_OUT') return; 
+
+                if (techKey === 'DJ_OUT') return;
 
                 if (priceEl && PRICES.TECH[techKey]) {
                     const price = (isNY && PRICES.NEW_YEAR.TECH[techKey])
@@ -151,20 +162,17 @@ function initializeHostCalculator() {
             const djOutCard = DOMElements.techSectionContainers.out?.querySelector('[data-value="DJ_OUT"]');
             if (djOutCard) {
                 const priceEl = djOutCard.querySelector('.font-semibold.text-lg');
-                
-                // Проверяем: это Казахстан или Заграница?
+
                 if (selection.location === 'intl') {
-                    // Цены в Долларах
                     const price = (isNY && PRICES.NEW_YEAR.DJ_INTL) ? PRICES.NEW_YEAR.DJ_INTL.price : PRICES.DJ_INTL.price;
                     if (priceEl) priceEl.textContent = `+ ${price} $`;
                 } else {
-                    // Цены в Тенге (KZ)
                     const price = (isNY && PRICES.NEW_YEAR.DJ_OUT) ? PRICES.NEW_YEAR.DJ_OUT.price : PRICES.DJ_OUT.price;
                     if (priceEl) priceEl.textContent = `+ ${price.toLocaleString('ru-RU')} ₸`;
                 }
             }
         }
-        
+
         function handleDateChange() {
             const dateValue = DOMElements.eventDateInput.value;
             selection.eventDate = dateValue;
@@ -179,21 +187,21 @@ function initializeHostCalculator() {
         }
 
         function handleLocationChange() {
-             selection.location = DOMElements.locationSelect.value;
-             
-             const isOutbound = ['kz', 'intl'].includes(selection.location);
-             
-             if (isOutbound) {
-                 // Если выезд: сбрасываем стационарную технику, оставляем DJ_OUT
-                 if (selection.techOption && selection.techOption !== 'DJ_OUT') {
-                     selection.techOption = null;
-                 }
-                 selection.projectorNeeded = false;
-             } else {
-                 // Если Алматы: сбрасываем DJ_OUT
-                 if (selection.techOption === 'DJ_OUT') selection.techOption = null;
-             }
-             reRenderUI();
+            selection.location = DOMElements.locationSelect.value;
+
+            const isOutbound = ['kz', 'intl'].includes(selection.location);
+
+            if (isOutbound) {
+                // Если выезд: сбрасываем стационарную технику, оставляем DJ_OUT
+                if (selection.techOption && selection.techOption !== 'DJ_OUT') {
+                    selection.techOption = null;
+                }
+                selection.projectorNeeded = false;
+            } else {
+                // Если Алматы: сбрасываем DJ_OUT
+                if (selection.techOption === 'DJ_OUT') selection.techOption = null;
+            }
+            reRenderUI();
         }
 
         function setupRetouchTooltip() {
@@ -211,12 +219,12 @@ function initializeHostCalculator() {
 
         function reRenderUI() {
             readParameters(); // Читаем selects (гости, площадка, гир)
-            updateDisplayedPrices(); 
-            updateLocationUI(); 
-            
-            DOMElements.hostCards.forEach(card => { 
-                card.classList.toggle('selected', card.dataset.value === selection.hostHours); 
-            });
+            updateDisplayedPrices();
+            updateLocationUI();
+
+            // --- УДАЛЕНО: Старый блок, который красил кнопки hostCards ---
+            // DOMElements.hostCards.forEach(card => { ... });
+            // -------------------------------------------------------------
 
             updateVenueScreenToggle();
             updateTechSection();
@@ -227,38 +235,38 @@ function initializeHostCalculator() {
 
         function updateLocationUI() {
             const isOutbound = ['kz', 'intl'].includes(selection.location);
-            
+
             if (DOMElements.hostHoursBlock) DOMElements.hostHoursBlock.classList.toggle('hidden', isOutbound);
             if (DOMElements.hostFixedBlock.container) DOMElements.hostFixedBlock.container.classList.toggle('hidden', !isOutbound);
 
             if (DOMElements.venueGearContainer) {
-                 DOMElements.venueGearContainer.classList.toggle('hidden', isOutbound);
+                DOMElements.venueGearContainer.classList.toggle('hidden', isOutbound);
             }
         }
 
-        function updateVenueScreenToggle() { 
-            DOMElements.venueScreenToggleBtns.forEach(btn => { 
-                btn.classList.toggle('active', btn.dataset.value === selection.venueScreen); 
-            }); 
+        function updateVenueScreenToggle() {
+            DOMElements.venueScreenToggleBtns.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.value === selection.venueScreen);
+            });
         }
 
         function updateTechSection() {
             const loc = selection.location;
-            
+
             // Сценарий 1: ВЫЕЗД (KZ или Intl) -> Показываем только DJ OUT
             if (loc === 'kz' || loc === 'intl') {
                 DOMElements.techSectionContainers.fullDjSet.classList.add('hidden');
                 DOMElements.techSectionContainers.soundOnly.classList.add('hidden');
                 DOMElements.techSectionContainers.noGear.classList.add('hidden');
-                
+
                 DOMElements.techSectionContainers.out.classList.remove('hidden');
-                
+
                 const djOutCard = DOMElements.techSectionContainers.out.querySelector('[data-value="DJ_OUT"]');
                 if (djOutCard) {
                     djOutCard.classList.toggle('selected', selection.techOption === 'DJ_OUT');
                 }
-                
-                 if (DOMElements.projectorCard) DOMElements.projectorCard.parentElement.classList.add('hidden');
+
+                if (DOMElements.projectorCard) DOMElements.projectorCard.parentElement.classList.add('hidden');
                 return;
             }
 
@@ -291,10 +299,10 @@ function initializeHostCalculator() {
 
                 card.classList.toggle('disabled', isDisabled);
                 card.classList.toggle('selected', selection.techOption === cardValue && !isDisabled);
-                
+
                 card.querySelector('.disabled-reason')?.remove();
                 card.querySelector('.warning-text')?.remove();
-                
+
                 const contentDiv = card.querySelector('div:first-child');
                 if (isDisabled && disabledReason) { contentDiv.insertAdjacentHTML('beforeend', `<p class="text-sm disabled-reason mt-2">🛑 ${disabledReason}</p>`); }
                 else if (warning) { contentDiv.insertAdjacentHTML('beforeend', `<p class="text-sm warning-text mt-2">⚠️ ${warning}</p>`); }
@@ -305,19 +313,19 @@ function initializeHostCalculator() {
             const card = DOMElements.projectorCard;
             if (!card) return;
             const venueHasScreen = selection.venueScreen === 'yes';
-            
+
             if (venueHasScreen) {
                 card.parentElement.classList.add('hidden');
                 selection.projectorNeeded = false;
             } else {
                 card.parentElement.classList.remove('hidden');
                 let isDisabled = false, disabledReason = null;
-                
+
                 if (selection.guestCount === '81-150') { isDisabled = true; disabledReason = 'Неэффективен для >80 гостей'; }
-                
+
                 card.classList.toggle('disabled', isDisabled);
                 card.classList.toggle('selected', selection.projectorNeeded && !isDisabled);
-                
+
                 card.querySelector('.disabled-reason')?.remove();
                 if (isDisabled && disabledReason) { card.querySelector('div').insertAdjacentHTML('beforeend', `<p class="text-sm disabled-reason mt-2">🛑 ${disabledReason}</p>`); }
             }
@@ -330,7 +338,7 @@ function initializeHostCalculator() {
                 const selectedCount = Object.values(aiGames).filter(Boolean).length;
                 const isSelected = selectedCount > 0;
                 let totalPrice = Object.keys(aiGames).reduce((sum, key) => aiGames[key] ? sum + PRICES.CREATIVE.AI_GAMES[key].price : sum, 0);
-                
+
                 aiCard.classList.toggle('selected', isSelected);
                 aiCard.querySelector('[data-creative-subtitle]').textContent = isSelected ? `Выбрано: ${selectedCount} игр(ы)` : 'Персонализация вечера нового уровня';
                 aiCard.querySelector('[data-creative-price]').textContent = isSelected ? `+ ${totalPrice.toLocaleString('ru-RU')} ₸` : 'от 5 000 ₸';
@@ -367,22 +375,22 @@ function initializeHostCalculator() {
         }
 
         function handleOptionSelection(group, value) {
-            if (group === 'host') { 
-                selection.hostHours = value; 
+            if (group === 'host') {
+                selection.hostHours = value;
             }
             else if (group === 'tech') {
                 selection.techOption = selection.techOption === value ? null : value;
                 if (selection.techOption === null && selection.projectorNeeded) { selection.projectorNeeded = false; }
-            } 
+            }
             else if (group === 'creative' && value === 'PROJECTOR') {
                 selection.projectorNeeded = !selection.projectorNeeded;
                 if (selection.projectorNeeded) { enforceDjForProjector(); }
-                else { 
-                    Object.keys(selection.creative.ai_games).forEach(gameKey => { 
-                        if (selection.creative.ai_games[gameKey] && PRICES.CREATIVE.AI_GAMES[gameKey]?.requiresScreen) { 
-                            selection.creative.ai_games[gameKey] = false; 
-                        } 
-                    }); 
+                else {
+                    Object.keys(selection.creative.ai_games).forEach(gameKey => {
+                        if (selection.creative.ai_games[gameKey] && PRICES.CREATIVE.AI_GAMES[gameKey]?.requiresScreen) {
+                            selection.creative.ai_games[gameKey] = false;
+                        }
+                    });
                 }
             }
             reRenderUI();
@@ -394,46 +402,52 @@ function initializeHostCalculator() {
                 summaryListEl: hostCalculator.querySelector('#summary-list'),
                 eventDateInput: hostCalculator.querySelector('#event-date'),
                 locationSelect: hostCalculator.querySelector('#host-location'),
-                
+
                 hostHoursBlock: document.getElementById('host-hours-block'),
+
+                // --- НОВОЕ: Элементы слайдера ведущего ---
+                hostSlider: document.getElementById('host-hours-slider'),
+                hostHoursOutput: document.getElementById('host-hours-output'),
+                hostCostOutput: document.getElementById('host-cost-output'),
+                // ------------------------------------------
+
                 hostFixedBlock: {
                     container: document.getElementById('host-fixed-block'),
                     title: document.getElementById('host-fixed-title'),
                     desc: document.getElementById('host-fixed-desc'),
                     price: document.getElementById('host-fixed-price')
                 },
-                
-                hostOptions: hostCalculator.querySelector('#host-options'),
-                hostCards: hostCalculator.querySelectorAll('[data-group="host"]'),
-                
+
+                // hostOptions и hostCards УДАЛЕНЫ, они больше не нужны
+
                 venueGearContainer: document.getElementById('venue-gear-container'),
-                
+
                 techSection: hostCalculator.querySelector('#tech-section'),
-                techSectionContainers: { 
-                    fullDjSet: document.getElementById('tech-container-full-dj'), 
-                    soundOnly: document.getElementById('tech-container-sound-only'), 
+                techSectionContainers: {
+                    fullDjSet: document.getElementById('tech-container-full-dj'),
+                    soundOnly: document.getElementById('tech-container-sound-only'),
                     noGear: document.getElementById('tech-container-no-gear'),
                     out: document.getElementById('tech-container-out')
                 },
                 allTechCards: hostCalculator.querySelectorAll('[data-group="tech"]'),
                 projectorCard: hostCalculator.querySelector('[data-value="PROJECTOR"]'),
                 creativeOptions: hostCalculator.querySelector('#creative-options'),
-                parameterSelects: hostCalculator.querySelectorAll('select'), 
+                parameterSelects: hostCalculator.querySelectorAll('select'),
                 copyQuoteBtn: hostCalculator.querySelector('#copy-quote-btn'),
                 toastNotification: document.getElementById('toast-notification'),
                 summaryCard: hostCalculator.querySelector('[data-summary-id="host"]'),
                 venueScreenToggleBtns: hostCalculator.querySelectorAll('.screen-toggle-btn'),
-                photographer: { 
-                    section: hostCalculator.querySelector('#photographer-section'), 
-                    toggleBtns: hostCalculator.querySelectorAll('.photographer-toggle-btn'), 
-                    hoursSlider: hostCalculator.querySelector('#photo-hours-slider'), 
-                    hoursOutput: hostCalculator.querySelector('#photo-hours-output'), 
-                    hoursCostOutput: hostCalculator.querySelector('#photographer-hours-cost'), 
-                    photoCountOutput: hostCalculator.querySelector('#photo-count-output'), 
-                    retouchInput: hostCalculator.querySelector('#additional-retouch-input'), 
-                    retouchCost: hostCalculator.querySelector('#additional-retouch-cost'), 
-                    decrementBtn: hostCalculator.querySelector('#decrement-retouch'), 
-                    incrementBtn: hostCalculator.querySelector('#increment-retouch'), 
+                photographer: {
+                    section: hostCalculator.querySelector('#photographer-section'),
+                    toggleBtns: hostCalculator.querySelectorAll('.photographer-toggle-btn'),
+                    hoursSlider: hostCalculator.querySelector('#photo-hours-slider'),
+                    hoursOutput: hostCalculator.querySelector('#photo-hours-output'),
+                    hoursCostOutput: hostCalculator.querySelector('#photographer-hours-cost'),
+                    photoCountOutput: hostCalculator.querySelector('#photo-count-output'),
+                    retouchInput: hostCalculator.querySelector('#additional-retouch-input'),
+                    retouchCost: hostCalculator.querySelector('#additional-retouch-cost'),
+                    decrementBtn: hostCalculator.querySelector('#decrement-retouch'),
+                    incrementBtn: hostCalculator.querySelector('#increment-retouch'),
                 }
             };
 
@@ -449,18 +463,18 @@ function initializeHostCalculator() {
                 }
             }
 
-            selection = { 
-                hostHours: '6', 
-                projectorNeeded: false, 
-                techOption: 'STANDARD', 
-                creative: { ai_games: {}, eminem_tracks: {} }, 
-                totalPrice: 0, 
-                venueType: 'standard', 
-                guestCount: '1-40', 
-                venueGear: 'none', 
-                venueScreen: 'no', 
-                photographerNeeded: 'no', 
-                photographerHours: 1, 
+            selection = {
+                hostHours: 2, // Старт с 2 часов
+                projectorNeeded: false,
+                techOption: 'STANDARD',
+                creative: { ai_games: {}, eminem_tracks: {} },
+                totalPrice: 0,
+                venueType: 'standard',
+                guestCount: '1-40',
+                venueGear: 'none',
+                venueScreen: 'no',
+                photographerNeeded: 'no',
+                photographerHours: 1,
                 additionalRetouch: 0,
                 eventDate: null,
                 isNewYearMode: false,
@@ -470,23 +484,36 @@ function initializeHostCalculator() {
             setupRetouchTooltip();
             setupTermsModal();
 
-            DOMElements.hostCards.forEach(card => card.addEventListener('click', () => handleOptionSelection('host', card.dataset.value)));
-            DOMElements.allTechCards.forEach(card => card.addEventListener('click', () => { 
+            // --- НОВОЕ: Логика слайдера ведущего ---
+            if (DOMElements.hostSlider) {
+                DOMElements.hostSlider.addEventListener('input', (e) => {
+                    selection.hostHours = parseInt(e.target.value, 10);
+                    // Обновляем текст "Х часов" сразу при перетаскивании
+                    if (DOMElements.hostHoursOutput) {
+                        const h = selection.hostHours;
+                        DOMElements.hostHoursOutput.textContent = `${h} час${h > 1 && h < 5 ? 'а' : h >= 5 ? 'ов' : ''}`;
+                    }
+                    reRenderUI();
+                });
+            }
+            // ---------------------------------------
+
+            DOMElements.allTechCards.forEach(card => card.addEventListener('click', () => {
                 if (card.dataset.value === 'DJ_OUT' || !card.classList.contains('disabled')) {
-                    handleOptionSelection('tech', card.dataset.value) 
+                    handleOptionSelection('tech', card.dataset.value)
                 }
             }));
-            
+
             if (DOMElements.projectorCard) DOMElements.projectorCard.addEventListener('click', () => { if (!DOMElements.projectorCard.classList.contains('disabled')) handleOptionSelection('creative', 'PROJECTOR') });
-            
+
             DOMElements.creativeOptions.addEventListener('click', (e) => {
                 const resetButton = e.target.closest('[data-reset-target]');
-                if (resetButton) { 
-                    e.preventDefault(); e.stopPropagation(); 
-                    const target = resetButton.dataset.resetTarget; 
-                    if (target === 'ai') selection.creative.ai_games = {}; 
-                    else if (target === 'eminem') selection.creative.eminem_tracks = {}; 
-                    reRenderUI(); 
+                if (resetButton) {
+                    e.preventDefault(); e.stopPropagation();
+                    const target = resetButton.dataset.resetTarget;
+                    if (target === 'ai') selection.creative.ai_games = {};
+                    else if (target === 'eminem') selection.creative.eminem_tracks = {};
+                    reRenderUI();
                 }
             });
 
@@ -496,12 +523,12 @@ function initializeHostCalculator() {
             DOMElements.photographer.retouchInput.addEventListener('change', (e) => { selection.additionalRetouch = parseInt(e.target.value, 10) || 0; if (selection.additionalRetouch < 0) selection.additionalRetouch = 0; reRenderUI(); });
             DOMElements.photographer.decrementBtn.addEventListener('click', () => { if (selection.additionalRetouch > 0) { selection.additionalRetouch--; reRenderUI(); } });
             DOMElements.photographer.incrementBtn.addEventListener('click', () => { selection.additionalRetouch++; reRenderUI(); });
-            
+
             if (DOMElements.eventDateInput) DOMElements.eventDateInput.addEventListener('change', handleDateChange);
             if (DOMElements.locationSelect) DOMElements.locationSelect.addEventListener('change', handleLocationChange);
-            
+
             DOMElements.parameterSelects.forEach(sel => {
-                if(sel.id !== 'host-location') { 
+                if (sel.id !== 'host-location') {
                     sel.addEventListener('change', () => { readParameters(); reRenderUI(); });
                 }
             });
@@ -514,7 +541,7 @@ function initializeHostCalculator() {
 
         function getItemsCount() {
             let count = 0;
-            count++; 
+            count++;
             if (selection.venueGear !== 'full_dj_set' && selection.techOption && (PRICES.TECH[selection.techOption] || PRICES.DJ_OUT)) count++;
             if (selection.projectorNeeded) count++;
             count += Object.values(selection.creative.ai_games || {}).filter(Boolean).length;
@@ -535,16 +562,16 @@ function initializeHostCalculator() {
             if (e.target.closest('[data-modal-trigger="videoModal"]')) return;
             const trackCard = e.target.closest('[data-track-id]');
             const selectedCount = Object.keys(selection.creative.eminem_tracks || {}).length;
-            if (trackCard && !trackCard.classList.contains('disabled')) { 
-                const id = trackCard.dataset.trackId; 
-                if (selection.creative.eminem_tracks[id]) { 
-                    delete selection.creative.eminem_tracks[id]; 
-                } else if (selectedCount < 5) { 
-                    selection.creative.eminem_tracks[id] = true; 
-                } 
+            if (trackCard && !trackCard.classList.contains('disabled')) {
+                const id = trackCard.dataset.trackId;
+                if (selection.creative.eminem_tracks[id]) {
+                    delete selection.creative.eminem_tracks[id];
+                } else if (selectedCount < 5) {
+                    selection.creative.eminem_tracks[id] = true;
+                }
             }
-            if (e.target.id === 'reset-eminem-selection') { 
-                selection.creative.eminem_tracks = {}; 
+            if (e.target.id === 'reset-eminem-selection') {
+                selection.creative.eminem_tracks = {};
             }
             updateEminemModalUI();
             reRenderUI();
@@ -595,7 +622,7 @@ function initializeHostCalculator() {
 
                 gamesHTML += `<div class="creative-card ai-game-card ${isSelected ? 'selected' : ''} ${isDisabled ? 'disabled' : ''}" data-game-key="${key}"><div class="ai-card-main-content"><div class="card-header"><h4 class="card-title">${game.name}</h4><p class="card-price">+${game.price.toLocaleString('ru-RU')} ₸</p></div><p class="card-desc">${game.desc}</p></div>${hasFooter ? `<div class="ai-card-footer">${footerContent}</div>` : ''}</div>`;
             }
-            
+
             const addProjectorButtonHTML = canAddProjector ? `<button id="add-projector-from-modal" class="btn-add-projector"><i class="mr-2"></i>Добавить Проектор (+${PRICES.PROJECTOR.price.toLocaleString('ru-RU')} ₸)</button>` : '';
             const projectorWarningHTML = !screenAvailable ? `<div class="text-center mb-4"><p class="text-amber-400 font-medium text-sm">⚠️ Некоторым играм требуется экран.</p>${canAddProjector ? '<p class="text-xs text-gray-400 mt-1">Для управления проектором будет автоматически добавлен DJ.</p>' : ''}</div>` : '';
             modalContent.innerHTML = `<div class="modal-header"><div class="modal-title-group"><div><h3 class="modal-title">AI-ШОУ</h3><p class="modal-subtitle">Выберите уникальные интерактивы для ваших гостей</p></div></div><button class="modal-close-btn js-modal-close">&times;</button></div><div class="modal-body"><div class="grid grid-cols-1 md:grid-cols-2 gap-4">${gamesHTML}</div></div><div class="modal-footer flex-col">${projectorWarningHTML}<div class="footer-actions">${addProjectorButtonHTML}<button id="reset-ai-selection" class="btn-reset py-3 px-6 rounded-lg">Сбросить</button><button class="btn-primary font-bold py-3 px-8 rounded-lg js-modal-close">Готово</button></div></div>`;
@@ -604,15 +631,15 @@ function initializeHostCalculator() {
         function renderEminemModal() {
             if (!eminemModal) return;
             const modalContent = eminemModal.querySelector('.modal-content');
-            const selectedTracks = selection.creative.eminem_tracks || {}; 
-            const selectedCount = Object.keys(selectedTracks).length; 
+            const selectedTracks = selection.creative.eminem_tracks || {};
+            const selectedCount = Object.keys(selectedTracks).length;
             const limitReached = selectedCount >= 5;
             let tracksHTML = '';
-            TRACK_LIST.forEach(track => { 
-                const isSelected = selectedTracks[track.id]; 
-                const isDisabled = limitReached && !isSelected; 
+            TRACK_LIST.forEach(track => {
+                const isSelected = selectedTracks[track.id];
+                const isDisabled = limitReached && !isSelected;
                 const exampleButtonHTML = `<button class="btn-youtube" data-modal-trigger="videoModal" data-video-src="${track.url.split('v=')[1]}"><i class="fab fa-youtube mr-2"></i>Пример</button>`;
-                tracksHTML += `<div class="creative-card ${isSelected ? 'selected' : ''} ${isDisabled ? 'disabled' : ''}" data-track-id="${track.id}"><div class="track-card-header"><h4 class="card-title">${track.name}</h4>${exampleButtonHTML}</div><div class="track-meta"><span><i class="fas fa-microphone-alt"></i> ${track.structure}</span><span><i class="fas fa-clock"></i> ${track.duration}</span></div></div>`; 
+                tracksHTML += `<div class="creative-card ${isSelected ? 'selected' : ''} ${isDisabled ? 'disabled' : ''}" data-track-id="${track.id}"><div class="track-card-header"><h4 class="card-title">${track.name}</h4>${exampleButtonHTML}</div><div class="track-meta"><span><i class="fas fa-microphone-alt"></i> ${track.structure}</span><span><i class="fas fa-clock"></i> ${track.duration}</span></div></div>`;
             });
             modalContent.innerHTML = `<div class="modal-header"><div class="modal-title-group"><div><h3 class="modal-title">Eminem Tribute Show</h3><p class="modal-subtitle">Соберите свой идеальный сет-лист для зажигательного выступления</p></div></div><button class="modal-close-btn js-modal-close">&times;</button></div><div class="modal-body"><div class="grid grid-cols-1 md:grid-cols-2 gap-4">${tracksHTML}</div></div><div class="modal-footer"><div class="footer-info"><p>Выбрано <span class="count">${selectedCount}/5</span> треков</p><p class="limit-reached text-amber-400 font-semibold mt-1 ${limitReached ? '' : 'hidden'}">Достигнут максимум</p></div><div class="footer-buttons"><button id="reset-eminem-selection" class="btn-reset py-3 px-6 rounded-lg">Сбросить</button><button class="btn-primary font-bold py-3 px-8 rounded-lg js-modal-close">Готово</button></div></div>`;
         }
@@ -626,11 +653,11 @@ function initializeHostCalculator() {
             // Если изменился venueGear и мы в Алматы, пересчитываем дефолтный тех. пакет
             if (oldVenueGear !== selection.venueGear && ['almaty', 'almaty_region'].includes(selection.location)) {
                 selection.projectorNeeded = false;
-                if (selection.venueGear === 'none') { 
-                    const venue = selection.venueType, guests = selection.guestCount; 
-                    if (venue === 'large' || guests === '81-150') selection.techOption = 'MAXI'; 
-                    else if (venue === 'standard' || guests === '41-80') selection.techOption = 'STANDARD'; 
-                    else selection.techOption = 'COMPACT'; 
+                if (selection.venueGear === 'none') {
+                    const venue = selection.venueType, guests = selection.guestCount;
+                    if (venue === 'large' || guests === '81-150') selection.techOption = 'MAXI';
+                    else if (venue === 'standard' || guests === '41-80') selection.techOption = 'STANDARD';
+                    else selection.techOption = 'COMPACT';
                 }
                 else if (selection.venueGear === 'sound_only') { selection.techOption = 'DJ_WORK_ONLY'; }
                 else { selection.techOption = null; }
@@ -643,28 +670,33 @@ function initializeHostCalculator() {
         }
 
         function updateSummaryAndPrice() {
-            let totalKZT = 0; 
+            let totalKZT = 0;
             let totalUSD = 0;
             let currency = '₸';
-            
+
             let baseItems = [], techItems = [], creativeItems = [], photographerItems = [];
             const isNY = selection.isNewYearMode;
             const isOutbound = ['kz', 'intl'].includes(selection.location);
-            
-            // 1. ВЕДУЩИЙ
+
+            // 1. ВЕДУЩИЙ (Новая логика)
             if (!isOutbound) {
-                // Почасовая оплата (Тенге)
-                const hostPriceSource = isNY ? PRICES.NEW_YEAR.HOST : PRICES.HOST;
-                const hostPrice = hostPriceSource[selection.hostHours]; 
-                if (hostPrice) { 
-                    totalKZT += hostPrice; 
-                    baseItems.push({ name: `Ведущий (до ${selection.hostHours} ч)`, price: hostPrice }); 
+                const hours = selection.hostHours;
+
+                // --- ФОРМУЛА ---
+                let hostPrice = PRICES.HOST_PARAMS.BASE_PRICE + (hours * PRICES.HOST_PARAMS.HOURLY_RATE);
+
+                if (isNY) {
+                    hostPrice = hostPrice * PRICES.HOST_PARAMS.NY_MULTIPLIER;
+                    hostPrice = Math.round(hostPrice / 5000) * 5000;
                 }
+                // ---------------
+
+                totalKZT += hostPrice;
+                baseItems.push({ name: `Ведущий (${hours} ч)`, price: hostPrice });
             } else {
                 // Фиксированная оплата выезда
-                const locData = isNY ? PRICES.NEW_YEAR.HOST_LOCATION[selection.location] : PRICES.HOST_LOCATION[selection.location];
+                const locData = isNY ? PRICES.NEW_YEAR_LOCATION[selection.location] : PRICES.HOST_LOCATION[selection.location];
                 if (locData) {
-                    // Проверяем валюту
                     if (locData.currency === '$') {
                         totalUSD += locData.price;
                         currency = '$';
@@ -674,29 +706,26 @@ function initializeHostCalculator() {
                     baseItems.push({ name: locData.name, price: locData.price, currency: locData.currency || '₸' });
                 }
             }
-            
+
             // 2. ТЕХНИКА
             if (!isOutbound) {
-                // Стандартная логика для Алматы (Тенге)
-                if (selection.venueGear === 'full_dj_set') { 
-                    techItems.push({ name: '✅ Пакет не требуется', price: null }); 
-                } else if (selection.techOption && PRICES.TECH[selection.techOption]) { 
+                if (selection.venueGear === 'full_dj_set') {
+                    techItems.push({ name: '✅ Пакет не требуется', price: null });
+                } else if (selection.techOption && PRICES.TECH[selection.techOption]) {
                     const tech = PRICES.TECH[selection.techOption];
-                    const techPrice = (isNY && PRICES.NEW_YEAR.TECH[selection.techOption]) 
-                                    ? PRICES.NEW_YEAR.TECH[selection.techOption].price 
-                                    : tech.price;
-                    totalKZT += techPrice; 
-                    techItems.push({ name: tech.name, price: techPrice }); 
+                    const techPrice = (isNY && PRICES.NEW_YEAR.TECH[selection.techOption])
+                        ? PRICES.NEW_YEAR.TECH[selection.techOption].price
+                        : tech.price;
+                    totalKZT += techPrice;
+                    techItems.push({ name: tech.name, price: techPrice });
                 }
             } else if (selection.location === 'kz') {
-                // Логика для KZ (Тенге)
                 if (selection.techOption === 'DJ_OUT') {
                     const price = (isNY && PRICES.NEW_YEAR.DJ_OUT) ? PRICES.NEW_YEAR.DJ_OUT.price : PRICES.DJ_OUT.price;
                     totalKZT += price;
                     techItems.push({ name: PRICES.DJ_OUT.name, price: price, currency: '₸' });
                 }
             } else if (selection.location === 'intl') {
-                // Логика для Intl (Доллары)
                 if (selection.techOption === 'DJ_OUT') {
                     const price = (isNY && PRICES.NEW_YEAR.DJ_INTL) ? PRICES.NEW_YEAR.DJ_INTL.price : PRICES.DJ_INTL.price;
                     totalUSD += price;
@@ -704,68 +733,68 @@ function initializeHostCalculator() {
                 }
             }
 
-            // 3. ПРОЕКТОР (Только Алматы, Тенге)
-            if (selection.projectorNeeded && !isOutbound) { 
-                totalKZT += PRICES.PROJECTOR.price; 
-                techItems.push({ name: PRICES.PROJECTOR.name, price: PRICES.PROJECTOR.price }); 
-            }
-            
-            // 4. КРЕАТИВ (Тенге)
-            Object.keys(selection.creative.ai_games).forEach(key => { 
-                if (selection.creative.ai_games[key]) { 
-                    const game = PRICES.CREATIVE.AI_GAMES[key]; 
-                    totalKZT += game.price; 
-                    creativeItems.push({ name: game.name, price: game.price }); 
-                } 
-            });
-            const selectedTracks = Object.keys(selection.creative.eminem_tracks || {}); 
-            if (selectedTracks.length > 0) { 
-                const eminem = PRICES.CREATIVE.EMINEM; 
-                totalKZT += eminem.basePrice; 
-                const trackNames = selectedTracks.map(id => TRACK_LIST.find(t => t.id === id)?.name).filter(Boolean); 
-                creativeItems.push({ name: `${eminem.name} (${selectedTracks.length} тр.)`, price: eminem.basePrice, tracks: trackNames }); 
-            }
-            
-            // 5. ФОТОГРАФ (Тенге)
-            if (selection.photographerNeeded === 'yes') { 
-                const photoHourPrice = selection.photographerHours * PRICES.PHOTOGRAPHER.baseHourRate; 
-                const additionalRetouchCost = selection.additionalRetouch * PRICES.PHOTOGRAPHER.additionalRetouchPrice; 
-                const totalPhotoCost = photoHourPrice + additionalRetouchCost; 
-                totalKZT += totalPhotoCost; 
-                photographerItems.push({ name: `Работа фотографа (${selection.photographerHours} ч)`, price: photoHourPrice }); 
-                if (selection.additionalRetouch > 0) { 
-                    photographerItems.push({ name: `Доп. ретушь (${selection.additionalRetouch} фото)`, price: additionalRetouchCost }); 
-                } 
+            // 3. ПРОЕКТОР
+            if (selection.projectorNeeded && !isOutbound) {
+                totalKZT += PRICES.PROJECTOR.price;
+                techItems.push({ name: PRICES.PROJECTOR.name, price: PRICES.PROJECTOR.price });
             }
 
-            const buildCategoryHtml = (title, icon, items) => { 
-                if (!items.length) return ''; 
-                let itemsHtml = items.map(item => { 
-                    let trackListHtml = item.tracks ? `<ul class="summary-track-list">${item.tracks.map(t => `<li>${t}</li>`).join('')}</ul>` : ''; 
+            // 4. КРЕАТИВ
+            Object.keys(selection.creative.ai_games).forEach(key => {
+                if (selection.creative.ai_games[key]) {
+                    const game = PRICES.CREATIVE.AI_GAMES[key];
+                    totalKZT += game.price;
+                    creativeItems.push({ name: game.name, price: game.price });
+                }
+            });
+            const selectedTracks = Object.keys(selection.creative.eminem_tracks || {});
+            if (selectedTracks.length > 0) {
+                const eminem = PRICES.CREATIVE.EMINEM;
+                totalKZT += eminem.basePrice;
+                const trackNames = selectedTracks.map(id => TRACK_LIST.find(t => t.id === id)?.name).filter(Boolean);
+                creativeItems.push({ name: `${eminem.name} (${selectedTracks.length} тр.)`, price: eminem.basePrice, tracks: trackNames });
+            }
+
+            // 5. ФОТОГРАФ
+            if (selection.photographerNeeded === 'yes') {
+                const photoHourPrice = selection.photographerHours * PRICES.PHOTOGRAPHER.baseHourRate;
+                const additionalRetouchCost = selection.additionalRetouch * PRICES.PHOTOGRAPHER.additionalRetouchPrice;
+                const totalPhotoCost = photoHourPrice + additionalRetouchCost;
+                totalKZT += totalPhotoCost;
+                photographerItems.push({ name: `Работа фотографа (${selection.photographerHours} ч)`, price: photoHourPrice });
+                if (selection.additionalRetouch > 0) {
+                    photographerItems.push({ name: `Доп. ретушь (${selection.additionalRetouch} фото)`, price: additionalRetouchCost });
+                }
+            }
+
+            const buildCategoryHtml = (title, icon, items) => {
+                if (!items.length) return '';
+                let itemsHtml = items.map(item => {
+                    let trackListHtml = item.tracks ? `<ul class="summary-track-list">${item.tracks.map(t => `<li>${t}</li>`).join('')}</ul>` : '';
                     const cur = item.currency || '₸';
-                    const priceHtml = item.price !== null ? `<span class="summary-item-price">${item.price.toLocaleString('ru-RU')} ${cur}</span>` : ''; 
-                    const nameClass = item.price === null ? 'is-free' : ''; 
-                    return `<div class="summary-item"><div class="summary-item-name ${nameClass}">${item.name}</div>${priceHtml}</div>${trackListHtml}`; 
-                }).join(''); 
-                return `<div class="summary-category"><div class="summary-category-header"><i class="fas ${icon}"></i><span>${title}</span></div><div class="summary-items-container">${itemsHtml}</div></div>`; 
+                    const priceHtml = item.price !== null ? `<span class="summary-item-price">${item.price.toLocaleString('ru-RU')} ${cur}</span>` : '';
+                    const nameClass = item.price === null ? 'is-free' : '';
+                    return `<div class="summary-item"><div class="summary-item-name ${nameClass}">${item.name}</div>${priceHtml}</div>${trackListHtml}`;
+                }).join('');
+                return `<div class="summary-category"><div class="summary-category-header"><i class="fas ${icon}"></i><span>${title}</span></div><div class="summary-items-container">${itemsHtml}</div></div>`;
             };
-            
+
             DOMElements.summaryListEl.innerHTML = [
-                buildCategoryHtml('Основа', 'fa-microphone-alt', baseItems), 
-                buildCategoryHtml('Тех. Оснащение', 'fa-cogs', techItems), 
-                buildCategoryHtml('Услуги фотографа', 'fa-camera-retro', photographerItems), 
+                buildCategoryHtml('Основа', 'fa-microphone-alt', baseItems),
+                buildCategoryHtml('Тех. Оснащение', 'fa-cogs', techItems),
+                buildCategoryHtml('Услуги фотографа', 'fa-camera-retro', photographerItems),
                 buildCategoryHtml('Креативные фишки', 'fa-star', creativeItems)
             ].filter(Boolean).join('<hr class="summary-separator">');
-            
+
             // Уведомления
             const notifContainer = document.getElementById('host-notifications');
             if (notifContainer) {
-                 notifContainer.innerHTML = '';
-                 if (isOutbound) {
-                     notifContainer.innerHTML = `<div class="notification-card"><i class="fas fa-plane"></i><p>Трансфер и проживание оплачиваются отдельно (см. Райдер).</p></div><button data-modal-trigger="riderModal" class="btn-rider w-full mt-2">Ознакомиться с райдером</button>`;
-                 } else if (selection.location === 'almaty_region') {
-                     notifContainer.innerHTML = `<div class="notification-card"><i class="fas fa-car"></i><p>Трансфер (такси) оплачивается отдельно.</p></div>`;
-                 }
+                notifContainer.innerHTML = '';
+                if (isOutbound) {
+                    notifContainer.innerHTML = `<div class="notification-card"><i class="fas fa-plane"></i><p>Трансфер и проживание оплачиваются отдельно (см. Райдер).</p></div><button data-modal-trigger="riderModal" class="btn-rider w-full mt-2">Ознакомиться с райдером</button>`;
+                } else if (selection.location === 'almaty_region') {
+                    notifContainer.innerHTML = `<div class="notification-card"><i class="fas fa-car"></i><p>Трансфер (такси) оплачивается отдельно.</p></div>`;
+                }
             }
 
             // Формирование строки ИТОГО
@@ -779,8 +808,9 @@ function initializeHostCalculator() {
             }
 
             DOMElements.totalPriceEl.textContent = totalString;
-            selection.totalPrice = totalString; 
-            
+            selection.totalPrice = totalString;
+
+            // Обновляем плавающую панель для мобильных
             updateFloatingBarUI(totalString, getItemsCount(), null);
         }
 
@@ -791,76 +821,83 @@ function initializeHostCalculator() {
                 messageParts.push(`*ДАТА МЕРОПРИЯТИЯ: ${day}.${month}.${year}*`);
             }
             if (selection.isNewYearMode) messageParts.push(`*ТАРИФ: Новогодний*`);
-            
+
             messageParts.push(`\n*УСЛУГА: Ведущий мероприятий*`);
-            
+
             const locationMap = { 'almaty': 'В пределах г. Алматы', 'almaty_region': 'Алматинская область', 'kz': 'Другой город РК', 'intl': 'Другая страна' };
             messageParts.push(`- Местоположение: ${locationMap[selection.location]}`);
-            
+
             messageParts.push(`\n*ПАРАМЕТРЫ ПЛОЩАДКИ:*`);
             const paramText = { venueType: { 'chamber': 'Камерная', 'standard': 'Стандартная', 'large': 'Открытая/Большая' }, venueGear: { 'none': 'Ничего нет', 'sound_only': 'Только звук', 'full_dj_set': 'Есть всё' }, venueScreen: { 'no': 'Нет', 'yes': 'Да' } };
             messageParts.push(`- Тип площадки: ${paramText.venueType[selection.venueType]}`);
             messageParts.push(`- Количество гостей: ${selection.guestCount}`);
-            
+
             if (!['kz', 'intl'].includes(selection.location)) {
                 messageParts.push(`- Оборудование и DJ от заведения: ${paramText.venueGear[selection.venueGear]}`);
                 messageParts.push(`- Экран в заведении: ${paramText.venueScreen[selection.venueScreen]}`);
             }
             messageParts.push(`- Фотограф: ${selection.photographerNeeded === 'yes' ? 'Нужен' : 'Не нужен'}`);
-            
-            let baseServices = [], techServices = [], creativeServices = [], photoServices = []; 
+
+            let baseServices = [], techServices = [], creativeServices = [], photoServices = [];
             const isNY = selection.isNewYearMode;
-            
-            // Логика текста для Ведущего
+
+            // 1. ВЕДУЩИЙ (Текст для WhatsApp)
             if (!['kz', 'intl'].includes(selection.location)) {
-                const hostPriceSource = isNY ? PRICES.NEW_YEAR.HOST : PRICES.HOST;
-                if (hostPriceSource[selection.hostHours]) { 
-                    baseServices.push(`- Ведущий (до ${selection.hostHours} ч): ${hostPriceSource[selection.hostHours].toLocaleString('ru-RU')} ₸`); 
+                const hours = selection.hostHours;
+
+                // --- ФОРМУЛА ---
+                let hostPrice = PRICES.HOST_PARAMS.BASE_PRICE + (hours * PRICES.HOST_PARAMS.HOURLY_RATE);
+                if (isNY) {
+                    hostPrice = hostPrice * PRICES.HOST_PARAMS.NY_MULTIPLIER;
+                    hostPrice = Math.round(hostPrice / 5000) * 5000;
                 }
+                // ---------------
+
+                baseServices.push(`- Ведущий (${hours} ч): ${hostPrice.toLocaleString('ru-RU')} ₸`);
             } else {
-                 const locData = isNY ? PRICES.NEW_YEAR.HOST_LOCATION[selection.location] : PRICES.HOST_LOCATION[selection.location];
-                 const currency = locData.currency || '₸';
-                 baseServices.push(`- ${locData.name}: ${locData.price.toLocaleString('ru-RU')} ${currency}`);
+                const locData = isNY ? PRICES.NEW_YEAR_LOCATION[selection.location] : PRICES.HOST_LOCATION[selection.location];
+                const currency = locData.currency || '₸';
+                baseServices.push(`- ${locData.name}: ${locData.price.toLocaleString('ru-RU')} ${currency}`);
             }
-            
-            // Логика текста для Техники
+
+            // 2. ТЕХНИКА
             if (selection.location === 'kz') {
-                 if (selection.techOption === 'DJ_OUT') {
-                     const price = (isNY && PRICES.NEW_YEAR.DJ_OUT) ? PRICES.NEW_YEAR.DJ_OUT.price : PRICES.DJ_OUT.price;
-                     techServices.push(`- ${PRICES.DJ_OUT.name}: ${price.toLocaleString('ru-RU')} ₸`);
-                 }
+                if (selection.techOption === 'DJ_OUT') {
+                    const price = (isNY && PRICES.NEW_YEAR.DJ_OUT) ? PRICES.NEW_YEAR.DJ_OUT.price : PRICES.DJ_OUT.price;
+                    techServices.push(`- ${PRICES.DJ_OUT.name}: ${price.toLocaleString('ru-RU')} ₸`);
+                }
             } else if (selection.location === 'intl') {
-                 if (selection.techOption === 'DJ_OUT') {
-                     const price = (isNY && PRICES.NEW_YEAR.DJ_INTL) ? PRICES.NEW_YEAR.DJ_INTL.price : PRICES.DJ_INTL.price;
-                     techServices.push(`- ${PRICES.DJ_INTL.name}: ${price} $`);
-                 }
+                if (selection.techOption === 'DJ_OUT') {
+                    const price = (isNY && PRICES.NEW_YEAR.DJ_INTL) ? PRICES.NEW_YEAR.DJ_INTL.price : PRICES.DJ_INTL.price;
+                    techServices.push(`- ${PRICES.DJ_INTL.name}: ${price} $`);
+                }
             } else {
                 if (selection.venueGear !== 'full_dj_set' && selection.techOption && PRICES.TECH[selection.techOption]) {
                     const techPrice = (isNY && PRICES.NEW_YEAR.TECH[selection.techOption]) ? PRICES.NEW_YEAR.TECH[selection.techOption].price : PRICES.TECH[selection.techOption].price;
-                    techServices.push(`- ${PRICES.TECH[selection.techOption].name}: ${techPrice.toLocaleString('ru-RU')} ₸`); 
+                    techServices.push(`- ${PRICES.TECH[selection.techOption].name}: ${techPrice.toLocaleString('ru-RU')} ₸`);
                 }
-                if (selection.projectorNeeded) techServices.push(`- ${PRICES.PROJECTOR.name}: ${PRICES.PROJECTOR.price.toLocaleString('ru-RU')} ₸`); 
+                if (selection.projectorNeeded) techServices.push(`- ${PRICES.PROJECTOR.name}: ${PRICES.PROJECTOR.price.toLocaleString('ru-RU')} ₸`);
             }
-            
-            if (selection.photographerNeeded === 'yes') { 
-                const photoHourPrice = selection.photographerHours * PRICES.PHOTOGRAPHER.baseHourRate; 
-                photoServices.push(`- Работа фотографа (${selection.photographerHours} ч): ${photoHourPrice.toLocaleString('ru-RU')} ₸`); 
-                if (selection.additionalRetouch > 0) { 
-                    const additionalRetouchCost = selection.additionalRetouch * PRICES.PHOTOGRAPHER.additionalRetouchPrice; 
-                    photoServices.push(`- Доп. ретушь (${selection.additionalRetouch} фото): ${additionalRetouchCost.toLocaleString('ru-RU')} ₸`); 
-                } 
+
+            if (selection.photographerNeeded === 'yes') {
+                const photoHourPrice = selection.photographerHours * PRICES.PHOTOGRAPHER.baseHourRate;
+                photoServices.push(`- Работа фотографа (${selection.photographerHours} ч): ${photoHourPrice.toLocaleString('ru-RU')} ₸`);
+                if (selection.additionalRetouch > 0) {
+                    const additionalRetouchCost = selection.additionalRetouch * PRICES.PHOTOGRAPHER.additionalRetouchPrice;
+                    photoServices.push(`- Доп. ретушь (${selection.additionalRetouch} фото): ${additionalRetouchCost.toLocaleString('ru-RU')} ₸`);
+                }
             }
-            
+
             Object.keys(selection.creative.ai_games || {}).filter(key => selection.creative.ai_games[key]).forEach(key => { creativeServices.push(`- ${PRICES.CREATIVE.AI_GAMES[key].name}: ${PRICES.CREATIVE.AI_GAMES[key].price.toLocaleString('ru-RU')} ₸`); });
             if (Object.keys(selection.creative.eminem_tracks || {}).length > 0) { creativeServices.push(`- Eminem Show: ${PRICES.CREATIVE.EMINEM.basePrice.toLocaleString('ru-RU')} ₸`); }
-            
+
             if (baseServices.length) { messageParts.push('\n*ПРОГРАММА ВЕДУЩЕГО:*', ...baseServices); }
             if (techServices.length) { messageParts.push('\n*ТЕХНИЧЕСКОЕ ОСНАЩЕНИЕ:*', ...techServices); }
             if (photoServices.length) { messageParts.push('\n*УСЛУГИ ФОТОГРАФА:*', ...photoServices); }
             if (creativeServices.length) { messageParts.push('\n*КРЕАТИВНЫЕ ФИШКИ:*', ...creativeServices); }
-            
+
             messageParts.push(`\n*ИТОГОВАЯ СТОИМОСТЬ: ${selection.totalPrice}*`);
-            
+
             if (['kz', 'intl'].includes(selection.location)) {
                 messageParts.push("\n*Дополнительно оплачиваются расходы на логистику (проезд, проживание), согласно райдеру.*");
             } else if (selection.location === 'almaty_region') {
@@ -882,28 +919,28 @@ function initializeHostCalculator() {
         function updateFloatingBarUI(totalString, itemsCount, currency) {
             const bar = document.getElementById('host-floating-summary-bar'); if (!bar) return;
             const shouldBeVisible = itemsCount > 0 && hostCalculator.classList.contains('active');
-            
+
             bar.classList.toggle('visible', shouldBeVisible);
             if (window.innerWidth < 768) { const rapBarIsVisible = document.getElementById('rap-floating-summary-bar')?.classList.contains('visible'); if (shouldBeVisible) { document.body.style.paddingBottom = bar.offsetHeight + 20 + 'px'; } else if (!rapBarIsVisible) { document.body.style.paddingBottom = '0px'; } }
             if (shouldBeVisible) {
                 document.getElementById('host-floating-total').textContent = `Итого: ${totalString}`;
                 document.getElementById('host-floating-count').textContent = itemsCount;
-                
+
                 // --- НАЧАЛО ИСПРАВЛЕНИЯ ---
-                
+
                 // 1. Берем основной список услуг
                 const summaryContent = DOMElements.summaryListEl.innerHTML;
-                
+
                 // 2. Берем блок уведомлений (желтые плашки)
                 const notifContainer = document.getElementById('host-notifications');
                 const notificationsContent = notifContainer ? notifContainer.innerHTML : '';
-                
+
                 // 3. Если уведомления есть, добавляем разделитель <hr>
                 const separator = notificationsContent ? '<hr class="summary-separator mt-4 mb-4">' : '';
-                
+
                 // 4. Склеиваем всё вместе и вставляем в модалку
                 document.getElementById('host-modal-summary-content').innerHTML = summaryContent + separator + notificationsContent;
-                
+
                 // --- КОНЕЦ ИСПРАВЛЕНИЯ ---
 
                 document.getElementById('host-modal-total-price').textContent = `${totalString}`;
@@ -920,10 +957,10 @@ function initializeHostCalculator() {
                 setTimeout(() => { toast.classList.remove('show'); }, 6000);
             }
         }
-        
+
         initializeApp();
     })();
-} 
+}
 
 initializeHostCalculator();
 document.addEventListener('astro:page-load', initializeHostCalculator);
