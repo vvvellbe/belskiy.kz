@@ -873,7 +873,7 @@ function initializeHostCalculator() {
                 if (isOutbound) {
                     notifContainer.innerHTML = `<div class="notification-card"><i class="fas fa-plane"></i><p>Трансфер и проживание оплачиваются отдельно (см. Райдер).</p></div><button data-modal-trigger="riderModal" class="btn-rider w-full mt-2">Ознакомиться с райдером</button>`;
                 } else if (selection.location === 'almaty_region') {
-                    notifContainer.innerHTML = `<div class="notification-card"><i class="fas fa-car"></i><p>Трансфер (такси) оплачивается отдельно.</p></div>`;
+                    notifContainer.innerHTML = `<div class="notification-card"><i class="fas fa-car"></i><p>Трансфер (такси) в обе стороны оплачивается отдельно.</p></div>`;
                 }
             }
 
