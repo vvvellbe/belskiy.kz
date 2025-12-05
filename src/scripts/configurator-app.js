@@ -350,7 +350,7 @@ function initializeHostCalculator() {
                 else {
                     // Если техника (DJ) НЕ выбрана, показываем алерт
                     if (!selection.techOption) {
-                        card.querySelector('div').insertAdjacentHTML('beforeend', `<p class="text-sm warning-text mt-2 text-amber-400 font-medium">⚠️ Требуется DJ для управления проектором</p>`);
+                        card.querySelector('div').insertAdjacentHTML('beforeend', `<p class="text-sm warning-text mt-2 text-amber-400 font-medium">⚠️ Требуется DJ для управления проектором.</p>`);
                     }
                 }
             }
