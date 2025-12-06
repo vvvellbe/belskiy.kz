@@ -11,25 +11,25 @@ export const PRICES = {
     },
 
     HOST_LOCATION: {
-        'kz': { price: 300000, name: 'Выезд по РК' },
-        'intl': { price: 700, name: 'Международный выезд', currency: '$' }
+        'kz': { price: 395000, name: 'Выезд по РК' },
+        'intl': { price: 750, name: 'Международный выезд', currency: '$' }
     },
 
     // Для Нового года параметры локации
     NEW_YEAR_LOCATION: {
-        'kz': { price: 500000, name: 'Выезд по РК (NY)' },
+        'kz': { price: 520000, name: 'Выезд по РК (NY)' },
         'intl': { price: 1000, name: 'Международный выезд (NY)', currency: '$' }
     },
 
     TECH: {
         COMPACT: { price: 20000, name: 'Комплект «Компакт»', desc: 'Аудиосистема JBL (без DJ)' },
-        STANDARD: { price: 160000, name: 'Комплект «Стандарт»', desc: 'Профессиональный DJ + Звук' },
+        STANDARD: { price: 150000, name: 'Комплект «Стандарт»', desc: 'Профессиональный DJ + Звук' },
         MAXI: { price: 200000, name: 'Комплект «Максимум»', desc: 'DJ + Расширенный комплект звука' },
-        DJ_WORK_ONLY: { price: 120000, name: 'Работа DJ (на вашем звуке)' }
+        DJ_WORK_ONLY: { price: 100000, name: 'Работа DJ (на вашем звуке)' }
     },
 
     // Выездной DJ по Казахстану (Тенге)
-    DJ_OUT: { price: 200000, name: 'Выездной DJ (KZ)', desc: 'Работа DJ на оборудовании заказчика' },
+    DJ_OUT: { price: 250000, name: 'Выездной DJ (KZ)', desc: 'Работа DJ на оборудовании заказчика' },
 
     // Выездной DJ Заграница (Доллары)
     DJ_INTL: { price: 500, name: 'Выездной DJ (Intl)', desc: 'Работа DJ (International)', currency: '$' },
@@ -41,7 +41,7 @@ export const PRICES = {
             MAXI: { price: 300000 },
             DJ_WORK_ONLY: { price: 200000 }
         },
-        DJ_OUT: { price: 250000 },
+        DJ_OUT: { price: 350000 },
         DJ_INTL: { price: 700 }
     },
 
