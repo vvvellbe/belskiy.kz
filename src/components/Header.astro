@@ -9,33 +9,63 @@ const navLinks = [
     { href: "#features", text: "Фишки", id: "features" },
     { href: "#portfolio", text: "Портфолио", id: "portfolio" },
     { href: "#repertoire", text: "Репертуар", id: "repertoire" },
-    { href: "/configurator", text: "Прайс", id: "pricing" },
+    { href: "#pricing", text: "Прайс", id: "pricing" },
     { href: "#contact", text: "Контакты", id: "contact" },
 ];
-const homeUrl = Astro.url.pathname === '/' || Astro.url.pathname.startsWith('/index.html');
+const homeUrl =
+    Astro.url.pathname === "/" || Astro.url.pathname.startsWith("/index.html");
 ---
+
 <nav class="fixed top-0 left-0 right-0 z-50 p-4">
-    <div class="container mx-auto flex justify-between items-center relative z-10">
-        <a href={homeUrl ? "#hero" : "/"} class="text-2xl font-bold gradient-text">Валерий Бельский</a>
+    <div
+        class="container mx-auto flex justify-between items-center relative z-10"
+    >
+        <a
+            href={homeUrl ? "#hero" : "/"}
+            class="text-2xl font-bold gradient-text">Валерий Бельский</a
+        >
         <div class="hidden md:flex items-center" id="desktop-menu-container">
-            <div id="desktop-menu-links" class="flex items-center transition-all duration-300 ease-out">
-                {navLinks.map(link => (
-                    <a
-                        href={homeUrl ? link.href : (link.href.startsWith('#') ? `/${link.href}` : link.href)}
-                        class:list={[
-                            "nav-link hover:text-cyan-400 transition-colors px-3 lg:px-4 py-2",
-                            { "active-nav-link": link.id === activePage }
-                        ]}
-                        data-astro-reload={link.href.startsWith('#') && !homeUrl}
-                    >
-                        {link.text}
-                    </a>
-                ))}
+            <div
+                id="desktop-menu-links"
+                class="flex items-center transition-all duration-300 ease-out"
+            >
+                {
+                    navLinks.map((link) => (
+                        <a
+                            href={
+                                homeUrl
+                                    ? link.href
+                                    : link.href.startsWith("#")
+                                      ? `/${link.href}`
+                                      : link.href
+                            }
+                            class:list={[
+                                "nav-link hover:text-cyan-400 transition-colors px-3 lg:px-4 py-2",
+                                { "active-nav-link": link.id === activePage },
+                            ]}
+                            data-astro-reload={
+                                link.href.startsWith("#") && !homeUrl
+                            }
+                        >
+                            {link.text}
+                        </a>
+                    ))
+                }
             </div>
-            <a href="https://wa.me/77079292980?text=Здравствуйте%2C%20Валерий!%20Хотел%20бы%20обсудить%20организацию%20мероприятия." target="_blank" rel="noopener noreferrer" id="navCtaButton" class="btn-primary text-sm py-2 rounded-lg transition-all duration-300 ease-out whitespace-nowrap">Заказать Мероприятие</a>
+            <a
+                href="https://wa.me/77079292980?text=Здравствуйте%2C%20Валерий!%20Хотел%20бы%20обсудить%20организацию%20мероприятия."
+                target="_blank"
+                rel="noopener noreferrer"
+                id="navCtaButton"
+                class="btn-primary text-sm py-2 rounded-lg transition-all duration-300 ease-out whitespace-nowrap"
+                >Заказать Мероприятие</a
+            >
         </div>
         <div class="md:hidden">
-            <button id="burger-menu-button" class="text-gray-200 hover:text-cyan-400 focus:outline-none">
+            <button
+                id="burger-menu-button"
+                class="text-gray-200 hover:text-cyan-400 focus:outline-none"
+            >
                 <div class="burger-icon">
                     <span></span>
                     <span></span>
@@ -49,218 +79,318 @@ const homeUrl = Astro.url.pathname === '/' || Astro.url.pathname.startsWith('/in
 <div id="mobile-menu-container" class="mobile-menu-container">
     <div class="mobile-menu-overlay"></div>
     <div id="mobile-menu-items" class="mobile-menu-content">
-        {navLinks.map(link => (
-            <a
-                href={homeUrl ? link.href : (link.href.startsWith('#') ? `/${link.href}` : link.href)}
-                class:list={[
-                    "nav-link block text-center py-3 px-4 text-lg hover:bg-cyan-600 hover:bg-opacity-30 transition-colors",
-                    { "active-nav-link": link.id === activePage }
-                ]}
-                data-astro-reload={link.href.startsWith('#') && !homeUrl}
-            >
-                {link.text}
-            </a>
-        ))}
-        <div class="py-4 px-4 text-center border-t border-gray-700 border-opacity-50 mt-2">
+        {
+            navLinks.map((link) => (
+                <a
+                    href={
+                        homeUrl
+                            ? link.href
+                            : link.href.startsWith("#")
+                              ? `/${link.href}`
+                              : link.href
+                    }
+                    class:list={[
+                        "nav-link block text-center py-3 px-4 text-lg hover:bg-cyan-600 hover:bg-opacity-30 transition-colors",
+                        { "active-nav-link": link.id === activePage },
+                    ]}
+                    data-astro-reload={link.href.startsWith("#") && !homeUrl}
+                >
+                    {link.text}
+                </a>
+            ))
+        }
+        <div
+            class="py-4 px-4 text-center border-t border-gray-700 border-opacity-50 mt-2"
+        >
             <div class="space-x-4">
-                <a href="https://www.instagram.com/vvvellbe" target="_blank" rel="noopener noreferrer" class="text-2xl text-gray-300 hover:text-cyan-400 transition-colors" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                <a href="https://t.me/VVVELLBE" target="_blank" rel="noopener noreferrer" class="text-2xl text-gray-300 hover:text-cyan-400 transition-colors" aria-label="Telegram"><i class="fab fa-telegram-plane"></i></a>
-                <a href="https://www.youtube.com/@VVVELLBE" target="_blank" rel="noopener noreferrer" class="text-2xl text-gray-300 hover:text-cyan-400 transition-colors" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-                <a href="https://wa.me/77079292980" target="_blank" rel="noopener noreferrer" class="text-2xl text-gray-300 hover:text-cyan-400 transition-colors" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-                <a href="https://www.tiktok.com/@vvvellbe" target="_blank" rel="noopener noreferrer" class="text-2xl text-gray-300 hover:text-cyan-400 transition-colors" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                <a
+                    href="https://www.instagram.com/vvvellbe"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-2xl text-gray-300 hover:text-cyan-400 transition-colors"
+                    aria-label="Instagram"><i class="fab fa-instagram"></i></a
+                >
+                <a
+                    href="https://t.me/VVVELLBE"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-2xl text-gray-300 hover:text-cyan-400 transition-colors"
+                    aria-label="Telegram"
+                    ><i class="fab fa-telegram-plane"></i></a
+                >
+                <a
+                    href="https://www.youtube.com/@VVVELLBE"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-2xl text-gray-300 hover:text-cyan-400 transition-colors"
+                    aria-label="YouTube"><i class="fab fa-youtube"></i></a
+                >
+                <a
+                    href="https://wa.me/77079292980"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-2xl text-gray-300 hover:text-cyan-400 transition-colors"
+                    aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a
+                >
+                <a
+                    href="https://www.tiktok.com/@vvvellbe"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-2xl text-gray-300 hover:text-cyan-400 transition-colors"
+                    aria-label="TikTok"><i class="fab fa-tiktok"></i></a
+                >
             </div>
         </div>
         <div class="py-3 px-4">
-            <a href="https://wa.me/77079292980?text=Здравствуйте%2C%20Валерий!%20Хотел%20бы%20обсудить%20организацию%20мероприятия." target="_blank" rel="noopener noreferrer" id="mobileCtaButton" class="btn-primary text-lg font-semibold py-3 px-8 rounded-lg inline-block w-full text-center">Заказать Мероприятие</a>
+            <a
+                href="https://wa.me/77079292980?text=Здравствуйте%2C%20Валерий!%20Хотел%20бы%20обсудить%20организацию%20мероприятия."
+                target="_blank"
+                rel="noopener noreferrer"
+                id="mobileCtaButton"
+                class="btn-primary text-lg font-semibold py-3 px-8 rounded-lg inline-block w-full text-center"
+                >Заказать Мероприятие</a
+            >
         </div>
     </div>
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    // --- ЛОГИКА БУРГЕР-МЕНЮ (РАБОТАЕТ НА ВСЕХ СТРАНИЦАХ) ---
-    const burgerButton = document.getElementById('burger-menu-button');
-    const mobileMenuContainer = document.getElementById('mobile-menu-container');
-    const mobileMenuItems = document.getElementById('mobile-menu-items');
-    const body = document.body;
+    document.addEventListener("DOMContentLoaded", () => {
+        // --- ЛОГИКА БУРГЕР-МЕНЮ (РАБОТАЕТ НА ВСЕХ СТРАНИЦАХ) ---
+        const burgerButton = document.getElementById("burger-menu-button");
+        const mobileMenuContainer = document.getElementById(
+            "mobile-menu-container",
+        );
+        const mobileMenuItems = document.getElementById("mobile-menu-items");
+        const body = document.body;
 
-    if (burgerButton && mobileMenuContainer) {
-        const openMenu = () => {
-            burgerButton.querySelector('.burger-icon')?.classList.add('open');
-            mobileMenuContainer.classList.add('is-visible', 'open');
-            body.classList.add('body-no-scroll');
-        };
-
-        const closeMenu = () => {
-            burgerButton.querySelector('.burger-icon')?.classList.remove('open');
-            mobileMenuContainer.classList.remove('open');
-            body.classList.remove('body-no-scroll');
-            setTimeout(() => {
-                mobileMenuContainer.classList.remove('is-visible');
-            }, 300);
-        };
-
-        burgerButton.addEventListener('click', () => {
-            const isMenuOpen = mobileMenuContainer.classList.contains('open');
-            if (isMenuOpen) {
-                closeMenu();
-            } else {
-                openMenu();
-            }
-        });
-
-        const menuLinks = mobileMenuItems?.querySelectorAll('a');
-        menuLinks?.forEach(link => {
-            link.addEventListener('click', () => {
-                closeMenu();
-            });
-        });
-    }
-
-    // --- ЛОГИКА ПОДСВЕТКИ ПРИ СКРОЛЛЕ (РАБОТАЕТ ТОЛЬКО НА ГЛАВНОЙ) ---
-    if (window.location.pathname === '/') {
-        const sections = document.querySelectorAll('section[id]');
-        const navLinks = document.querySelectorAll('a.nav-link');
-
-        if (sections.length > 0 && navLinks.length > 0) {
-            const observerOptions = {
-                root: null,
-                rootMargin: '-50% 0px -50% 0px',
-                threshold: 0
+        if (burgerButton && mobileMenuContainer) {
+            const openMenu = () => {
+                burgerButton
+                    .querySelector(".burger-icon")
+                    ?.classList.add("open");
+                mobileMenuContainer.classList.add("is-visible", "open");
+                body.classList.add("body-no-scroll");
             };
 
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const id = entry.target.getAttribute('id');
-                        navLinks.forEach(link => link.classList.remove('active-nav-link'));
-                        const activeLink = document.querySelector(`.nav-link[href*="#${id}"]`);
-                        activeLink?.classList.add('active-nav-link');
-                    }
-                });
-            }, observerOptions);
+            const closeMenu = () => {
+                burgerButton
+                    .querySelector(".burger-icon")
+                    ?.classList.remove("open");
+                mobileMenuContainer.classList.remove("open");
+                body.classList.remove("body-no-scroll");
+                setTimeout(() => {
+                    mobileMenuContainer.classList.remove("is-visible");
+                }, 300);
+            };
 
-            sections.forEach(section => observer.observe(section));
+            burgerButton.addEventListener("click", () => {
+                const isMenuOpen =
+                    mobileMenuContainer.classList.contains("open");
+                if (isMenuOpen) {
+                    closeMenu();
+                } else {
+                    openMenu();
+                }
+            });
+
+            const menuLinks = mobileMenuItems?.querySelectorAll("a");
+            menuLinks?.forEach((link) => {
+                link.addEventListener("click", () => {
+                    closeMenu();
+                });
+            });
         }
-    }
-});
+
+        // --- ЛОГИКА ПОДСВЕТКИ ПРИ СКРОЛЛЕ (РАБОТАЕТ ТОЛЬКО НА ГЛАВНОЙ) ---
+        if (window.location.pathname === "/") {
+            const sections = document.querySelectorAll("section[id]");
+            const navLinks = document.querySelectorAll("a.nav-link");
+
+            if (sections.length > 0 && navLinks.length > 0) {
+                const observerOptions = {
+                    root: null,
+                    rootMargin: "-50% 0px -50% 0px",
+                    threshold: 0,
+                };
+
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            const id = entry.target.getAttribute("id");
+                            navLinks.forEach((link) =>
+                                link.classList.remove("active-nav-link"),
+                            );
+                            const activeLink = document.querySelector(
+                                `.nav-link[href*="#${id}"]`,
+                            );
+                            activeLink?.classList.add("active-nav-link");
+                        }
+                    });
+                }, observerOptions);
+
+                sections.forEach((section) => observer.observe(section));
+            }
+        }
+    });
 </script>
 
 <style>
-/* Стили шапки и десктопного меню */
-nav {
-    background: rgba(10, 10, 10, 0.6);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(0, 255, 255, 0.1);
-    transition: padding 0.3s ease, background-color 0.3s ease;
-}
-nav.scrolled {
-    background: rgba(10, 10, 10, 0.85);
-    padding-top: 0.75rem; padding-bottom: 0.75rem;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-}
-#navCtaButton {
-    opacity: 0; transform: scale(0.9); pointer-events: none; width: 0;
-    padding-left: 0; padding-right: 0; margin-left: 0; overflow: hidden;
-}
-#navCtaButton.visible {
-    opacity: 1; transform: scale(1); pointer-events: auto; width: auto;
-    padding-left: 1rem; padding-right: 1rem; margin-left: 1rem;
-}
+    /* Стили шапки и десктопного меню */
+    nav {
+        background: rgba(10, 10, 10, 0.6);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+        transition:
+            padding 0.3s ease,
+            background-color 0.3s ease;
+    }
+    nav.scrolled {
+        background: rgba(10, 10, 10, 0.85);
+        padding-top: 0.75rem;
+        padding-bottom: 0.75rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+    #navCtaButton {
+        opacity: 0;
+        transform: scale(0.9);
+        pointer-events: none;
+        width: 0;
+        padding-left: 0;
+        padding-right: 0;
+        margin-left: 0;
+        overflow: hidden;
+    }
+    #navCtaButton.visible {
+        opacity: 1;
+        transform: scale(1);
+        pointer-events: auto;
+        width: auto;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        margin-left: 1rem;
+    }
 
-/* --- ✅ ФИНАЛЬНАЯ, ПРОВЕРЕННАЯ ВЕРСИЯ СТИЛЕЙ МЕНЮ --- */
+    /* --- ✅ ФИНАЛЬНАЯ, ПРОВЕРЕННАЯ ВЕРСИЯ СТИЛЕЙ МЕНЮ --- */
 
-/* Родительский контейнер */
-.mobile-menu-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    z-index: 40;
-    pointer-events: none;
-    visibility: hidden;
-}
-/* ❗ ИЗМЕНЕНИЕ: Теперь за видимость отвечает '.is-visible', а не '.open' */
-.mobile-menu-container.is-visible {
-    pointer-events: auto;
-    visibility: visible;
-}
+    /* Родительский контейнер */
+    .mobile-menu-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        z-index: 40;
+        pointer-events: none;
+        visibility: hidden;
+    }
+    /* ❗ ИЗМЕНЕНИЕ: Теперь за видимость отвечает '.is-visible', а не '.open' */
+    .mobile-menu-container.is-visible {
+        pointer-events: auto;
+        visibility: visible;
+    }
 
-/* Слой №1: Подложка */
-.mobile-menu-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(10, 10, 10, 0.75);
-    /* Начальные состояния */
-    opacity: 0;
-    backdrop-filter: blur(0px);
-    -webkit-backdrop-filter: blur(0px);
-    /* Анимации */
-    transition: opacity 0.3s ease-out, backdrop-filter 0.3s ease-out, -webkit-backdrop-filter 0.3s ease-out;
-}
-/* Конечное состояние для подложки */
-.mobile-menu-container.open .mobile-menu-overlay {
-    opacity: 1;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-}
+    /* Слой №1: Подложка */
+    .mobile-menu-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(10, 10, 10, 0.75);
+        /* Начальные состояния */
+        opacity: 0;
+        backdrop-filter: blur(0px);
+        -webkit-backdrop-filter: blur(0px);
+        /* Анимации */
+        transition:
+            opacity 0.3s ease-out,
+            backdrop-filter 0.3s ease-out,
+            -webkit-backdrop-filter 0.3s ease-out;
+    }
+    /* Конечное состояние для подложки */
+    .mobile-menu-container.open .mobile-menu-overlay {
+        opacity: 1;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
 
-/* Слой №2: Контент */
-.mobile-menu-content {
-    position: relative;
-    z-index: 1;
-    padding-top: 4.5rem;
-    height: 100%;
-    overflow-y: auto;
-    /* Начальные состояния */
-    opacity: 0;
-    transform: translateY(-20px);
-    /* Анимации */
-    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
-}
-/* Конечное состояние для контента */
-.mobile-menu-container.open .mobile-menu-content {
-    opacity: 1;
-    transform: translateY(0);
-}
+    /* Слой №2: Контент */
+    .mobile-menu-content {
+        position: relative;
+        z-index: 1;
+        padding-top: 4.5rem;
+        height: 100%;
+        overflow-y: auto;
+        /* Начальные состояния */
+        opacity: 0;
+        transform: translateY(-20px);
+        /* Анимации */
+        transition:
+            opacity 0.3s ease-out,
+            transform 0.3s ease-out;
+    }
+    /* Конечное состояние для контента */
+    .mobile-menu-container.open .mobile-menu-content {
+        opacity: 1;
+        transform: translateY(0);
+    }
 
-/* --- Стили для иконки-бургера (теперь они снова работают) --- */
-.burger-icon {
-    width: 28px; height: 22px; position: relative;
-    cursor: pointer; display: inline-block;
-}
-.burger-icon span {
-    display: block; position: absolute; height: 3px;
-    width: 100%; background: #e0e0e0; border-radius: 3px;
-    opacity: 1; left: 0; transform: rotate(0deg);
-    transition: .25s ease-in-out;
-}
-.burger-icon span:nth-child(1) { top: 0px; }
-.burger-icon span:nth-child(2) { top: 9px; }
-.burger-icon span:nth-child(3) { top: 18px; }
+    /* --- Стили для иконки-бургера (теперь они снова работают) --- */
+    .burger-icon {
+        width: 28px;
+        height: 22px;
+        position: relative;
+        cursor: pointer;
+        display: inline-block;
+    }
+    .burger-icon span {
+        display: block;
+        position: absolute;
+        height: 3px;
+        width: 100%;
+        background: #e0e0e0;
+        border-radius: 3px;
+        opacity: 1;
+        left: 0;
+        transform: rotate(0deg);
+        transition: 0.25s ease-in-out;
+    }
+    .burger-icon span:nth-child(1) {
+        top: 0px;
+    }
+    .burger-icon span:nth-child(2) {
+        top: 9px;
+    }
+    .burger-icon span:nth-child(3) {
+        top: 18px;
+    }
 
-.burger-icon.open span:nth-child(1) {
-    top: 9px; transform: rotate(135deg); background: #00ffff;
-}
-.burger-icon.open span:nth-child(2) {
-    opacity: 0; left: -28px;
-}
-.burger-icon.open span:nth-child(3) {
-    top: 9px; transform: rotate(-135deg); background: #00ffff;
-}
-/* ✅ НОВЫЙ БЛОК: Задаем плавный переход для всех ссылок меню */
-.nav-link {
-    transition: color 0.3s ease, text-shadow 0.3s ease;
-}
+    .burger-icon.open span:nth-child(1) {
+        top: 9px;
+        transform: rotate(135deg);
+        background: #00ffff;
+    }
+    .burger-icon.open span:nth-child(2) {
+        opacity: 0;
+        left: -28px;
+    }
+    .burger-icon.open span:nth-child(3) {
+        top: 9px;
+        transform: rotate(-135deg);
+        background: #00ffff;
+    }
+    /* ✅ НОВЫЙ БЛОК: Задаем плавный переход для всех ссылок меню */
+    .nav-link {
+        transition:
+            color 0.3s ease,
+            text-shadow 0.3s ease;
+    }
 
-/* ✅ ОБНОВЛЕННЫЙ БЛОК: Добавили жирность для активной ссылки */
-.active-nav-link {
-    color: #00ffff;
-    text-shadow: 0 0 8px rgba(0, 255, 255, 0.7);
-}
+    /* ✅ ОБНОВЛЕННЫЙ БЛОК: Добавили жирность для активной ссылки */
+    .active-nav-link {
+        color: #00ffff;
+        text-shadow: 0 0 8px rgba(0, 255, 255, 0.7);
+    }
 </style>

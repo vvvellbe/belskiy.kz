@@ -1,12 +1,14 @@
 ---
-import PortfolioItem from '../components/PortfolioItem.astro';
-import '../styles/tabs.css';
+import PortfolioItem from "../components/PortfolioItem.astro";
+import "../styles/tabs.css";
 ---
 
 <section id="portfolio" class="py-16 md:py-24">
   <div class="container mx-auto px-6 reveal">
-    <div class="text-center md:text-left">
-      <h2 class="section-title text-3xl md:text-4xl mb-12 gradient-text">Портфолио</h2>
+    <div class="text-center">
+      <h2 class="section-title text-3xl md:text-4xl mb-8 gradient-text">
+        Портфолио
+      </h2>
     </div>
 
     <div class="flex justify-center mb-12">
@@ -26,10 +28,16 @@ import '../styles/tabs.css';
       <div id="portfolio-host" class="content-panel active">
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           <PortfolioItem title="Свадьба" videoSrc="XK-TnPEjv-Q" />
-          <PortfolioItem title="Корпоратив БЦК" videoSrc="https://www.instagram.com/p/C1T8n_jCol9/embed" />
-          <PortfolioItem title="День Рождение у блогеров" videoSrc="https://www.instagram.com/p/C7ilOqaikY_/embed" />         
+          <PortfolioItem
+            title="Корпоратив БЦК"
+            videoSrc="https://www.instagram.com/p/C1T8n_jCol9/embed"
+          />
+          <PortfolioItem
+            title="День Рождение у блогеров"
+            videoSrc="https://www.instagram.com/p/C7ilOqaikY_/embed"
+          />
           <PortfolioItem title="Юбилей" videoSrc="31Op9z62rpI" />
-          <PortfolioItem title="Годик" videoSrc="mVffv1mXUj0" />    
+          <PortfolioItem title="Годик" videoSrc="mVffv1mXUj0" />
           <PortfolioItem title="Корпоратив Групп 4" videoSrc="tcJPq_gzfhY" />
         </div>
       </div>
@@ -37,7 +45,10 @@ import '../styles/tabs.css';
       <!-- === RAP TAB === -->
       <div id="portfolio-rap" class="content-panel">
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <PortfolioItem title="Алматы Арена" videoSrc="https://www.instagram.com/p/DC6K3wLifnA/embed" />
+          <PortfolioItem
+            title="Алматы Арена"
+            videoSrc="https://www.instagram.com/p/DC6K3wLifnA/embed"
+          />
           <PortfolioItem title="Клуб Мотор" videoSrc="8Y8Nw49FCaA" />
           <PortfolioItem title="Harat's Republic" videoSrc="DjfyatkuSYU" />
           <PortfolioItem title="Танцы Бар" videoSrc="zpOxMVkXjxw" />
@@ -50,58 +61,69 @@ import '../styles/tabs.css';
 </section>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const tabsContainer = document.getElementById('portfolio-toggle') as HTMLDivElement | null;
-    const hostPanel = document.getElementById('portfolio-host') as HTMLElement | null;
-    const rapPanel  = document.getElementById('portfolio-rap')  as HTMLElement | null;
+  document.addEventListener("DOMContentLoaded", () => {
+    const tabsContainer = document.getElementById(
+      "portfolio-toggle",
+    ) as HTMLDivElement | null;
+    const hostPanel = document.getElementById(
+      "portfolio-host",
+    ) as HTMLElement | null;
+    const rapPanel = document.getElementById(
+      "portfolio-rap",
+    ) as HTMLElement | null;
 
     if (!tabsContainer || !hostPanel || !rapPanel) return;
 
     // ✅ после guard создаём «ненулевую» переменную
     const tabsContainerEl = tabsContainer as HTMLDivElement;
 
-    const glider = tabsContainerEl.querySelector('.glider') as HTMLElement | null;
-    const tabButtons = Array.from(tabsContainerEl.querySelectorAll<HTMLButtonElement>('.tab-btn'));
+    const glider = tabsContainerEl.querySelector(
+      ".glider",
+    ) as HTMLElement | null;
+    const tabButtons = Array.from(
+      tabsContainerEl.querySelectorAll<HTMLButtonElement>(".tab-btn"),
+    );
     const panels: HTMLElement[] = [hostPanel, rapPanel];
 
     function updateGlider(): void {
       if (!glider) return;
       // ✅ используем tabsContainerEl, а не tabsContainer
-      const active = tabsContainerEl.querySelector<HTMLButtonElement>('.tab-btn.active');
+      const active =
+        tabsContainerEl.querySelector<HTMLButtonElement>(".tab-btn.active");
       if (!active) return;
 
       const isMobile = window.innerWidth <= 640;
       if (isMobile) {
-        glider.style.width  = 'calc(100% - 10px)';
-        glider.style.left   = '5px';
-        glider.style.height = active.offsetHeight + 'px';
-        glider.style.top    = active.offsetTop + 'px';
+        glider.style.width = "calc(100% - 10px)";
+        glider.style.left = "5px";
+        glider.style.height = active.offsetHeight + "px";
+        glider.style.top = active.offsetTop + "px";
       } else {
-        glider.style.height = 'calc(100% - 10px)';
-        glider.style.top    = '5px';
-        glider.style.width  = active.offsetWidth + 'px';
-        glider.style.left   = active.offsetLeft + 'px';
+        glider.style.height = "calc(100% - 10px)";
+        glider.style.top = "5px";
+        glider.style.width = active.offsetWidth + "px";
+        glider.style.left = active.offsetLeft + "px";
       }
     }
 
     function showPanel(id: string): void {
       panels.forEach((p) => {
         if (p.id === id) {
-          p.classList.remove('active');
+          p.classList.remove("active");
           void p.offsetWidth; // перезапуск анимации
-          p.classList.add('active');
+          p.classList.add("active");
         } else {
-          p.classList.remove('active');
+          p.classList.remove("active");
         }
       });
     }
 
     tabButtons.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        tabButtons.forEach((b) => b.classList.remove('active'));
-        btn.classList.add('active');
+      btn.addEventListener("click", () => {
+        tabButtons.forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
 
-        const target = btn.getAttribute('data-target');
+        const target = btn.getAttribute("data-target");
         if (target) showPanel(target);
 
         updateGlider();
@@ -109,7 +131,7 @@ import '../styles/tabs.css';
     });
 
     updateGlider();
-    window.addEventListener('resize', updateGlider);
+    window.addEventListener("resize", updateGlider);
     setTimeout(updateGlider, 0);
   });
 </script>

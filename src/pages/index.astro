@@ -1,19 +1,23 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Header from '../components/Header.astro';
-import Hero from '../components/Hero.astro';
-import About from '../components/About.astro';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Header from "../components/Header.astro";
+import Hero from "../components/Hero.astro";
+import About from "../components/About.astro";
 //import Services from '../components/Services.astro';
-import Features from '../components/Features.astro';
-import Portfolio from '../components/Portfolio.astro';
-import Repertoire from '../components/Repertoire.astro';
-import Pricing from '../components/Pricing.astro';
-import Contact from '../components/Contact.astro';
-import Footer from '../components/Footer.astro';
+import Features from "../components/Features.astro";
+import Portfolio from "../components/Portfolio.astro";
+import Repertoire from "../components/Repertoire.astro";
+import Pricing from "../components/Pricing.astro";
+import Contact from "../components/Contact.astro";
+import Footer from "../components/Footer.astro";
+// --- НОВОЕ: Импорт компонента уведомлений ---
+import ToastNotification from "../components/configurator/ToastNotification.astro";
 ---
-<BaseLayout 
-  title="Ведущий на мероприятие в Алматы — Валерий Бельский"
-  description="Профессиональный ведущий в Алматы на свадьбу, юбилей, корпоратив. Валерий Бельский — харизма, юмор и незабываемая атмосфера вашего праздника. Свяжитесь со мной!">
+
+<BaseLayout
+  title="Ведущий на мероприятие в Алматы — Валерий Бельский"
+  description="Профессиональный ведущий в Алматы на свадьбу, юбилей, корпоратив. Валерий Бельский — харизма, юмор и незабываемая атмосфера вашего праздника. Свяжитесь со мной!"
+>
   <Header />
   <Hero />
   <About />
@@ -24,4 +28,79 @@ import Footer from '../components/Footer.astro';
   <Pricing />
   <Contact />
   <Footer />
+
+  <ToastNotification />
 </BaseLayout>
+
+<script>
+  // Импортируем данные пакетов
+  import { PACKAGES } from "../scripts/configurator-data.js";
+
+  function setupPackageButtons() {
+    const toast = document.getElementById("toast-notification");
+    const whatsappBtn = document.getElementById("whatsapp-send-btn");
+
+    document.body.addEventListener("click", (e) => {
+      // 1. ИСПРАВЛЕНИЕ ТИПОВ: Проверяем, что target существует и это HTML-элемент
+      const target = e.target;
+      if (!target || !(target instanceof HTMLElement)) return;
+
+      // Теперь TS знает, что у target есть метод closest
+      const btn = target.closest("[data-package-id]");
+
+      // Проверяем, что кнопка найдена и это действительно HTML-элемент
+      if (!btn || !(btn instanceof HTMLElement)) return;
+
+      e.preventDefault();
+
+      // Проверка на наличие dataset (для надежности)
+      if (!btn.dataset.packageId) return;
+
+      const pkgId = btn.dataset.packageId.toUpperCase();
+
+      // 2. ИСПРАВЛЕНИЕ ИНДЕКСАЦИИ:
+      // @ts-ignore (Говорим TS пропустить проверку ключа, так как мы берем его из JS-файла)
+      const pkg = PACKAGES[pkgId];
+
+      if (!pkg) return;
+
+      // 3. Формируем список (TS теперь поймет тип f автоматически, если pkg найден)
+      // @ts-ignore
+      const featuresList = pkg.features.map((f) => `- ${f}`).join("\n");
+
+      // 4. Формируем итоговый текст
+      const message = `Здравствуйте, Валерий!
+Выбрал на сайте пакет услуг: *${pkg.name}*
+Стоимость: *${pkg.price.toLocaleString("ru-RU")}* ₸
+
+*Что входит:*
+${featuresList}
+${pkg.note ? `\n_${pkg.note}_` : ""}
+
+Хотел бы узнать, свободна ли моя дата и обсудить детали.`;
+
+      // 5. Копируем в буфер обмена
+      navigator.clipboard
+        .writeText(message)
+        .then(() => {
+          if (toast && whatsappBtn) {
+            const phoneNumber = "77079292980";
+            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+
+            whatsappBtn.setAttribute("href", whatsappUrl);
+            toast.classList.add("show");
+
+            setTimeout(() => {
+              toast.classList.remove("show");
+            }, 5000);
+          }
+        })
+        .catch((err) => {
+          console.error("Ошибка копирования:", err);
+        });
+    });
+  }
+
+  document.addEventListener("astro:page-load", setupPackageButtons);
+  setupPackageButtons();
+</script>

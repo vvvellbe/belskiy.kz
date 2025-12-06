@@ -127,3 +127,68 @@ export const TRACK_LIST = [
     { id: 'all-she-wrote', name: 'All She Wrote', structure: '1 куплет и 2 припева', duration: '1:45', minDurationSeconds: 105, maxDurationSeconds: 105, url: 'https://www.youtube.com/watch?v=OItsfklZC-Y' },
     { id: 'forgot-about-dre', name: 'Forgot About Dre', structure: '1 куплет и 2 припева', duration: '1:45', minDurationSeconds: 105, maxDurationSeconds: 105, url: 'https://www.youtube.com/watch?v=QFcv5Ma8u8k' },
 ];
+
+// src/scripts/configurator-data.js
+
+export const PACKAGES = {
+    LIGHT: {
+        id: 'light',
+        name: 'Light',
+        price: 285000,
+        description: 'Идеально для камерных мероприятий',
+        params: {
+            hostHours: 2,
+            guestCount: '1-40',
+            venueType: 'chamber',
+            venueGear: 'none',
+            techOption: null
+        },
+        features: [
+            'Время работы: 2 часа',
+            'Программа: 2–3 AI-интерактива + динамичные активности',
+            'Звук: Акустическая система JBL от ведущего (для залов до 40 человек)',
+            'Шоу: Eminem Tribute (5-10 мин) - по желанию'
+        ],
+        note: 'Услуги DJ в этот пакет не входят.'
+    },
+    STANDARD: {
+        id: 'standard',
+        name: 'Standard',
+        price: 625000,
+        description: 'Оптимальный выбор для большинства событий',
+        params: {
+            hostHours: 4,
+            guestCount: '41-80',
+            venueType: 'standard',
+            venueGear: 'none',
+            techOption: 'STANDARD'
+        },
+        features: [
+            'Время работы: 4 часа',
+            'Программа: 4–5 AI-интерактивов + динамичные активности',
+            'Звук: Профессиональный DJ + Комплект оборудования (до 80 чел)',
+            'Шоу: Eminem Tribute (10-15 мин) - по желанию'
+        ],
+        note: null // <-- Добавлено для совместимости (пустое значение)
+    },
+    PRO: {
+        id: 'pro',
+        name: 'Pro',
+        price: 720000,
+        description: 'Максимальное насыщение программы',
+        params: {
+            hostHours: 6,
+            guestCount: '41-80',
+            venueType: 'standard',
+            venueGear: 'none',
+            techOption: 'STANDARD'
+        },
+        features: [
+            'Время работы: 6 часов',
+            'Программа: 5–6 AI-интерактивов + динамичные активности',
+            'Звук: Профессиональный DJ + Комплект оборудования (до 80 чел)',
+            'Шоу: Eminem Tribute (до 30 мин) или выходы в течении вечера - по желанию'
+        ],
+        note: null // <-- Добавлено для совместимости (пустое значение)
+    }
+};
