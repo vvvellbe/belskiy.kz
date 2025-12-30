@@ -33,9 +33,9 @@ function setupVideoModal() {
         modalContent.classList.remove('modal-instagram-vertical-content');
       }
       document.removeEventListener('keydown', onEsc);
-    }, 400); 
+    }, 400);
   };
-  
+
   const closeModalRef = closeModal;
 
   function onEsc(ev) {
@@ -67,10 +67,10 @@ function setupVideoModal() {
     modalEl.classList.add('open');
     document.addEventListener('keydown', onEsc);
   }
-  
-  document.body.addEventListener('click', function(e) {
+
+  document.body.addEventListener('click', function (e) {
     const trigger = e.target.closest('[data-modal-trigger="videoModal"]');
-    
+
     if (trigger) {
       e.preventDefault();
       openModal(trigger);
@@ -83,85 +83,101 @@ function setupVideoModal() {
 
 // --- Логика для прелоадера ---
 function setupPreloader() {
-    const preloader = document.getElementById('preloader');
-    if (!preloader) return;
+  const preloader = document.getElementById('preloader');
+  if (!preloader) return;
 
-    document.body.classList.add('body-preloading');
+  document.body.classList.add('body-preloading');
 
-    let progress = 0;
-    const progressBar = document.getElementById('progress-bar');
-    const progressText = document.getElementById('progress-text');
-    
-    const interval = setInterval(() => {
-        progress += Math.floor(Math.random() * 5) + 1;
-        if (progress > 99) progress = 99;
-        if(progressBar) progressBar.style.width = progress + '%';
-        if(progressText) progressText.textContent = progress + '%';
-    }, 150);
+  let progress = 0;
+  const progressBar = document.getElementById('progress-bar');
+  const progressText = document.getElementById('progress-text');
 
-    const onPageLoad = () => {
-         clearInterval(interval);
-         if(progressBar) progressBar.style.width = '100%';
-         if(progressText) progressText.textContent = '100%';
-         setTimeout(() => {
-           preloader.classList.add('hidden');
-           document.body.classList.remove('body-preloading');
-         }, 400);
-    };
-    
-    window.addEventListener('load', onPageLoad);
-    
+  const interval = setInterval(() => {
+    progress += Math.floor(Math.random() * 5) + 1;
+    if (progress > 99) progress = 99;
+    if (progressBar) progressBar.style.width = progress + '%';
+    if (progressText) progressText.textContent = progress + '%';
+  }, 150);
+
+  const onPageLoad = () => {
+    clearInterval(interval);
+    if (progressBar) progressBar.style.width = '100%';
+    if (progressText) progressText.textContent = '100%';
     setTimeout(() => {
-        if (!preloader.classList.contains('hidden')) {
-           onPageLoad();
+      preloader.classList.add('hidden');
+      document.body.classList.remove('body-preloading');
+
+      // --- ИСПРАВЛЕНИЕ: Скролл к якорю после исчезновения прелоадера ---
+      // Проверяем, есть ли хеш в URL (например, #contact)
+      if (window.location.hash) {
+        const targetId = window.location.hash.substring(1); // убираем '#'
+        const targetElement = document.getElementById(targetId);
+
+        if (targetElement) {
+          // Делаем небольшую задержку, чтобы браузер успел обработать изменение overflow
+          setTimeout(() => {
+            targetElement.scrollIntoView({ behavior: 'smooth' });
+          }, 100);
         }
-    }, 5000); 
+      }
+      // --- КОНЕЦ ИСПРАВЛЕНИЯ ---
+
+    }, 400);
+  };
+
+  window.addEventListener('load', onPageLoad);
+
+  setTimeout(() => {
+    if (!preloader.classList.contains('hidden')) {
+      onPageLoad();
+    }
+  }, 5000);
 }
 
 // --- Логика для кнопки "Наверх" ---
 function setupScrollToTop() {
-    const scrollToTopBtn = document.getElementById('scrollToTopBtn');
-    if (!scrollToTopBtn) return;
+  const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+  if (!scrollToTopBtn) return;
 
-    let lastScrollY = window.scrollY;
+  let lastScrollY = window.scrollY;
 
-    const handleScroll = () => {
-        const currentScrollY = window.scrollY;
+  const handleScroll = () => {
+    const currentScrollY = window.scrollY;
 
-        if (currentScrollY > 300 && currentScrollY < lastScrollY) {
-            scrollToTopBtn.classList.add('visible');
-        } else {
-            scrollToTopBtn.classList.remove('visible');
-        }
+    if (currentScrollY > 300 && currentScrollY < lastScrollY) {
+      scrollToTopBtn.classList.add('visible');
+    } else {
+      scrollToTopBtn.classList.remove('visible');
+    }
 
-        lastScrollY = currentScrollY;
-    };
+    lastScrollY = currentScrollY;
+  };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
+  window.addEventListener('scroll', handleScroll, { passive: true });
+  handleScroll();
 
-    scrollToTopBtn.addEventListener('click', () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
+  scrollToTopBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
 }
 
 // --- Логика для навигации (изменение при скролле) ---
 function setupNavbarScroll() {
-    const nav = document.querySelector('nav');
-    const navCtaButton = document.getElementById('navCtaButton');
-    if(!nav) return;
+  const nav = document.querySelector('nav');
+  const navCtaButton = document.getElementById('navCtaButton');
+  if (!nav) return;
 
-    const handleScroll = () => {
-        if (window.scrollY > 50) {
-            nav.classList.add('scrolled');
-            navCtaButton?.classList.add('visible');
-        } else {
-            nav.classList.remove('scrolled');
-            navCtaButton?.classList.remove('visible');
-        }
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
+  const handleScroll = () => {
+    if (window.scrollY > 50) {
+      nav.classList.add('scrolled');
+      navCtaButton?.classList.add('visible');
+    } else {
+      nav.classList.remove('scrolled');
+      navCtaButton?.classList.remove('visible');
+    }
+  };
+  window.addEventListener('scroll', handleScroll, { passive: true });
+  handleScroll();
 }
 
 // --- НАЧАЛО НОВОГО КОДА ---
@@ -177,7 +193,7 @@ function setupBottomNavHighlighting() {
   navLinks.forEach(link => {
     const linkPath = new URL(link.href).pathname.replace(/\/$/, '');
     const cleanCurrentPath = currentPath.replace(/\/$/, '');
-    
+
     if (linkPath === cleanCurrentPath && cleanCurrentPath !== '') {
       link.classList.add('active');
       isPageSpecific = true;
@@ -233,12 +249,12 @@ function setupBottomNavHighlighting() {
 
 // --- Запускаем все функции ---
 function initializePageScripts() {
-    setupPreloader(); 
-    setupRevealAnimation();
-    setupVideoModal();
-    setupScrollToTop();
-    setupNavbarScroll();
-    setupBottomNavHighlighting(); // <-- ВЫЗЫВАЕМ НАШУ НОВУЮ ФУНКЦИЮ
+  setupPreloader();
+  setupRevealAnimation();
+  setupVideoModal();
+  setupScrollToTop();
+  setupNavbarScroll();
+  setupBottomNavHighlighting(); // <-- ВЫЗЫВАЕМ НАШУ НОВУЮ ФУНКЦИЮ
 }
 
 document.addEventListener('astro:page-load', initializePageScripts);

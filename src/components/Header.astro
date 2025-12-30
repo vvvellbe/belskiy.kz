@@ -9,7 +9,8 @@ const navLinks = [
     { href: "#features", text: "Фишки", id: "features" },
     { href: "#portfolio", text: "Портфолио", id: "portfolio" },
     { href: "#repertoire", text: "Репертуар", id: "repertoire" },
-    { href: "#pricing", text: "Прайс", id: "pricing" },
+    { href: "#pricing", text: "Пакеты", id: "pricing" },
+    { href: "/configurator", text: "Калькулятор цен", id: "calculator" },
     { href: "#contact", text: "Контакты", id: "contact" },
 ];
 const homeUrl =
@@ -221,10 +222,13 @@ const homeUrl =
                             navLinks.forEach((link) =>
                                 link.classList.remove("active-nav-link"),
                             );
-                            const activeLink = document.querySelector(
+                            // ИСПРАВЛЕНИЕ: Подсвечиваем все ссылки (и десктоп, и мобильные)
+                            const activeLinks = document.querySelectorAll(
                                 `.nav-link[href*="#${id}"]`,
                             );
-                            activeLink?.classList.add("active-nav-link");
+                            activeLinks.forEach((link) =>
+                                link.classList.add("active-nav-link"),
+                            );
                         }
                     });
                 }, observerOptions);

@@ -66,7 +66,10 @@ import ToastNotification from "../components/configurator/ToastNotification.astr
 
       // 3. Формируем список (TS теперь поймет тип f автоматически, если pkg найден)
       // @ts-ignore
-      const featuresList = pkg.features.map((f) => `- ${f}`).join("\n");
+      const featuresList = pkg.features
+        .filter((f: any) => f.included)
+        .map((f: any) => `- ${f.text}`)
+        .join("\n");
 
       // 4. Формируем итоговый текст
       const message = `Здравствуйте, Валерий!

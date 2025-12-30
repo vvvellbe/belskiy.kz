@@ -119,8 +119,23 @@ function initializeHostCalculator() {
             if (!isOutbound) {
                 const hours = selection.hostHours;
 
-                // --- ФОРМУЛА РАСЧЕТА ---
-                let price = PRICES.HOST_PARAMS.BASE_PRICE + (hours * PRICES.HOST_PARAMS.HOURLY_RATE);
+                // --- ФОРМУЛА РАСЧЕТА (ОБНОВЛЕННАЯ) ---
+                // Ведущий:
+                // <= 3 часов: 175 000 + (часы * 20 000)
+                // >= 4 часов: 250 000 + (часы * 20 000)
+
+                let basePrice = 0;
+                let hourlyRate = 0;
+
+                if (hours <= PRICES.HOST_PARAMS.LITE.LIMIT_HOURS) {
+                    basePrice = PRICES.HOST_PARAMS.LITE.BASE_PRICE;
+                    hourlyRate = PRICES.HOST_PARAMS.LITE.HOURLY_RATE;
+                } else {
+                    basePrice = PRICES.HOST_PARAMS.FULL.BASE_PRICE;
+                    hourlyRate = PRICES.HOST_PARAMS.FULL.HOURLY_RATE;
+                }
+
+                let price = basePrice + (hours * hourlyRate);
 
                 if (isNY) {
                     price = price * PRICES.HOST_PARAMS.NY_MULTIPLIER;
@@ -409,7 +424,19 @@ function initializeHostCalculator() {
                 DOMElements.photographer.hoursSlider.value = hours;
                 const minPhotos = hours * 30; const maxPhotos = hours * 50;
                 DOMElements.photographer.photoCountOutput.innerHTML = `<i class="fas fa-images mr-2"></i>Вы получите примерно ${minPhotos}-${maxPhotos} фотографий в базовой обработке.`;
-                const photoHourPrice = hours * PRICES.PHOTOGRAPHER.baseHourRate;
+                const h = hours;
+                // ИСПРАВЛЕНИЕ: База фотографа зависит от часов ВЕДУЩЕГО (selection.hostHours)
+                const hostH = selection.hostHours;
+
+                let pBase = 0, pHourly = 0;
+                if (hostH <= PRICES.HOST_PARAMS.LITE.LIMIT_HOURS) {
+                    pBase = PRICES.PHOTOGRAPHER.LITE.BASE;
+                    pHourly = PRICES.PHOTOGRAPHER.LITE.HOURLY;
+                } else {
+                    pBase = PRICES.PHOTOGRAPHER.FULL.BASE;
+                    pHourly = PRICES.PHOTOGRAPHER.FULL.HOURLY;
+                }
+                const photoHourPrice = pBase + (h * pHourly);
                 if (DOMElements.photographer.hoursCostOutput) { DOMElements.photographer.hoursCostOutput.textContent = `(${photoHourPrice.toLocaleString('ru-RU')} ₸)`; }
                 DOMElements.photographer.retouchInput.value = selection.additionalRetouch;
                 const additionalCost = selection.additionalRetouch * PRICES.PHOTOGRAPHER.additionalRetouchPrice;
@@ -510,7 +537,7 @@ function initializeHostCalculator() {
             }
 
             selection = {
-                hostHours: 2, // Старт с 2 часов
+                hostHours: 1, // Старт с 1 часа
                 projectorNeeded: false,
                 techOption: 'STANDARD',
                 creative: { ai_games: {}, eminem_tracks: {} },
@@ -520,7 +547,7 @@ function initializeHostCalculator() {
                 venueGear: 'none',
                 venueScreen: 'no',
                 photographerNeeded: 'no',
-                photographerHours: 2, // Старт фотографа 2 часа
+                photographerHours: 1, // Старт фотографа 1 час
                 additionalRetouch: 0,
                 eventDate: null,
                 isNewYearMode: false,
@@ -754,8 +781,19 @@ function initializeHostCalculator() {
             if (!isOutbound) {
                 const hours = selection.hostHours;
 
-                // --- ФОРМУЛА ---
-                let hostPrice = PRICES.HOST_PARAMS.BASE_PRICE + (hours * PRICES.HOST_PARAMS.HOURLY_RATE);
+                // --- ФОРМУЛА (ОБНОВЛЕННАЯ) ---
+                let basePrice = 0;
+                let hourlyRate = 0;
+
+                if (hours <= PRICES.HOST_PARAMS.LITE.LIMIT_HOURS) {
+                    basePrice = PRICES.HOST_PARAMS.LITE.BASE_PRICE;
+                    hourlyRate = PRICES.HOST_PARAMS.LITE.HOURLY_RATE;
+                } else {
+                    basePrice = PRICES.HOST_PARAMS.FULL.BASE_PRICE;
+                    hourlyRate = PRICES.HOST_PARAMS.FULL.HOURLY_RATE;
+                }
+
+                let hostPrice = basePrice + (hours * hourlyRate);
 
                 if (isNY) {
                     hostPrice = hostPrice * PRICES.HOST_PARAMS.NY_MULTIPLIER;
@@ -837,7 +875,20 @@ function initializeHostCalculator() {
 
             // 5. ФОТОГРАФ
             if (selection.photographerNeeded === 'yes') {
-                const photoHourPrice = selection.photographerHours * PRICES.PHOTOGRAPHER.baseHourRate;
+                const h = selection.photographerHours;
+
+                // ИСПРАВЛЕНИЕ: База фотографа зависит от часов ВЕДУЩЕГО
+                const hostH = selection.hostHours;
+
+                let pBase = 0, pHourly = 0;
+                if (hostH <= PRICES.HOST_PARAMS.LITE.LIMIT_HOURS) {
+                    pBase = PRICES.PHOTOGRAPHER.LITE.BASE;
+                    pHourly = PRICES.PHOTOGRAPHER.LITE.HOURLY;
+                } else {
+                    pBase = PRICES.PHOTOGRAPHER.FULL.BASE;
+                    pHourly = PRICES.PHOTOGRAPHER.FULL.HOURLY;
+                }
+                const photoHourPrice = pBase + (h * pHourly);
                 const additionalRetouchCost = selection.additionalRetouch * PRICES.PHOTOGRAPHER.additionalRetouchPrice;
                 const totalPhotoCost = photoHourPrice + additionalRetouchCost;
                 totalKZT += totalPhotoCost;
@@ -925,8 +976,20 @@ function initializeHostCalculator() {
             if (!['kz', 'intl'].includes(selection.location)) {
                 const hours = selection.hostHours;
 
-                // --- ФОРМУЛА ---
-                let hostPrice = PRICES.HOST_PARAMS.BASE_PRICE + (hours * PRICES.HOST_PARAMS.HOURLY_RATE);
+                // --- ФОРМУЛА (ОБНОВЛЕННАЯ) ---
+                let basePrice = 0;
+                let hourlyRate = 0;
+
+                if (hours <= PRICES.HOST_PARAMS.LITE.LIMIT_HOURS) {
+                    basePrice = PRICES.HOST_PARAMS.LITE.BASE_PRICE;
+                    hourlyRate = PRICES.HOST_PARAMS.LITE.HOURLY_RATE;
+                } else {
+                    basePrice = PRICES.HOST_PARAMS.FULL.BASE_PRICE;
+                    hourlyRate = PRICES.HOST_PARAMS.FULL.HOURLY_RATE;
+                }
+
+                let hostPrice = basePrice + (hours * hourlyRate);
+
                 if (isNY) {
                     hostPrice = hostPrice * PRICES.HOST_PARAMS.NY_MULTIPLIER;
                     hostPrice = Math.round(hostPrice / 5000) * 5000;
@@ -960,8 +1023,20 @@ function initializeHostCalculator() {
             }
 
             if (selection.photographerNeeded === 'yes') {
-                const photoHourPrice = selection.photographerHours * PRICES.PHOTOGRAPHER.baseHourRate;
+                const h = selection.photographerHours;
+                const hostH = selection.hostHours;
+
+                let pBase = 0, pHourly = 0;
+                if (hostH <= PRICES.HOST_PARAMS.LITE.LIMIT_HOURS) {
+                    pBase = PRICES.PHOTOGRAPHER.LITE.BASE;
+                    pHourly = PRICES.PHOTOGRAPHER.LITE.HOURLY;
+                } else {
+                    pBase = PRICES.PHOTOGRAPHER.FULL.BASE;
+                    pHourly = PRICES.PHOTOGRAPHER.FULL.HOURLY;
+                }
+                const photoHourPrice = pBase + (h * pHourly);
                 photoServices.push(`- Работа фотографа (${selection.photographerHours} ч): ${photoHourPrice.toLocaleString('ru-RU')} ₸`);
+
                 if (selection.additionalRetouch > 0) {
                     const additionalRetouchCost = selection.additionalRetouch * PRICES.PHOTOGRAPHER.additionalRetouchPrice;
                     photoServices.push(`- Доп. ретушь (${selection.additionalRetouch} фото): ${additionalRetouchCost.toLocaleString('ru-RU')} ₸`);

@@ -798,11 +798,14 @@ section .relative {
   }
 
   /* 2. Make the summary card "sticky" on desktop */
+  /* 2. Make the summary card "sticky" on desktop */
   .summary-card {
     position: -webkit-sticky; /* For Safari */
     position: sticky;
     top: 120px; /* Distance from the top of the viewport */
     align-self: flex-start; /* Prevents the card from stretching vertically in a flex container */
+    height: fit-content; /* Ensure the card doesn't stretch to full height */
+    z-index: 10;
   }
 }
 /*

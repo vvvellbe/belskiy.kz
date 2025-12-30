@@ -166,6 +166,7 @@
             <div class="program-card rounded-xl p-6 sm:p-8">
                 <h2 class="text-2xl font-semibold text-white mb-2">Ведущий</h2>
 
+                <!-- 
                 <div id="host-hours-block">
                     <p class="text-sm text-gray-400 mb-6">
                         Выберите длительность программы:
@@ -186,7 +187,7 @@
                                 <span
                                     id="host-hours-output"
                                     class="font-bold text-lg text-cyan-400"
-                                    >2 часа</span
+                                    >1 час</span
                                 >
                                 <span
                                     id="host-cost-output"
@@ -196,18 +197,19 @@
                         <input
                             type="range"
                             id="host-hours-slider"
-                            min="2"
+                            min="1"
                             max="8"
-                            value="2"
+                            value="1"
                             step="1"
                             class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer range-lg photographer-slider"
                         />
                         <p class="text-sm text-gray-400 mt-3">
                             <i class="fas fa-clock mr-2"></i>Сдвигайте ползунок,
-                            чтобы выбрать время (от 2 до 8 часов).
+                            чтобы выбрать время (от 1 до 8 часов).
                         </p>
                     </div>
 
+                    
                     <h4 class="font-semibold text-gray-200 mt-8 mb-4">
                         В стоимость включено:
                     </h4>
@@ -269,6 +271,51 @@
                                 </p>
                             </div>
                         </div>
+                    </div>
+                    
+                </div>
+                -->
+
+                <div id="host-hours-block">
+                    <p class="text-sm text-gray-400 mb-6">
+                        Выберите длительность программы:
+                    </p>
+
+                    <div
+                        class="bg-gray-900/50 p-6 rounded-lg border border-gray-700"
+                    >
+                        <div
+                            class="flex flex-col md:flex-row md:justify-between md:items-center mb-4"
+                        >
+                            <label
+                                for="host-hours-slider"
+                                class="font-semibold text-gray-200 mb-1 md:mb-0"
+                                >Время работы:</label
+                            >
+                            <div class="flex items-baseline gap-3">
+                                <span
+                                    id="host-hours-output"
+                                    class="font-bold text-lg text-cyan-400"
+                                    >1 час</span
+                                >
+                                <span
+                                    id="host-cost-output"
+                                    class="text-gray-400 font-semibold"></span>
+                            </div>
+                        </div>
+                        <input
+                            type="range"
+                            id="host-hours-slider"
+                            min="1"
+                            max="8"
+                            value="1"
+                            step="1"
+                            class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer range-lg photographer-slider"
+                        />
+                        <p class="text-sm text-gray-400 mt-3">
+                            <i class="fas fa-clock mr-2"></i>Сдвигайте ползунок,
+                            чтобы выбрать время (от 1 до 8 часов).
+                        </p>
                     </div>
                 </div>
 
@@ -333,7 +380,7 @@
                                 </p>
                             </div>
                             <p class="font-semibold text-lg text-white mt-3">
-                                + 130 000 ₸
+                                + 110 000 ₸
                             </p>
                         </div>
                     </div>
@@ -355,7 +402,7 @@
                                 </p>
                             </div>
                             <p class="font-semibold text-lg text-white mt-3">
-                                + 200 000 ₸
+                                + 160 000 ₸
                             </p>
                         </div>
                         <div
@@ -458,9 +505,9 @@
                         <input
                             type="range"
                             id="photo-hours-slider"
-                            min="2"
+                            min="1"
                             max="8"
-                            value="2"
+                            value="1"
                             step="1"
                             class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer range-lg photographer-slider"
                         />
@@ -576,15 +623,19 @@
                     >
                         <div>
                             <h4 class="font-semibold text-white">
-                                Персональное AI-шоу
+                                Персональные игры на базе AI (Искусственного
+                                интеллекта)
                             </h4>
                             <p
                                 class="text-sm text-gray-400 mt-1 leading-relaxed"
                             >
-                                Я заранее собираю различные данные о ваших
-                                гостях и с помощью нейросетей генерирую
-                                уникальный контент. Ваши гости станут главными
-                                героями вечера и интерактивов.
+                                Разрабатываю игру с нуля специально для вас. С
+                                помощью нейросетей мы создадим уникальный
+                                контент про ваших гостей, а благодаря навыкам
+                                программирования я реализую любую, даже самую
+                                смелую игровую механику. Ваши правила, ваши
+                                шутки, ваша личная игра, которой больше не будет
+                                ни у кого.
                             </p>
                             <p
                                 id="ai-show-warning"
@@ -596,7 +647,7 @@
                         </div>
                         <div class="text-right flex-shrink-0 w-full sm:w-auto">
                             <p class="font-semibold text-white text-lg">
-                                + 50 000 ₸
+                                + 100 000 ₸
                             </p>
                         </div>
                     </div>

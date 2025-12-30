@@ -1,47 +1,57 @@
 ---
 // 1. Импортируем наш основной макет
-import BaseLayout from '../layouts/BaseLayout.astro';
+import BaseLayout from "../layouts/BaseLayout.astro";
 // 2. Импортируем компоненты шапки и подвала
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import '../styles/configurator.css'; 
-import '../styles/tabs.css';         
-import '../styles/modal.css';
-import Tabs from '../components/configurator/Tabs.astro';
-import HostCalculator from '../components/configurator/HostCalculator.astro';
-import RapCalculator from '../components/configurator/RapCalculator.astro';
-import FloatingSummaryBar from '../components/configurator/FloatingSummaryBar.astro';
-import SummaryModal from '../components/configurator/SummaryModal.astro';
-import AiGamesModal from '../components/configurator/AiGamesModal.astro';
-import EminemModal from '../components/configurator/EminemModal.astro';
-import RiderModal from '../components/configurator/RiderModal.astro';
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import "../styles/configurator.css";
+import "../styles/tabs.css";
+import "../styles/modal.css";
+import Tabs from "../components/configurator/Tabs.astro";
+import HostCalculator from "../components/configurator/HostCalculator.astro";
+import RapCalculator from "../components/configurator/RapCalculator.astro";
+import FloatingSummaryBar from "../components/configurator/FloatingSummaryBar.astro";
+import SummaryModal from "../components/configurator/SummaryModal.astro";
+import AiGamesModal from "../components/configurator/AiGamesModal.astro";
+import EminemModal from "../components/configurator/EminemModal.astro";
+import RiderModal from "../components/configurator/RiderModal.astro";
 // --- НАЧАЛО: НОВАЯ СТРОКА ---
-import TermsModal from '../components/configurator/TermsModal.astro'; // 1. Импортируем новое окно
+import TermsModal from "../components/configurator/TermsModal.astro"; // 1. Импортируем новое окно
 // --- КОНЕЦ: НОВАЯ СТРОКА ---
-import ToastNotification from '../components/configurator/ToastNotification.astro';
+import ToastNotification from "../components/configurator/ToastNotification.astro";
 
 // 3. ИМПОРТИРУЕМ СКРИПТЫ И ДАННЫЕ ПРАВИЛЬНО
-import { PRICES, PRICES_RAP, TRACK_LIST } from '../scripts/configurator-data.js';
+import {
+  PRICES,
+  PRICES_RAP,
+  TRACK_LIST,
+} from "../scripts/configurator-data.js";
 
 // 4. Задаем уникальные мета-теги для этой страницы
-const pageTitle = "Цены на услуги ведущего в Алматы | Калькулятор стоимости";
-const pageDescription = "Рассчитайте стоимость услуг ведущего Валерия Бельского на ваше мероприятие в Алматы. Интерактивный калькулятор для свадьбы, корпоратива или юбилея.";
+const pageTitle = "Калькулятор цен на услуги ведущего в Алматы";
+const pageDescription =
+  "Рассчитайте стоимость услуг ведущего Валерия Бельского с помощью калькулятора цен. Интерактивный расчет для свадьбы, корпоратива или юбилея.";
 const pageOgImage = "/assets/images/configurator-og.jpg"; // Путь от корня сайта
 ---
+
 <BaseLayout title={pageTitle} description={pageDescription} image={pageOgImage}>
-  
-  <Header activePage="pricing" />
+  <Header activePage="calculator" />
 
   <main class="pt-24 sm:pt-28 md:pt-32">
     <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-7xl">
       <header class="text-center mb-10">
-          <h1 class="text-3xl sm:text-4xl font-bold text-white">Цены на услуги ведущего в Алматы</h1>
-          <p class="text-lg text-gray-400 mt-2">Рассчитайте стоимость вашего мероприятия с помощью интерактивного калькулятора</p>
+        <h1 class="text-3xl sm:text-4xl font-bold text-white">
+          Калькулятор цен
+        </h1>
+        <p class="text-lg text-gray-400 mt-2">
+          Рассчитайте стоимость вашего мероприятия с помощью интерактивного
+          калькулятора
+        </p>
       </header>
 
       <section>
         <Tabs />
-        
+
         <div class="relative">
           <HostCalculator />
           <RapCalculator />
@@ -59,19 +69,19 @@ const pageOgImage = "/assets/images/configurator-og.jpg"; // Путь от ко�
   <AiGamesModal />
   <EminemModal />
   <RiderModal />
-  
-  <TermsModal /> <ToastNotification />
-  
+
+  <TermsModal />
+  <ToastNotification />
+
   <Footer />
 
- <script define:vars={{ PRICES, PRICES_RAP, TRACK_LIST }}>
-  // Явно "выставляем" наши данные в глобальный объект window
-  window.PRICES = PRICES;
-  window.PRICES_RAP = PRICES_RAP;
-  window.TRACK_LIST = TRACK_LIST;
-</script>
+  <script define:vars={{ PRICES, PRICES_RAP, TRACK_LIST }}>
+    // Явно "выставляем" наши данные в глобальный объект window
+    window.PRICES = PRICES;
+    window.PRICES_RAP = PRICES_RAP;
+    window.TRACK_LIST = TRACK_LIST;
+  </script>
 
-    <script src="../scripts/configurator-app.js"></script>
+  <script src="../scripts/configurator-app.js"></script>
   <script src="../scripts/configurator-rap.js"></script>
-
 </BaseLayout>
