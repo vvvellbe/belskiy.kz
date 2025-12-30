@@ -16,6 +16,7 @@ function initializeHostCalculator() {
             modalElement.classList.remove('open');
             if (!document.querySelector('.modal-overlay.open')) {
                 document.body.classList.remove('modal-open');
+                document.documentElement.classList.remove('modal-open');
             }
         }
     }
@@ -40,6 +41,7 @@ function initializeHostCalculator() {
             }
             targetModal.classList.add('open');
             document.body.classList.add('modal-open');
+            document.documentElement.classList.add('modal-open');
         }
     });
 
@@ -90,12 +92,14 @@ function initializeHostCalculator() {
             const openModal = () => {
                 termsModal.classList.add('open');
                 document.body.classList.add('modal-open');
+                document.documentElement.classList.add('modal-open');
             };
 
             const closeModalFn = () => {
                 termsModal.classList.remove('open');
                 if (!document.querySelector('.modal-overlay.open')) {
                     document.body.classList.remove('modal-open');
+                    document.documentElement.classList.remove('modal-open');
                 }
             };
 
