@@ -1073,11 +1073,46 @@ function initializeHostCalculator() {
         }
 
         function setupFloatingBar() {
-            const bar = document.getElementById('host-floating-summary-bar'); const modal = document.getElementById('host-summary-modal'); const openBtn = document.getElementById('host-floating-open-modal'); const modalCopyBtn = document.getElementById('host-modal-copy-btn'); if (!bar || !modal || !openBtn || !modalCopyBtn) return;
-            const openModal = () => { modal.classList.add('open'); document.body.classList.add('modal-open'); }; const closeModalFn = () => { modal.classList.remove('open'); document.body.classList.remove('modal-open'); };
-            openBtn.addEventListener('click', openModal); modal.addEventListener('click', (e) => { if (e.target.closest('.modal-close-btn') || e.target === modal) closeModalFn(); });
+            const bar = document.getElementById('host-floating-summary-bar');
+            const modal = document.getElementById('host-summary-modal');
+            const openBtn = document.getElementById('host-floating-open-modal');
+            const modalCopyBtn = document.getElementById('host-modal-copy-btn');
+
+            if (!bar || !modal || !openBtn || !modalCopyBtn) return;
+
+            const openModal = () => {
+                modal.classList.add('open');
+                document.body.classList.add('modal-open');
+                document.documentElement.classList.add('modal-open');
+            };
+
+            const closeModalFn = () => {
+                modal.classList.remove('open');
+                // Check if any other modals are still open before removing the class
+                if (!document.querySelector('.modal-overlay.open')) {
+                    document.body.classList.remove('modal-open');
+                    document.documentElement.classList.remove('modal-open');
+                }
+            };
+
+            openBtn.addEventListener('click', openModal);
+
+            modal.addEventListener('click', (e) => {
+                if (e.target.closest('.modal-close-btn') || e.target === modal) {
+                    closeModalFn();
+                }
+            });
+
             modalCopyBtn.addEventListener('click', () => copyToClipboard(generatePlainTextQuote()));
-            const summaryCardObserver = new IntersectionObserver((entries) => { entries.forEach(entry => { if (hostCalculator.classList.contains('active')) { bar.classList.toggle('hidden-by-scroll', entry.isIntersecting); } }); }, { threshold: 0.1 });
+
+            const summaryCardObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (hostCalculator.classList.contains('active')) {
+                        bar.classList.toggle('hidden-by-scroll', entry.isIntersecting);
+                    }
+                });
+            }, { threshold: 0.1 });
+
             if (DOMElements.summaryCard) summaryCardObserver.observe(DOMElements.summaryCard);
         }
 
