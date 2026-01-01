@@ -34,7 +34,7 @@ import ToastNotification from "../components/configurator/ToastNotification.astr
 
 <script>
   // Импортируем данные пакетов
-  import { PACKAGES } from "../scripts/configurator-data.js";
+  import { PACKAGES, PACKAGES_RAP } from "../scripts/configurator-data.js";
 
   function setupPackageButtons() {
     const toast = document.getElementById("toast-notification");
@@ -60,7 +60,7 @@ import ToastNotification from "../components/configurator/ToastNotification.astr
 
       // 2. ИСПРАВЛЕНИЕ ИНДЕКСАЦИИ:
       // @ts-ignore (Говорим TS пропустить проверку ключа, так как мы берем его из JS-файла)
-      const pkg = PACKAGES[pkgId];
+      const pkg = PACKAGES[pkgId] || PACKAGES_RAP[pkgId];
 
       if (!pkg) return;
 

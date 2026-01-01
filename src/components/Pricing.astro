@@ -15,6 +15,23 @@ import ServicePackages from "./ServicePackages.astro";
       </p>
     </div>
 
+    <div class="flex justify-center mb-12">
+      <div class="tabs" id="pricing-mode-toggle">
+        <span class="glider"></span>
+        <button class="tab-btn active" data-target="host-packages">
+          <i class="fas fa-glass-cheers mr-2"></i>Ведущий
+        </button>
+        <button class="tab-btn" data-target="rap-packages">
+          <i class="fas fa-microphone-alt mr-2"></i>Рэп-исполнитель
+        </button>
+      </div>
+    </div>
+
+    <!-- Подключаем общие стили табов -->
+    <style>
+      @import "../styles/tabs.css";
+    </style>
+
     <ServicePackages mode="link" />
 
     <div class="mt-16 text-center border-t border-gray-800 pt-12">
@@ -35,3 +52,74 @@ import ServicePackages from "./ServicePackages.astro";
     </div>
   </div>
 </section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const toggleContainer = document.getElementById("pricing-mode-toggle");
+    if (!toggleContainer) return;
+
+    const tabs = toggleContainer.querySelectorAll(".tab-btn");
+    const glider = toggleContainer.querySelector(".glider") as HTMLElement;
+    const hostPackages = document.getElementById("host-packages");
+    const rapPackages = document.getElementById("rap-packages");
+
+    // Добавляем классы content-panel для анимации
+    hostPackages?.classList.add("content-panel", "active");
+    rapPackages?.classList.add("content-panel");
+    // Убираем hidden т.к. content-panel управляет display
+    hostPackages?.classList.remove("hidden");
+    rapPackages?.classList.remove("hidden");
+
+    function updateGlider() {
+      const activeTab = toggleContainer!.querySelector(
+        ".tab-btn.active",
+      ) as HTMLElement;
+      if (!glider || !activeTab) return;
+
+      const isMobile = window.innerWidth <= 640;
+
+      if (isMobile) {
+        glider.style.width = "calc(100% - 10px)";
+        glider.style.left = "5px";
+        glider.style.height = `${activeTab.offsetHeight}px`;
+        glider.style.top = `${activeTab.offsetTop}px`;
+      } else {
+        glider.style.height = "calc(100% - 10px)";
+        glider.style.top = "5px";
+        glider.style.width = `${activeTab.offsetWidth}px`;
+        glider.style.left = `${activeTab.offsetLeft}px`;
+      }
+    }
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        // Remove active from all
+        tabs.forEach((t) => t.classList.remove("active"));
+        // Add active to current
+        tab.classList.add("active");
+
+        const targetId = (tab as HTMLElement).dataset.target;
+
+        // Toggle Content
+        if (targetId === "host-packages") {
+          hostPackages?.classList.add("active");
+          rapPackages?.classList.remove("active");
+          toggleContainer?.classList.remove("rap-mode");
+        } else if (targetId === "rap-packages") {
+          hostPackages?.classList.remove("active");
+          rapPackages?.classList.add("active");
+          toggleContainer?.classList.add("rap-mode");
+        }
+
+        // Update Glider after state change
+        updateGlider();
+      });
+    });
+
+    // Initialize
+    updateGlider();
+    window.addEventListener("resize", updateGlider);
+    // Небольшая задержка для точного расчета размеров после рендера шрифтов
+    setTimeout(updateGlider, 100);
+  });
+</script>

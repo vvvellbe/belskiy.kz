@@ -86,15 +86,13 @@ export const PRICES = {
 };
 
 export const PRICES_RAP = {
-    TIERS: {
-        'START': { name: 'Пакет "Старт"', price: 40000, tracks: 5, desc: 'Идеально для короткого, яркого выступления (1-5 треков).' },
-        'DRIVE': { name: 'Пакет "Драйв"', price: 100000, tracks: 14, desc: 'Оптимальный набор для полноценного шоу (6-14 треков).' },
-        'PREMIUM': { name: 'Пакет "Премиум"', price: 160000, tracks: 38, desc: 'Максимальный заряд энергии на весь вечер (15-38 треков).' }
-    },
-    NEW_YEAR: {
-        'START': { name: 'Пакет "Старт" (New Year)', price: 80000, tracks: 5, desc: 'Новогодний тариф: Яркое начало праздника.' },
-        'DRIVE': { name: 'Пакет "Драйв" (New Year)', price: 150000, tracks: 14, desc: 'Новогодний тариф: Оптимальное шоу.' },
-        'PREMIUM': { name: 'Пакет "Премиум" (New Year)', price: 200000, tracks: 38, desc: 'Новогодний тариф: Максимальный разнос.' }
+    // Новая структура для рэп-калькулятора (по времени)
+    PARAMS: {
+        BASE_PRICE: 100000,
+        SHOW_BLOCK_PRICE: 20000, // 30 мин
+        WAIT_BLOCK_PRICE: 5000, // 30 мин
+        INCLUDED_SHOW_MIN: 30,
+        INCLUDED_WAIT_MIN: 30
     },
     LOCATION: {
         'kz': { name: 'Выступление по РК', fixedPrice: 160000, newYearPrice: 200000 },
@@ -219,5 +217,44 @@ export const PACKAGES = {
             { text: 'Eminem Tribute Show: до 10 треков (по желанию)', included: true, tooltip: 'Исполнение каверов на песни Эминема вживую на вашем мероприятии.' }
         ],
         note: null
+    }
+};
+
+export const PACKAGES_RAP = {
+    RAP_LIGHT: {
+        id: 'rap_light',
+        name: 'Light',
+        price: 100000,
+        description: 'Идеально для свадеб, юбилеев, сюрпризов',
+        features: [
+            { text: 'Количество треков: до 10-15', included: true },
+            { text: 'Время выступления: до 30 минут', included: true },
+            { text: 'Нахождение на площадке: до 1 часа', included: true },
+            { text: 'Звук: Портативная аудиосистема и микрофон JBL (или ваше оборудование с DJ)', included: true }
+        ]
+    },
+    RAP_STANDARD: {
+        id: 'rap_standard',
+        name: 'Standard',
+        price: 125000,
+        description: 'Идеально для корпоративов, вечеринок',
+        features: [
+            { text: 'Количество треков: до 20-25', included: true },
+            { text: 'Время выступления: до 1 часа', included: true },
+            { text: 'Нахождение на площадке: до 2 часов', included: true },
+            { text: 'Звук: Портативная аудиосистема и микрофон JBL (или ваше оборудование с DJ)', included: true }
+        ]
+    },
+    RAP_PRO: {
+        id: 'rap_pro',
+        name: 'Pro',
+        price: 190000,
+        description: 'Идеально для полноценных концертов',
+        features: [
+            { text: 'Количество треков: до 30-35', included: true },
+            { text: 'Время выступления: до 1.5 часа', included: true },
+            { text: 'Нахождение на площадке: до 7 часов', included: true },
+            { text: 'Звук: Портативная аудиосистема и микрофон JBL (или ваше оборудование с DJ)', included: true }
+        ]
     }
 };

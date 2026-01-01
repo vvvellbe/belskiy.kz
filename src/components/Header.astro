@@ -236,6 +236,31 @@ const homeUrl =
                 sections.forEach((section) => observer.observe(section));
             }
         }
+
+        // --- УМНАЯ ШАПКА (Скрытие при скролле вниз) ---
+        let lastScrollY = window.scrollY;
+        const nav = document.querySelector("nav");
+
+        window.addEventListener("scroll", () => {
+            const currentScrollY = window.scrollY;
+
+            // Если скроллим вниз и прокрутили больше высоты шапки -> скрываем
+            if (currentScrollY > lastScrollY && currentScrollY > 80) {
+                nav?.classList.add("nav-hidden");
+            } else {
+                // Если скроллим вверх -> показываем
+                nav?.classList.remove("nav-hidden");
+            }
+
+            // Логика прозрачности/тени
+            if (currentScrollY > 50) {
+                nav?.classList.add("scrolled");
+            } else {
+                nav?.classList.remove("scrolled");
+            }
+
+            lastScrollY = currentScrollY;
+        });
     });
 </script>
 
@@ -248,13 +273,17 @@ const homeUrl =
         border-bottom: 1px solid rgba(0, 255, 255, 0.1);
         transition:
             padding 0.3s ease,
-            background-color 0.3s ease;
+            background-color 0.3s ease,
+            transform 0.3s ease; /* Добавлена анимация скрытия */
     }
     nav.scrolled {
         background: rgba(10, 10, 10, 0.85);
         padding-top: 0.75rem;
         padding-bottom: 0.75rem;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+    nav.nav-hidden {
+        transform: translateY(-100%);
     }
     #navCtaButton {
         opacity: 0;

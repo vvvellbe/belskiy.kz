@@ -116,6 +116,13 @@ import "../styles/tabs.css";
           p.classList.remove("active");
         }
       });
+
+      // Rap Mode Color Logic
+      if (id === "portfolio-rap") {
+        tabsContainerEl.classList.add("rap-mode");
+      } else {
+        tabsContainerEl.classList.remove("rap-mode");
+      }
     }
 
     tabButtons.forEach((btn) => {

@@ -260,6 +260,13 @@ const hiddenTracks = TRACK_LIST.slice(10);
             p.classList.remove("active");
           }
         });
+
+        // Rap Mode Color Logic (for Repertoire Setlists)
+        if (id === "repertoire-setlists") {
+          tabsContainer.classList.add("rap-mode");
+        } else {
+          tabsContainer.classList.remove("rap-mode");
+        }
       };
 
       tabButtons.forEach((btn) => {

@@ -7,32 +7,30 @@ function initializeRapCalculator() {
 
     function initializeRapApp() {
         DOMElements = {
-            dateInput: document.getElementById('rap-event-date'), // НОВЫЙ ЭЛЕМЕНТ
+            dateInput: document.getElementById('rap-event-date'),
             locationSelect: document.getElementById('rap-location'),
-            trackListContainer: document.getElementById('track-list-container'),
-            trackCards: document.querySelectorAll('#track-list-container .track-card'),
+
+            // New Sliders
+            showTimeSlider: document.getElementById('rap-show-time'),
+            showTimeOutput: document.getElementById('rap-show-time-output'),
+            totalTimeSlider: document.getElementById('rap-total-time'),
+            totalTimeOutput: document.getElementById('rap-total-time-output'),
+
             summaryList: document.getElementById('rap-summary-list'),
             notifications: document.getElementById('rap-notifications'),
             totalPrice: document.getElementById('rap-total-price'),
             copyQuoteBtn: document.getElementById('copy-rap-quote-btn'),
-            packageInfo: document.getElementById('rap-package-info'),
-            selectAllTracksBtn: document.getElementById('select-all-tracks-btn'),
-            resetTracksBtn: document.getElementById('reset-tracks-btn'),
             summaryCard: rapCalculatorContent.querySelector('[data-summary-id="rap"]'),
         };
 
         selection = {
             mode: 'rap',
             location: 'almaty',
-            selectedTracks: {},
-            eventDate: null,       // НОВОЕ ПОЛЕ
-            isNewYearMode: false   // НОВЫЙ ФЛАГ
+            eventDate: null,
+            isNewYearMode: false,
+            showDuration: 30, // minutes
+            totalDuration: 60 // minutes
         };
-
-        if (DOMElements.trackListContainer.childElementCount === 0) {
-            populateStaticTrackList();
-            DOMElements.trackCards = document.querySelectorAll('#track-list-container .track-card');
-        }
 
         setupEventListeners();
         setupFloatingBar();
@@ -43,42 +41,14 @@ function initializeRapCalculator() {
         });
     }
 
-    function populateStaticTrackList() {
-        if (!DOMElements.trackListContainer) return;
-        let tracksHTML = '';
-        TRACK_LIST.forEach(track => {
-            const exampleButtonHTML = `
-            <button class="btn-youtube text-xs" data-modal-trigger="videoModal" data-video-src="${track.url.split('v=')[1]}">
-                <i class="fab fa-youtube mr-1"></i> Пример
-            </button>`;
-
-            tracksHTML += `
-            <div class="track-card rounded-lg p-3" data-track-id="${track.id}">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <i class="fas fa-plus-circle"></i>
-                        <div>
-                            <p class="font-semibold text-white">${track.name}</p>
-                            <p class="text-xs text-gray-400">Длительность: ${track.duration}</p>
-                        </div>
-                    </div>
-                    ${exampleButtonHTML} 
-                </div>
-            </div>`;
-        });
-        DOMElements.trackListContainer.innerHTML = tracksHTML;
-    }
-
-
     function setupEventListeners() {
-        // --- НОВЫЙ СЛУШАТЕЛЬ ДАТЫ ---
+        // Date Input
         if (DOMElements.dateInput) {
             DOMElements.dateInput.addEventListener('change', (e) => {
                 const dateValue = e.target.value;
                 selection.eventDate = dateValue;
-                
+
                 if (dateValue) {
-                    // Месяцы с 0 (январь) по 11 (декабрь)
                     const month = new Date(dateValue).getMonth();
                     selection.isNewYearMode = (month === 11);
                 } else {
@@ -88,197 +58,154 @@ function initializeRapCalculator() {
             });
         }
 
+        // Location Select
         DOMElements.locationSelect.addEventListener('change', (e) => {
             selection.location = e.target.value;
             updateRapSummary();
         });
-        
-        DOMElements.trackCards.forEach(card => {
-            card.addEventListener('click', (e) => {
-                if (e.target.closest('[data-modal-trigger="videoModal"]')) {
-                    return;
-                }
 
-                const trackId = card.dataset.trackId;
-                if (selection.selectedTracks[trackId]) {
-                    delete selection.selectedTracks[trackId];
-                } else {
-                    selection.selectedTracks[trackId] = true;
-                }
-                updateRapSummary();
-            });
+        // Show Time Slider
+        DOMElements.showTimeSlider.addEventListener('input', (e) => {
+            selection.showDuration = parseInt(e.target.value, 10);
+            DOMElements.showTimeOutput.textContent = `${selection.showDuration} мин`;
+            validateTime();
+            updateRapSummary();
         });
 
+        // Total Time Slider
+        DOMElements.totalTimeSlider.addEventListener('input', (e) => {
+            selection.totalDuration = parseInt(e.target.value, 10);
+            updateTotalTimeOutput(selection.totalDuration);
+            validateTime();
+            updateRapSummary();
+        });
+
+        // Copy Quote Button
         DOMElements.copyQuoteBtn.addEventListener('click', () => {
             const quoteText = generateRapPlainTextQuote();
             copyToClipboard(quoteText);
         });
-
-        DOMElements.selectAllTracksBtn.addEventListener('click', () => {
-            TRACK_LIST.forEach(track => {
-                selection.selectedTracks[track.id] = true;
-            });
-            updateRapSummary();
-        });
-
-        DOMElements.resetTracksBtn.addEventListener('click', () => {
-            selection.selectedTracks = {};
-            updateRapSummary();
-        });
     }
 
-function updateRapSummary() {
-        const trackCount = Object.keys(selection.selectedTracks).length;
-        let currentTier, totalPrice, currency = '₸', travelInfo = null;
-        const needsRider = ['kz', 'intl'].includes(selection.location);
-        
-        const activePrices = selection.isNewYearMode ? PRICES_RAP.NEW_YEAR : PRICES_RAP.TIERS;
-
-        if (trackCount === 0) {
-            currentTier = { name: 'Выберите треки', desc: 'Начните добавлять треки, чтобы сформировать пакет.' };
-            totalPrice = 0;
-        } else if (trackCount <= activePrices.START.tracks) {
-            currentTier = activePrices.START;
-        } else if (trackCount <= activePrices.DRIVE.tracks) {
-            currentTier = activePrices.DRIVE;
+    function updateTotalTimeOutput(minutes) {
+        const hours = minutes / 60;
+        // Format: "1.5 часа" or "2 часа" or "1 час"
+        let label = '';
+        if (Number.isInteger(hours)) {
+            label = `${hours} час${hours === 1 ? '' : hours < 5 ? 'а' : 'ов'}`;
         } else {
-            currentTier = activePrices.PREMIUM;
+            label = `${hours} часа`;
         }
+        DOMElements.totalTimeOutput.textContent = label;
+    }
+
+    function validateTime() {
+        // Rule: Total Time >= Show Time + 30 min (Tech time)
+        const minTotalDuration = selection.showDuration + 30;
+
+        if (selection.totalDuration < minTotalDuration) {
+            // If total time is less than minimum required, bump it up
+            selection.totalDuration = minTotalDuration;
+            DOMElements.totalTimeSlider.value = selection.totalDuration;
+            updateTotalTimeOutput(selection.totalDuration);
+        }
+
+        // Ensure the slider 'min' attribute allows for this logic? 
+        // Logic check: Slider 2 min is 60. 
+        // If Show=30, MinTotal=60. OK.
+        // If Show=60, MinTotal=90. OK.
+        // If Show=90, MinTotal=120. OK.
+    }
+
+    function calculatePrice() {
+        const { PARAMS, LOCATION } = PRICES_RAP;
 
         if (selection.location === 'kz') {
-            if (selection.isNewYearMode && PRICES_RAP.LOCATION.kz.newYearPrice) {
-                 totalPrice = PRICES_RAP.LOCATION.kz.newYearPrice;
-            } else {
-                 totalPrice = PRICES_RAP.LOCATION.kz.fixedPrice;
+            if (selection.isNewYearMode && LOCATION.kz.newYearPrice) {
+                return { price: LOCATION.kz.newYearPrice, currency: '₸', travelInfo: 'Стоимость для выездного мероприятия фиксированная.' };
             }
-            travelInfo = 'Стоимость для выездного мероприятия в другой город Казахстана фиксированная.';
-        } else if (selection.location === 'intl') {
-            // --- ОБНОВЛЕННЫЙ БЛОК ДЛЯ МЕЖДУНАРОДНЫХ ВЫСТУПЛЕНИЙ ---
-            if (selection.isNewYearMode && PRICES_RAP.LOCATION.intl.newYearPrice) {
-                totalPrice = PRICES_RAP.LOCATION.intl.newYearPrice;
-            } else {
-                totalPrice = PRICES_RAP.LOCATION.intl.fixedPrice;
-            }
-            // ------------------------------------------------------
-            currency = PRICES_RAP.LOCATION.intl.currency;
-            travelInfo = 'Стоимость для выездного мероприятия в страну за пределами Казахстана фиксированная.';
-        } else {
-            totalPrice = currentTier.price || 0;
-            if (selection.location === 'almaty_region') {
-                travelInfo = 'Транспортные расходы (такси по тарифу Яндекс Go) оплачиваются заказчиком дополнительно.';
-            }
-        }
-    
-        let totalMinSeconds = 0, totalMaxSeconds = 0;
-        const selectedTrackItems = Object.keys(selection.selectedTracks).map(trackId => {
-            const track = TRACK_LIST.find(t => t.id === trackId);
-            if (track) {
-                totalMinSeconds += track.minDurationSeconds;
-                totalMaxSeconds += track.maxDurationSeconds;
-                return { name: track.name };
-            }
-            return null;
-        }).filter(Boolean);
-    
-        const durationText = formatDuration(totalMinSeconds, totalMaxSeconds);
-    
-        renderPackageInfo(currentTier);
-        renderSummaryList(currentTier, trackCount, durationText, selectedTrackItems);
-        renderNotifications(travelInfo, needsRider);
-        
-        DOMElements.trackCards.forEach(card => {
-            const trackId = card.dataset.trackId;
-            const isSelected = !!selection.selectedTracks[trackId];
-            card.classList.toggle('selected', isSelected);
-            const icon = card.querySelector('i');
-            if (icon) {
-                icon.classList.toggle('fa-check-circle', isSelected);
-                icon.classList.toggle('text-emerald-400', isSelected);
-                icon.classList.toggle('fa-plus-circle', !isSelected);
-            }
-        });
-
-        if (DOMElements.totalPrice) {
-            DOMElements.totalPrice.textContent = `${totalPrice.toLocaleString('ru-RU')} ${currency}`;
+            return { price: LOCATION.kz.fixedPrice, currency: '₸', travelInfo: 'Стоимость для выездного мероприятия фиксированная.' };
         }
 
-        updateFloatingBarUI(totalPrice, trackCount, currency);
-    }
-    
-    function renderPackageInfo(tier) {
-        if (!DOMElements.packageInfo) return;
-        DOMElements.packageInfo.innerHTML = `
-        <div class="package-info-card">
-         <h3 class="font-semibold text-lg text-white">${tier.name}</h3>
-         <p class="text-sm text-gray-400 mt-1">${tier.desc}</p>
-        </div>`;
+        if (selection.location === 'intl') {
+            if (selection.isNewYearMode && LOCATION.intl.newYearPrice) {
+                return { price: LOCATION.intl.newYearPrice, currency: LOCATION.intl.currency, travelInfo: 'International fixed price.' };
+            }
+            return { price: LOCATION.intl.fixedPrice, currency: LOCATION.intl.currency, travelInfo: 'International fixed price.' };
+        }
+
+        // Almaty Calculation
+        let totalPrice = PARAMS.BASE_PRICE; // Includes 30m show + 30m wait
+
+        // Calculate Extra Show Cost
+        if (selection.showDuration > PARAMS.INCLUDED_SHOW_MIN) {
+            const extraShowMinutes = selection.showDuration - PARAMS.INCLUDED_SHOW_MIN;
+            const extraShowBlocks = Math.ceil(extraShowMinutes / 30);
+            totalPrice += extraShowBlocks * PARAMS.SHOW_BLOCK_PRICE;
+        }
+
+        // Calculate Waiting Cost
+        // Clean Wait Time = Total - Show. 
+        // Note: The Base Price includes 30 min of "Technical/Waiting" time implicitly?
+        // Let's look at the spec: "Total Time cannot be less than Show + 30 min tech".
+        // Spec: "First 30 minutes of clean waiting — 0 KZT (included)".
+        // Wait Time = Total - Show.
+        const pureWaitTime = selection.totalDuration - selection.showDuration;
+
+        if (pureWaitTime > PARAMS.INCLUDED_WAIT_MIN) {
+            const extraWaitMinutes = pureWaitTime - PARAMS.INCLUDED_WAIT_MIN;
+            const extraWaitBlocks = Math.ceil(extraWaitMinutes / 30);
+            totalPrice += extraWaitBlocks * PARAMS.WAIT_BLOCK_PRICE;
+        }
+
+        return { price: totalPrice, currency: '₸', travelInfo: selection.location === 'almaty_region' ? 'Транспортные расходы оплачиваются дополнительно.' : null };
     }
 
-    function renderSummaryList(tier, trackCount, durationText, trackItems) {
-        if (!DOMElements.summaryList) return;
+    function updateRapSummary() {
+        const calcResult = calculatePrice();
+        let { price, currency, travelInfo } = calcResult;
+
+        // Render Summary List
         let summaryHtml = '';
-        if (trackCount > 0 || ['kz', 'intl'].includes(selection.location)) {
-            let activeTier = tier;
-            // Логика отображения названия пакета для выездных (всегда Премиум)
-            if (selection.location === 'kz' || selection.location === 'intl') {
-                 // Определяем, какой "Премиум" брать (обычный или новогодний) для названия
-                 const activePrices = selection.isNewYearMode ? PRICES_RAP.NEW_YEAR : PRICES_RAP.TIERS;
-                 activeTier = activePrices.PREMIUM;
-            }
-            summaryHtml += createSummaryCategory('Пакет выступления', 'fa-microphone-alt', [{ name: activeTier.name }]);
-        }
-        if (trackCount > 0) {
-            summaryHtml += createSummaryCategory(`Сет-лист (${trackCount} треков)`, 'fa-music', trackItems, true);
-            summaryHtml += createSummaryCategory('Длительность', 'fa-clock', [{ name: 'Примерное время:', price: durationText, isDuration: true }]);
-        }
-        DOMElements.summaryList.innerHTML = summaryHtml;
-    }
 
-    function renderNotifications(travelInfo, needsRider) {
-        if (!DOMElements.notifications) return;
+        if (['kz', 'intl'].includes(selection.location)) {
+            summaryHtml += createSummaryItem('Пакет выступления', 'Включено');
+            summaryHtml += createSummaryItem('Локация', PRICES_RAP.LOCATION[selection.location].name);
+        } else {
+            // Show Time
+            summaryHtml += createSummaryItem('Длительность шоу', `${selection.showDuration} мин`);
+
+            // Total Time
+            const h = selection.totalDuration / 60;
+            const totalTimeLabel = Number.isInteger(h) ? `${h} ч.` : `${h} ч.`;
+            summaryHtml += createSummaryItem('Время на площадке', totalTimeLabel);
+
+            // Detailed breakdown (optional, but requested "correct text")
+            const pureWait = selection.totalDuration - selection.showDuration;
+            summaryHtml += createSummaryItem('Чистое ожидание', `${pureWait} мин`);
+        }
+
+        DOMElements.summaryList.innerHTML = summaryHtml;
+
+        // Notifications
         DOMElements.notifications.innerHTML = '';
         if (travelInfo) {
             DOMElements.notifications.innerHTML += `<div class="notification-card"><i class="fas fa-info-circle"></i><p>${travelInfo}</p></div>`;
         }
-        if (needsRider) {
-            DOMElements.notifications.innerHTML += `<div class="flex flex-col items-center gap-2 mt-2"><button data-modal-trigger="riderModal" class="btn-rider w-full">Ознакомиться с райдером</button><p class="text-xs text-amber-400 font-semibold">Для выездных мероприятий обязательно</p></div>`;
-        }
+
+        // Update Price
+        DOMElements.totalPrice.textContent = `${price.toLocaleString('ru-RU')} ${currency}`;
+
+        updateFloatingBarUI(price, 0, currency);
     }
 
-    function formatDuration(minSeconds, maxSeconds) {
-        if (minSeconds === 0) return '0 мин. 00 сек.';
-        
-        const format = (s) => {
-            const h = Math.floor(s / 3600);
-            const m = Math.floor((s % 3600) / 60);
-            const secs = s % 60;
-
-            const hDisplay = h > 0 ? `${h} ч. ` : '';
-            const mDisplay = `${m} мин. `;
-            const sDisplay = `${secs.toString().padStart(2, '0')} сек.`;
-
-            return `${hDisplay}${mDisplay}${sDisplay}`.trim();
-        };
-
-        const minFormatted = format(minSeconds);
-        if (minSeconds === maxSeconds) return minFormatted;
-        
-        return `${minFormatted} - ${format(maxSeconds)}`;
-    }
-
-    function createSummaryCategory(title, icon, items, scrollable = false) {
-        const containerClass = scrollable ? 'summary-items-container scrollable' : 'summary-items-container';
-        let itemsHtml = items.map(item => {
-            const priceHtml = item.price !== undefined ? `<span class="summary-item-price ${item.isDuration ? 'duration-text' : ''}">${typeof item.price === 'number' ? item.price.toLocaleString('ru-RU') : item.price} ${item.currency || ''}</span>` : '';
-            return `<div class="summary-item"><div class="summary-item-name">${item.name}</div>${priceHtml}</div>`;
-        }).join('');
-        return `<div class="summary-category"><div class="summary-category-header"><i class="fas ${icon}"></i><span>${title}</span></div><div class="${containerClass}">${itemsHtml}</div></div>`;
+    function createSummaryItem(label, value) {
+        return `<div class="summary-item"><div class="summary-item-name text-gray-400">${label}</div><span class="summary-item-price text-white font-medium">${value}</span></div>`;
     }
 
     function generateRapPlainTextQuote() {
         let parts = ["Здравствуйте, Валерий!", "Сформировал(а) заявку на рэп-выступление на belskiy.kz:\n"];
-        
-        // --- ДОБАВЛЕНИЕ ДАТЫ В ЗАЯВКУ ---
+
         if (selection.eventDate) {
             const [year, month, day] = selection.eventDate.split('-');
             parts.push(`*ДАТА ВЫСТУПЛЕНИЯ: ${day}.${month}.${year}*`);
@@ -286,26 +213,20 @@ function updateRapSummary() {
         if (selection.isNewYearMode) {
             parts.push(`*ТАРИФ: Новогодний*`);
         }
-        
+
         parts.push(`\n*УСЛУГА: Рэп-исполнитель*`);
         const locationMap = { almaty: 'В пределах г. Алматы', almaty_region: 'Алматинская область / Районы', kz: 'Другой город Казахстана', intl: 'Другая страна' };
         parts.push(`- Местоположение: ${locationMap[selection.location]}`);
-        
-        const trackCount = Object.keys(selection.selectedTracks).length;
-        const selectedTrackNames = Object.keys(selection.selectedTracks).map(id => TRACK_LIST.find(t => t.id === id)?.name).filter(Boolean);
-        
-        if (selectedTrackNames.length > 0) { 
-            parts.push(`\n*ВЫБРАННЫЙ СЕТ-ЛИСТ (${trackCount} треков):*`); 
-            selectedTrackNames.forEach(name => parts.push(`- ${name}`)); 
-        } 
-        else if (selection.location === 'kz' || selection.location === 'intl') { 
-            parts.push(`- Пакет: Премиум (Полная программа)`); 
+
+        if (!['kz', 'intl'].includes(selection.location)) {
+            parts.push(`- Длительность шоу: ${selection.showDuration} мин`);
+            parts.push(`- Общее время на площадке: ${selection.totalDuration / 60} ч`);
         }
-        
+
         parts.push(`\n*ИТОГОВАЯ СТОИМОСТЬ: ${DOMElements.totalPrice.textContent}*`);
-        
-        if (selection.location !== 'almaty') { 
-            parts.push("\n*Дополнительно оплачиваются расходы на логистику (проезд, проживание), согласно райдеру.*"); 
+
+        if (selection.location !== 'almaty') {
+            parts.push("\n*Дополнительно оплачиваются расходы на логистику (проезд, проживание), согласно райдеру.*");
         }
         return parts.join('\n');
     }
@@ -321,6 +242,8 @@ function updateRapSummary() {
         openBtn.addEventListener('click', openModal);
         modal.addEventListener('click', (e) => { if (e.target.closest('.modal-close-btn') || e.target === modal) closeModal(); });
         modalCopyBtn.addEventListener('click', () => copyToClipboard(generateRapPlainTextQuote()));
+
+        // Hide/Show based on scroll intersection with the main summary card
         const summaryCardObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => { if (rapCalculatorContent.classList.contains('active')) { bar.classList.toggle('hidden-by-scroll', entry.isIntersecting); } });
         }, { threshold: 0.1 });
@@ -330,15 +253,14 @@ function updateRapSummary() {
     function updateFloatingBarUI(total, itemsCount, currency = '₸') {
         const bar = document.getElementById('rap-floating-summary-bar');
         if (!bar) return;
-        // Показываем бар, если есть треки ИЛИ если это выезд (где треки не влияют на цену, но заказ сформирован)
-        const hasSelections = itemsCount > 0 || ['kz', 'intl'].includes(selection.location);
-        const shouldBeVisible = hasSelections && rapCalculatorContent.classList.contains('active');
-        
+
+        // Always visible if calculator is active
+        const shouldBeVisible = rapCalculatorContent.classList.contains('active');
         bar.classList.toggle('visible', shouldBeVisible);
 
         if (window.innerWidth < 768) {
             const hostBarIsVisible = document.getElementById('host-floating-summary-bar')?.classList.contains('visible');
-             if (shouldBeVisible) {
+            if (shouldBeVisible) {
                 document.body.style.paddingBottom = bar.offsetHeight + 20 + 'px';
             } else if (!hostBarIsVisible) {
                 document.body.style.paddingBottom = '0px';
@@ -347,7 +269,9 @@ function updateRapSummary() {
 
         if (shouldBeVisible) {
             document.getElementById('rap-floating-total').textContent = `Итого: ${total.toLocaleString('ru-RU')} ${currency}`;
-            document.getElementById('rap-floating-count').textContent = itemsCount;
+            // Count isn't really relevant now, maybe just hide or show '1 услуга'
+            document.getElementById('rap-floating-count').textContent = '';
+
             const summaryContent = DOMElements.summaryList.innerHTML;
             const notificationsContent = DOMElements.notifications.innerHTML;
             const separator = notificationsContent ? '<hr class="summary-separator mt-4 mb-4">' : '';
@@ -359,22 +283,22 @@ function updateRapSummary() {
     function copyToClipboard(text) {
         navigator.clipboard.writeText(text).then(showToast, err => console.error('Не удалось скопировать', err));
     }
-    
-    function showToast() {
-      const toast = document.getElementById('toast-notification');
-      const whatsappBtn = document.getElementById('whatsapp-send-btn');
 
-      if (toast && whatsappBtn) {
-        const phoneNumber = '77079292980'; 
-        const invitationText = 'Вставьте скопированную заявку сюда.';
-        const encodedText = encodeURIComponent(invitationText);
-        const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedText}`;
-        whatsappBtn.href = whatsappUrl;
-        toast.classList.add('show');
-        setTimeout(() => {
-          toast.classList.remove('show');
-        }, 6000);
-      }
+    function showToast() {
+        const toast = document.getElementById('toast-notification');
+        const whatsappBtn = document.getElementById('whatsapp-send-btn');
+
+        if (toast && whatsappBtn) {
+            const phoneNumber = '77079292980';
+            const invitationText = 'Вставьте скопированную заявку сюда.';
+            const encodedText = encodeURIComponent(invitationText);
+            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedText}`;
+            whatsappBtn.href = whatsappUrl;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 6000);
+        }
     }
 
     initializeRapApp();

@@ -3,7 +3,7 @@
         <div class="w-full lg:w-2/3 flex flex-col gap-8">
             <div class="config-card rounded-xl p-6 sm:p-8">
                 <h2 class="text-2xl font-semibold text-white mb-6">
-                    1. Параметры выступления
+                    Параметры выступлений
                 </h2>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -40,26 +40,80 @@
             </div>
 
             <div class="program-card rounded-xl p-6 sm:p-8">
-                <h2 class="text-2xl font-semibold text-white mb-4">
-                    2. Соберите ваш сет-лист
+                <h2 class="text-2xl font-semibold text-white mb-2">
+                    Конфигурация шоу
                 </h2>
-                <div id="rap-package-info" class="mb-6"></div>
-                <div class="flex items-center gap-4 mb-6">
-                    <button
-                        id="select-all-tracks-btn"
-                        class="btn-secondary flex-1 py-2 px-3 rounded-lg"
-                        >Выбрать все</button
+                <p class="text-sm text-gray-400 mb-6">
+                    Настройте время выступления и общее время нахождения артиста
+                    на площадке.
+                </p>
+
+                <!-- Слайдер 1: Длительность выступления -->
+                <div class="mb-8">
+                    <div
+                        class="flex flex-col md:flex-row md:justify-between md:items-center mb-4"
                     >
-                    <button
-                        id="reset-tracks-btn"
-                        class="btn-reset flex-1 py-2 px-3 rounded-lg"
-                        >Сбросить</button
+                        <label
+                            for="rap-show-time"
+                            class="font-semibold text-gray-200 mb-1 md:mb-0"
+                        >
+                            Длительность выступления:
+                        </label>
+                        <span
+                            id="rap-show-time-output"
+                            class="font-bold text-lg text-cyan-400">30 мин</span
+                        >
+                    </div>
+                    <!-- min=30, max=90, step=30 -->
+                    <input
+                        type="range"
+                        id="rap-show-time"
+                        min="30"
+                        max="90"
+                        step="30"
+                        value="30"
+                        class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer range-lg photographer-slider"
+                    />
+                    <div
+                        class="flex justify-between text-xs text-gray-500 mt-2 px-1"
                     >
+                        <span>30 мин</span>
+                        <span>60 мин</span>
+                        <span>90 мин</span>
+                    </div>
                 </div>
-                <div
-                    id="track-list-container"
-                    class="space-y-3 max-h-[60vh] overflow-y-auto pr-2"
-                >
+
+                <!-- Слайдер 2: Общее время на площадке -->
+                <div class="mb-6">
+                    <div
+                        class="flex flex-col md:flex-row md:justify-between md:items-center mb-4"
+                    >
+                        <label
+                            for="rap-total-time"
+                            class="font-semibold text-gray-200 mb-1 md:mb-0"
+                        >
+                            Общее время на площадке (включая ожидание):
+                        </label>
+                        <span
+                            id="rap-total-time-output"
+                            class="font-bold text-lg text-cyan-400">1 час</span
+                        >
+                    </div>
+                    <!-- min=60 (1 час), max=480 (8 часов), step=30 -->
+                    <input
+                        type="range"
+                        id="rap-total-time"
+                        min="60"
+                        max="480"
+                        step="30"
+                        value="60"
+                        class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer range-lg photographer-slider"
+                    />
+                    <p class="text-sm text-gray-400 mt-3">
+                        <i class="fas fa-info-circle mr-2 text-cyan-400"></i>
+                        Минимальное техническое время (саундчек + сборы): 30 минут.
+                        Оно автоматически добавляется к времени выступления.
+                    </p>
                 </div>
             </div>
         </div>
