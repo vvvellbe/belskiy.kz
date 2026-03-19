@@ -1,0 +1,208 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Header from "../components/Header.astro";
+import { Image } from "astro:assets";
+import profileImage from "../assets/eminem-trubute.jpg";
+---
+
+<BaseLayout
+  title="Eminem Tribute Show | Valeriy Belskiy"
+  description="Официальные ссылки Eminem Tribute Show. Букинг, сотрудничество и поддержка проекта."
+>
+  <Header activePage="eminem-tribute" />
+  <main class="min-h-screen bg-zinc-950 pt-20 pb-20 relative overflow-hidden">
+    <!-- Фоновые эффекты в стиле Neo-Brutalism/Эминем -->
+    <div
+      class="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none"
+    >
+      <div
+        class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-red-600/20 rounded-full blur-[100px]"
+      >
+      </div>
+      <div
+        class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-red-900/20 rounded-full blur-[120px]"
+      >
+      </div>
+    </div>
+
+    <div class="container mx-auto px-4 relative z-10 max-w-lg">
+      <!-- Профиль -->
+      <div class="flex flex-col items-center mb-6 text-center mt-0">
+        <div
+          class="w-28 h-28 rounded-full overflow-hidden border-4 border-red-600 shadow-[0_0_20px_rgba(220,38,38,0.5)] mb-4 bg-zinc-800"
+        >
+          <Image
+            src={profileImage}
+            alt="Eminem Tribute Show"
+            class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500"
+            width={112}
+            height={112}
+          />
+        </div>
+        <h1 class="text-2xl font-bold text-white mb-1 uppercase tracking-wider">
+          Eminem Tribute Show
+        </h1>
+        <p class="text-gray-400 text-sm mb-2">Valeriy Belskiy</p>
+        <p class="text-gray-500 text-xs px-6 italic">
+          ⚠️Не открывается ссылка? Нажмите на ... (три точки) в правом верхнем
+          углу и выбирите "открыть в браузере (Chrome/Safari и т.д.)"
+        </p>
+      </div>
+
+      <!-- Ссылки Taplink -->
+      <div class="flex flex-col gap-4 w-full">
+        <!-- Booking & Cooperation -->
+        <a
+          href="http://wa.me/77085506890"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="group relative w-full overflow-hidden rounded-xl bg-red-600 p-[2px] transition-all hover:scale-[1.02] hover:shadow-[0_0_25px_rgba(220,38,38,0.6)] cursor-pointer"
+        >
+          <div
+            class="flex h-full w-full items-center justify-between rounded-lg bg-red-600 px-4 py-4 sm:px-6"
+          >
+            <div class="flex items-center gap-4 w-full">
+              <div
+                class="text-white text-3xl opacity-90 group-hover:scale-110 transition-transform"
+              >
+                <i class="far fa-calendar-plus"></i>
+              </div>
+              <div
+                class="flex flex-col items-center justify-center w-full pr-8"
+              >
+                <span
+                  class="font-bold text-white text-[15px] sm:text-[16px] text-center w-full"
+                  >Booking & Cooperation | Букинг и сотрудничество</span
+                >
+                <span class="text-white/80 text-[13px] text-center w-full mt-1"
+                  >PR-manager Victoria (Виктория)</span
+                >
+              </div>
+            </div>
+          </div>
+        </a>
+
+        <!-- Kaspi QR -->
+        <div class="flex flex-col items-center mt-2 group">
+          <a
+            href="https://pay.kaspi.kz/pay/9wmk71dc"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="relative w-full overflow-hidden rounded-xl bg-gradient-to-br from-zinc-800 to-zinc-900 border border-zinc-700 p-1 transition-all hover:scale-[1.02] hover:border-red-500/50 hover:shadow-[0_0_15px_rgba(220,38,38,0.2)] cursor-pointer"
+          >
+            <div class="flex h-full w-full items-center px-4 py-4 sm:px-6">
+              <div
+                class="text-gray-300 text-3xl opacity-80 group-hover:text-red-500 transition-colors"
+              >
+                <i class="fas fa-handshake-angle"></i>
+              </div>
+              <div
+                class="flex flex-col items-center justify-center w-full pr-8"
+              >
+                <span
+                  class="font-semibold text-gray-200 text-[15px] sm:text-[16px]"
+                  >Поддержать проект</span
+                >
+                <span
+                  class="text-gray-400 text-[13px] mt-1 flex items-center gap-1"
+                  >Kaspi QR (Казахстан 🇰🇿)</span
+                >
+              </div>
+            </div>
+          </a>
+          <!-- Kaspi Gold Text -->
+          <div class="mt-3 text-center w-full">
+            <p class="text-gray-400 text-sm italic tracking-wide">
+              Или Kaspi Gold: <span
+                class="text-gray-200 font-medium not-italic ml-1"
+                >4400 4303 7284 5419</span
+              >
+              <span class="text-xs text-gray-500 ml-1">(Валерий Б.)</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Donation Alerts -->
+        <a
+          href="https://dalink.to/valeriybelskiy"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="group relative w-full overflow-hidden rounded-xl bg-gradient-to-br from-zinc-800 to-zinc-900 border border-zinc-700 p-1 transition-all hover:scale-[1.02] hover:border-red-500/50 hover:shadow-[0_0_15px_rgba(220,38,38,0.2)] cursor-pointer mt-2"
+        >
+          <div class="flex h-full w-full items-center px-4 py-4 sm:px-6">
+            <div
+              class="text-gray-300 text-3xl opacity-80 group-hover:text-red-500 transition-colors"
+            >
+              <i class="fas fa-hand-holding-heart"></i>
+            </div>
+            <div class="flex flex-col items-center justify-center w-full pr-8">
+              <span
+                class="font-semibold text-gray-200 text-[15px] sm:text-[16px]"
+                >Поддержать проект</span
+              >
+              <span class="text-gray-400 text-[13px] mt-1"
+                >Donation Alerts (СНГ)</span
+              >
+            </div>
+          </div>
+        </a>
+
+        <!-- Ko-fi -->
+        <a
+          href="https://ko-fi.com/eminemshowtribute"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="group relative w-full overflow-hidden rounded-xl bg-gradient-to-br from-zinc-800 to-zinc-900 border border-zinc-700 p-1 transition-all hover:scale-[1.02] hover:border-red-500/50 hover:shadow-[0_0_15px_rgba(220,38,38,0.2)] cursor-pointer mt-2"
+        >
+          <div class="flex h-full w-full items-center px-4 py-4 sm:px-6">
+            <div
+              class="text-gray-300 text-3xl opacity-80 group-hover:text-red-500 transition-colors"
+            >
+              <i class="fas fa-globe"></i>
+            </div>
+            <div class="flex flex-col items-center justify-center w-full pr-8">
+              <span
+                class="font-semibold text-gray-200 text-[15px] sm:text-[16px]"
+                >Support project</span
+              >
+              <span class="text-gray-400 text-[13px] mt-1"
+                >Credit Card / PayPal (World)</span
+              >
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Social Icons -->
+      <div class="mt-12 flex justify-center gap-6">
+        <a
+          href="https://instagram.com/eminemshowtribute"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="w-14 h-14 rounded-2xl bg-zinc-900 border border-zinc-700 flex items-center justify-center text-2xl text-gray-300 hover:text-white hover:border-red-500 hover:shadow-[0_0_15px_rgba(220,38,38,0.3)] transition-all hover:-translate-y-1"
+        >
+          <i class="fab fa-instagram"></i>
+        </a>
+        <a
+          href="https://www.tiktok.com/@eminemshowtribute"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="w-14 h-14 rounded-2xl bg-zinc-900 border border-zinc-700 flex items-center justify-center text-2xl text-gray-300 hover:text-white hover:border-red-500 hover:shadow-[0_0_15px_rgba(220,38,38,0.3)] transition-all hover:-translate-y-1"
+        >
+          <i class="fab fa-tiktok"></i>
+        </a>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  /* Скрываем подвал и часть нижнего меню (так как это таплинковая страница, фокус на кнопках) */
+  :global(nav.bottom-0) {
+    display: none !important;
+  }
+
+  :global(body) {
+    background-color: #09090b; /* zinc-950 */
+  }
+</style>
