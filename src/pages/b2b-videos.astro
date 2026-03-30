@@ -2,127 +2,164 @@
 const pageTitle = "B2B Кейсы - Видео";
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
-    <title>{pageTitle}</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #050505;
-            color: #ffffff;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"
+        />
+        <title>{pageTitle}</title>
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                background-color: #050505;
+                color: #ffffff;
+                font-family:
+                    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                    Helvetica, Arial, sans-serif;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
 
-        .header {
-            width: 100%;
-            padding: 20px;
-            text-align: center;
-            background: rgba(0, 0, 0, 0.8);
-            position: sticky;
-            top: 0;
-            z-index: 10;
-            border-bottom: 1px solid #1a1a1a;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
+            .header {
+                width: 100%;
+                padding: 20px;
+                text-align: center;
+                background: rgba(0, 0, 0, 0.8);
+                position: sticky;
+                top: 0;
+                z-index: 10;
+                border-bottom: 1px solid #1a1a1a;
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+            }
 
-        h1 {
-            margin: 0;
-            font-size: 1.2rem;
-            font-weight: 500;
-            color: #e0e0e0;
-        }
+            h1 {
+                margin: 0;
+                font-size: 1.2rem;
+                font-weight: 500;
+                color: #e0e0e0;
+            }
 
-        .video-container {
-            width: 100%;
-            max-width: 500px;
-            padding: 20px;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            gap: 40px;
-        }
+            .video-container {
+                width: 100%;
+                max-width: 500px;
+                padding: 20px;
+                box-sizing: border-box;
+                display: flex;
+                flex-direction: column;
+                gap: 40px;
+            }
 
-        .video-item {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
+            .video-item {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                scroll-margin-top: 75px;
+            }
 
-        .video-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            padding-left: 5px;
-            color: #f0f0f0;
-        }
+            .video-title {
+                font-size: 1.1rem;
+                font-weight: 600;
+                padding-left: 5px;
+                color: #f0f0f0;
+            }
 
-        .video-wrapper {
-            width: 100%;
-            border-radius: 16px;
-            overflow: hidden;
-            background: #111;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            border: 1px solid #222;
-        }
+            .video-wrapper {
+                width: 100%;
+                border-radius: 16px;
+                overflow: hidden;
+                background: #111;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+                border: 1px solid #222;
+            }
 
-        video {
-            width: 100%;
-            height: auto;
-            display: block;
-            border-radius: 16px;
-        }
-        
-        /* Custom stylings for video controls to some extent, but native looks best on mobile iOS/Android */
+            video {
+                width: 100%;
+                height: auto;
+                display: block;
+                border-radius: 16px;
+            }
 
-        .back-instruction {
-            text-align: center;
-            padding: 30px 20px;
-            color: #888;
-            font-size: 0.9rem;
-            line-height: 1.5;
-        }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <h1>B2B Проекты</h1>
-    </div>
+            /* Custom stylings for video controls to some extent, but native looks best on mobile iOS/Android */
 
-    <div class="video-container">
-        <!-- Ролик 1 -->
-        <div class="video-item" id="ai">
-            <div class="video-title">ИИ-ценности</div>
-            <div class="video-wrapper">
-                <video src="/b2b-videos/ai-values.mp4" controls playsinline preload="metadata"></video>
+            .back-instruction {
+                text-align: center;
+                padding: 30px 20px;
+                color: #888;
+                font-size: 0.9rem;
+                line-height: 1.5;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <h1>Кейсы</h1>
+        </div>
+
+        <div class="video-container">
+            <!-- Ролик 1 -->
+            <div class="video-item" id="ai">
+                <div class="video-title">ИИ-ценности</div>
+                <div class="video-wrapper">
+                    <video
+                        src="/b2b-videos/ai-values.mp4"
+                        controls
+                        playsinline
+                        preload="metadata"></video>
+                </div>
+            </div>
+
+            <!-- Ролик 2 -->
+            <div class="video-item" id="noise">
+                <div class="video-title">Шумомер</div>
+                <div class="video-wrapper">
+                    <video
+                        src="/b2b-videos/noise-meter.mp4"
+                        controls
+                        playsinline
+                        preload="metadata"></video>
+                </div>
+            </div>
+
+            <!-- Ролик 3 -->
+            <div class="video-item" id="arena">
+                <div class="video-title">Almaty Arena</div>
+                <div class="video-wrapper">
+                    <video
+                        src="/b2b-videos/almaty-arena.mp4"
+                        controls
+                        playsinline
+                        preload="metadata"></video>
+                </div>
             </div>
         </div>
 
-        <!-- Ролик 2 -->
-        <div class="video-item" id="noise">
-            <div class="video-title">Шумомер</div>
-            <div class="video-wrapper">
-                <video src="/b2b-videos/noise-meter.mp4" controls playsinline preload="metadata"></video>
-            </div>
+        <div class="back-instruction">
+            Вернитесь в PDF-презентацию, чтобы продолжить чтение
         </div>
 
-        <!-- Ролик 3 -->
-        <div class="video-item" id="arena">
-            <div class="video-title">Almaty Arena Perfomance</div>
-            <div class="video-wrapper">
-                <video src="/b2b-videos/almaty-arena.mp4" controls playsinline preload="metadata"></video>
-            </div>
-        </div>
-    </div>
+        <script>
+            function playVideoForHash(hash: string) {
+                if (!hash) return;
+                const item = document.getElementById(hash.slice(1));
+                if (!item) return;
+                const video = item.querySelector('video');
+                if (!video) return;
+                video.play().catch(() => {});
+            }
 
-    <div class="back-instruction">
-        Вернитесь в PDF-презентацию, чтобы продолжить чтение
-    </div>
-</body>
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', () => playVideoForHash(window.location.hash));
+            } else {
+                playVideoForHash(window.location.hash);
+            }
+
+            window.addEventListener('hashchange', () => playVideoForHash(window.location.hash));
+        </script>
+    </body>
 </html>
