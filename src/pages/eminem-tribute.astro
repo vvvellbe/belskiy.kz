@@ -73,6 +73,9 @@ import profileImage from "../assets/eminem-trubute.jpg";
                 <span class="text-white/80 text-[13px] text-center w-full mt-1"
                   >PR-manager Victoria (Виктория)</span
                 >
+                <span class="text-white font-semibold text-[14px] text-center w-full mt-0.5 tracking-wide"
+                  >+7 (708) 550-68-90</span
+                >
               </div>
             </div>
           </div>
@@ -97,7 +100,7 @@ import profileImage from "../assets/eminem-trubute.jpg";
               >
                 <span
                   class="font-semibold text-gray-200 text-[15px] sm:text-[16px]"
-                  >Поддержать проект</span
+                  >Сказать спасибо</span
                 >
                 <span
                   class="text-gray-400 text-[13px] mt-1 flex items-center gap-1"
@@ -134,7 +137,7 @@ import profileImage from "../assets/eminem-trubute.jpg";
             <div class="flex flex-col items-center justify-center w-full pr-8">
               <span
                 class="font-semibold text-gray-200 text-[15px] sm:text-[16px]"
-                >Поддержать проект</span
+                >Сказать спасибо</span
               >
               <span class="text-gray-400 text-[13px] mt-1"
                 >Donation Alerts (СНГ)</span
@@ -159,7 +162,7 @@ import profileImage from "../assets/eminem-trubute.jpg";
             <div class="flex flex-col items-center justify-center w-full pr-8">
               <span
                 class="font-semibold text-gray-200 text-[15px] sm:text-[16px]"
-                >Support project</span
+                >Say Thank You</span
               >
               <span class="text-gray-400 text-[13px] mt-1"
                 >Credit Card / PayPal (World)</span
@@ -252,21 +255,17 @@ import profileImage from "../assets/eminem-trubute.jpg";
           ua,
         ) || window.innerWidth <= 768;
 
-      if (isMobile && !sessionStorage.getItem("inAppWarningSeen")) {
+      if (isMobile) {
         popup.style.visibility = "visible";
 
-        // Идеальные 3 секунды задержки: мозг успел загрузить инфу, но палец еще не кликнул
         setTimeout(() => {
           popup.classList.remove("translate-y-full");
         }, 3000);
 
         closeBtn.addEventListener("click", () => {
           popup.classList.add("translate-y-full");
-          sessionStorage.setItem("inAppWarningSeen", "true");
           setTimeout(() => (popup.style.visibility = "hidden"), 600);
         });
-
-
       }
     }
 
